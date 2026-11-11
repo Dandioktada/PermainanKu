@@ -5,6 +5,20 @@
 (function () {
   "use strict";
 
+  // ---------- Tema siang/malam ----------
+  // Dicek setiap menit, jadi tema berganti sendiri saat lewat pukul 18.00 atau 06.00.
+  function perbaruiWaktu() {
+    const paksa = new URLSearchParams(location.search).get("waktu");
+    const dev = /^pengembangan--/.test(location.hostname);
+    const jam = new Date().getHours();
+    const waktu = paksa === "siang" || paksa === "malam" ? paksa : dev ? "malam" : (jam >= 6 && jam < 18 ? "siang" : "malam");
+    document.documentElement.setAttribute("data-waktu", waktu);
+    const meta = document.querySelector('meta[name="theme-color"]');
+    if (meta) meta.setAttribute("content", waktu === "malam" ? "#121a3a" : "#8fcbee");
+  }
+  perbaruiWaktu();
+  setInterval(perbaruiWaktu, 60000);
+
   const lapisan = document.getElementById("terbang");
   if (!lapisan) return;
   const kurangiGerak = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -52,7 +66,9 @@
     goyang.style.animationDuration = (kucing ? 2.6 : 1.6) + "s";
 
     const hewan = document.createElement("div");
-    hewan.className = kucing ? "kucing-terbang" : "kupu-kupu" + (Math.random() < 0.5 ? " biru" : "");
+    const malam = document.documentElement.getAttribute("data-waktu") === "malam";
+    // Malam hari: kupu-kupu diganti kunang-kunang
+    hewan.className = kucing ? "kucing-terbang" : malam ? "kunang" : "kupu-kupu" + (Math.random() < 0.5 ? " biru" : "");
 
     goyang.appendChild(hewan);
     lintas.appendChild(goyang);

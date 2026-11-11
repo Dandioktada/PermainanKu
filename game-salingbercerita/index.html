@@ -6,11 +6,23 @@
 <title>Saling Bercerita</title>
 <meta name="theme-color" content="#8fcbee">
 <link rel="stylesheet" href="style.css">
+<script>
+  // Tema siang/malam mengikuti jam di HP pemain. Dipasang sebelum halaman tampil supaya tidak berkedip.
+  // ?waktu=siang atau ?waktu=malam untuk memaksa tema. Di situs pengembangan, tema malam selalu aktif untuk dicoba.
+  (function () {
+    var paksa = new URLSearchParams(location.search).get("waktu");
+    var dev = /^pengembangan--/.test(location.hostname);
+    var jam = new Date().getHours();
+    var waktu = paksa === "siang" || paksa === "malam" ? paksa : dev ? "malam" : (jam >= 6 && jam < 18 ? "siang" : "malam");
+    document.documentElement.setAttribute("data-waktu", waktu);
+  })();
+</script>
 </head>
 <body>
 
 <!-- Dekorasi latar pixel -->
 <div class="dekor" aria-hidden="true">
+  <div class="bintang-langit"></div>
   <div class="awan a1"></div>
   <div class="awan a2"></div>
   <div class="awan a3"></div>
