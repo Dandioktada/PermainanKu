@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Saling Kenal</title>
+<meta name="description" content="Alat bantu bertanya untuk proses ta'aruf. Mulai Mengenal dari Bercerita.">
+<meta name="theme-color" content="#ffffff">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 32 32%27%3E%3Ccircle cx=%2712%27 cy=%2716%27 r=%278%27 fill=%27none%27 stroke=%27%232f6f62%27 stroke-width=%273%27/%3E%3Ccircle cx=%2720%27 cy=%2716%27 r=%278%27 fill=%27none%27 stroke=%27%23e0a526%27 stroke-width=%273%27/%3E%3C/svg%3E">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<!-- Bilah mode pengembangan (hanya tampil dengan ?dev=1) -->
+<div id="bilah-dev" class="bilah-dev" hidden>
+  <b>Mode pengembangan</b>
+  <span class="dev-label">Lihat sebagai:</span>
+  <button type="button" class="dev-pemain" data-p="0">Pemain A</button>
+  <button type="button" class="dev-pemain" data-p="1">Pemain B</button>
+  <button type="button" id="dev-isi">Isi otomatis</button>
+  <button type="button" id="dev-reset">Ulang dari awal</button>
+</div>
+
+<main class="app">
+
+  <!-- ====== LAYAR AWAL ====== -->
+  <section id="layar-awal" class="layar aktif">
+    <header class="kepala">
+      <div class="logo" aria-hidden="true"></div>
+      <h1>Saling Kenal</h1>
+      <p class="tagline">Mulai Mengenal <i>dari</i> Bercerita</p>
+    </header>
+
+    <div class="kartu-panel">
+      <p class="pengantar">Ingin mengenal calon lebih dalam, baik sebelum maupun sesudah bertukar CV? Saling bertanya dan menjawab di sini, lalu unduh hasilnya untuk dibaca bersama perantara atau wali.</p>
+
+      <label for="input-nama">Namamu</label>
+      <input id="input-nama" type="text" maxlength="30" placeholder="Tulis namamu" autocomplete="off">
+      <button id="btn-buat" class="btn utama">Buat Ruangan</button>
+
+      <div class="pemisah"><span>atau gabung ke ruangan</span></div>
+
+      <label for="input-kode">Kode ruangan</label>
+      <input id="input-kode" type="text" maxlength="5" placeholder="Contoh: K7M3Q" autocomplete="off" autocapitalize="characters">
+      <button id="btn-gabung" class="btn kedua">Gabung</button>
+    </div>
+
+    <button id="btn-lanjut" class="btn kedua" hidden></button>
+    <p id="pesan-awal" class="pesan" role="status"></p>
+  </section>
+
+  <!-- ====== LAYAR MENUNGGU ====== -->
+  <section id="layar-tunggu" class="layar">
+    <header class="kepala kecil">
+      <div class="logo" aria-hidden="true"></div>
+      <h1>Ruangan Siap</h1>
+      <p class="tagline">Bagikan kepada calonmu</p>
+    </header>
+    <div class="kartu-panel tengah">
+      <div class="ilustrasi" aria-hidden="true"></div>
+      <p class="label-kecil">Kode ruangan</p>
+      <p id="tampil-kode" class="kode">-----</p>
+      <a id="btn-wa" class="btn utama" target="_blank" rel="noopener">Kirim lewat WhatsApp</a>
+      <button id="btn-salin" class="btn kedua">Salin tautan</button>
+      <p class="menunggu"><span class="titik"></span><span class="titik"></span><span class="titik"></span> Menunggu calonmu masuk ke ruangan</p>
+    </div>
+    <button id="btn-batal" class="btn tipis">Batalkan</button>
+  </section>
+
+  <!-- ====== LAYAR PERMAINAN (satu layar, isinya berganti per tahap) ====== -->
+  <section id="layar-main" class="layar">
+    <div class="bar-atas">
+      <span id="nama-0" class="chip-nama">-</span>
+      <span id="status-koneksi" class="koneksi" title="Status koneksi"></span>
+      <span id="nama-1" class="chip-nama">-</span>
+    </div>
+
+    <ol class="langkah" id="langkah">
+      <li data-fase="atur">Susun</li>
+      <li data-fase="jawab">Jawab</li>
+      <li data-fase="nilai">Nilai</li>
+      <li data-fase="perjelas">Perjelas</li>
+      <li data-fase="selesai">Selesai</li>
+    </ol>
+
+    <div id="isi-tahap"></div>
+
+    <div id="kotak-tunggu" class="kotak-tunggu" hidden>
+      <p class="menunggu"><span class="titik"></span><span class="titik"></span><span class="titik"></span> <span id="teks-tunggu">Menunggu</span></p>
+    </div>
+
+    <button id="btn-keluar" class="btn tipis">Keluar dari Ruangan</button>
+  </section>
+
+</main>
+
+<div id="toast" class="toast" role="status"></div>
+
+<script src="https://unpkg.com/peerjs@1.5.4/dist/peerjs.min.js"></script>
+<script src="https://unpkg.com/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
+<script src="pertanyaan.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
