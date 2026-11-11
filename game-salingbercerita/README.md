@@ -35,9 +35,16 @@ Semua kalimat ada di file `kartu.js`. Penanda `{A}` diganti nama yang menjawab, 
 - `style.css` : tampilan
 - `game.js` : jalannya permainan dan koneksi online
 - `kartu.js` : daftar topik dan isi kartu
+- `font/` : huruf pixel Pixelify Sans dan VT323 (lisensi SIL Open Font License 1.1, berkas lisensi ada di folder yang sama)
 
 ## Catatan Teknis
 
 Koneksi antarpemain memakai PeerJS (WebRTC) dengan server sinyal gratis milik PeerJS, jadi tidak perlu server sendiri.
 Game di-hosting di Netlify (project `salingbercerita`) dan tersambung ke branch `main` dengan base directory `game-salingbercerita`.
 Setiap perubahan yang di-push ke `main` otomatis ter-update di situs.
+
+## Tampilan
+
+Gaya pixel art yang cozy: langit bertingkat, awan bergerak, rumput dan bunga, serta bingkai kotak bertepi tegas.
+Semua ikon pixel (dadu, bintang, hati, awan, matahari, bunga, gembok) digambar sebagai grid di `bahan/sprite.py`, lalu hasilnya disimpan di bagian bawah `style.css`.
+Angka memakai huruf VT323 supaya kode ruangan dan angka tidak tertukar dengan huruf S atau Z.
