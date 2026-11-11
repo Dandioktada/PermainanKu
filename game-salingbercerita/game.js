@@ -166,7 +166,7 @@
       nama: [namaHost, null],
       fase: "persiapan",          // persiapan | main | ringkasan
       siap: [false, false],
-      rahasia: [],                // { dari, untuk, teks, giliranKe, keluar }
+      rahasia: [],                // { dari, untuk, teks, posisi, keluar }
       dek: { coklat: acak(urutan(t.coklat.kartu.length)), hijau: acak(urutan(t.hijau.kartu.length)) },
       giliran: 0,
       riwayat: [],                // kartu yang sudah keluar; kartu terakhir = kartu yang sedang dibahas
@@ -191,23 +191,32 @@
     return !k || !!k.bintang;
   }
 
+  // Menentukan urutan ke berapa setiap kartu rahasia muncul.
+  // Aturan: sebelum kartu rahasia pertama dan di antara dua kartu rahasia selalu ada 2 atau 3 kartu biasa.
+  // Kartu ke-n (dihitung dari 0) selalu diputar oleh pemain n % 2, karena giliran bergantian dan dimulai dari pemain 0.
+  // Jarak 2 atau 3 menghasilkan urutan genap dan ganjil, jadi kartu rahasia selalu bisa jatuh ke giliran si penjawab.
   function jadwalkanRahasia() {
-    // Pertanyaan dari pemain p dijawab oleh pasangannya, pada giliran ke-2 sampai ke-6 si penjawab.
-    [0, 1].forEach((untuk) => {
-      const daftar = state.rahasia.filter((r) => r.untuk === untuk);
-      const slot = acak([2, 3, 4, 5, 6]).slice(0, daftar.length).sort((a, b) => a - b);
-      acak(daftar).forEach((r, i) => { r.giliranKe = slot[i]; });
-    });
+    const sisa = [0, 1].map((untuk) => acak(state.rahasia.filter((r) => r.untuk === untuk)));
+    const awal = state.riwayat.length;
+    let posisiTerakhir = awal - 1;
+    while (sisa[0].length || sisa[1].length) {
+      let untuk;
+      if (sisa[0].length !== sisa[1].length) untuk = sisa[0].length > sisa[1].length ? 0 : 1;
+      else untuk = Math.random() < 0.5 ? 0 : 1;
+      const jarak = [2, 3].find((g) => (posisiTerakhir + g + 1) % 2 === (untuk + state.giliran + awal) % 2);
+      posisiTerakhir += jarak + 1;
+      sisa[untuk].shift().posisi = posisiTerakhir;
+    }
   }
 
   function putar(oleh) {
     if (!bolehPutar(state, oleh) || Date.now() < animasiSampai) return;
     const t = cariTopik(state.topik);
-    const giliranKe = state.riwayat.filter((r) => r.oleh === oleh).length + 1;
+    const urutanKe = state.riwayat.length;
     const sekarang = Date.now();
 
     // Kartu rahasia yang sudah waktunya muncul untuk pemain ini
-    let rahasia = state.rahasia.find((r) => !r.keluar && r.untuk === oleh && r.giliranKe <= giliranKe);
+    let rahasia = state.rahasia.find((r) => !r.keluar && r.untuk === oleh && r.posisi <= urutanKe);
     // Kalau kartu biasa sudah habis, keluarkan sisa kartu rahasia pemain ini
     if (!rahasia && state.dek.coklat.length + state.dek.hijau.length === 0) {
       rahasia = state.rahasia.find((r) => !r.keluar && r.untuk === oleh);
@@ -248,7 +257,7 @@
           .map((x) => String(x || "").trim().slice(0, 200)).filter(Boolean).slice(0, 3);
         if (!daftar.length) return;
         state.rahasia = state.rahasia.filter((r) => r.dari !== oleh)
-          .concat(daftar.map((teks) => ({ dari: oleh, untuk: 1 - oleh, teks, giliranKe: 99, keluar: false })));
+          .concat(daftar.map((teks) => ({ dari: oleh, untuk: 1 - oleh, teks, posisi: 9999, keluar: false })));
         state.siap[oleh] = true;
         if (state.siap[0] && state.siap[1]) {
           jadwalkanRahasia();

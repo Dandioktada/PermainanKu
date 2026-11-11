@@ -10,7 +10,7 @@ Game ini hanya menampilkan permainan. Obrolannya dilakukan lewat telepon WhatsAp
 1. Pemain pertama menulis nama, memilih topik, lalu menekan **Buat Ruangan**.
 2. Kode ruangan atau tautannya dikirim ke pemain kedua, misalnya lewat WhatsApp.
 3. Pemain kedua membuka tautan, menulis nama, lalu menekan **Gabung**.
-4. Masing-masing menulis 1 sampai 3 **pertanyaan rahasia** untuk pasangannya. Pertanyaan ini muncul diam-diam sebagai kartu rahasia pada giliran ke-2 sampai ke-6 pasangannya.
+4. Masing-masing menulis 1 sampai 3 **pertanyaan rahasia** untuk pasangannya. Pertanyaan ini muncul diam-diam sebagai kartu rahasia saat giliran pasangannya. Sebelum kartu rahasia pertama dan di antara dua kartu rahasia selalu ada 2 atau 3 kartu biasa.
 5. Pemain bergiliran menekan **Putar Dadu**. Dadu punya 3 sisi Cokelat dan 3 sisi Hijau. Warna yang keluar menentukan kartu yang diambil.
 6. **Yang memutar dadu menjawab kartu.** Nama di kartu otomatis mengikuti nama pemain.
 7. Setelah yang menjawab selesai bercerita, pasangan yang mendengarkan mengisi **bintang 1 sampai 5** dan kalimat feedback. Penilaian ini disembunyikan dari yang menjawab. Dadu baru bisa diputar lagi setelah penilaian disimpan.
