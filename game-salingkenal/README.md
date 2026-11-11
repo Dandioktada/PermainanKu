@@ -2,6 +2,8 @@
 
 **Mulai Mengenal dari Bercerita**
 
+Alamat permainan: https://salingkenal.netlify.app (versi uji: https://pengembangan--salingkenal.netlify.app, mode pengembangan: tambahkan `?dev=1`)
+
 Alat bantu bertanya untuk muslim dan muslimah yang sedang menjalani proses ta'aruf, terutama yang berjauhan. Melengkapi tukar CV dengan sesi tanya jawab yang terarah, lalu hasilnya bisa diunduh sebagai PDF untuk dibaca bersama perantara atau wali.
 
 ## Alur

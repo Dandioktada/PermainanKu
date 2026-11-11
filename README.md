@@ -24,6 +24,6 @@ PermainanKu/
 | Folder | Nama Game | Alamat | Keterangan |
 |---|---|---|---|
 | `game-salingbercerita/` | Saling Bercerita | https://salingbercerita.netlify.app | Game kartu obrolan untuk dua orang secara online. Dadu dua warna menentukan kartu Cokelat (masa depan, rencana, mimpi) atau Hijau (komitmen, kejujuran, kasih sayang). |
-| `game-salingkenal/` | Saling Kenal | (belum dihubungkan ke Netlify) | Alat bantu tanya jawab untuk proses ta'aruf. Dua pemain saling mengajukan pertanyaan (dibantu bank pertanyaan bertingkat), menjawab, memberi penilaian kejelasan, lalu mengunduh hasilnya sebagai PDF. |
+| `game-salingkenal/` | Saling Kenal | https://salingkenal.netlify.app | Alat bantu tanya jawab untuk proses ta'aruf. Dua pemain saling mengajukan pertanyaan (dibantu bank pertanyaan bertingkat), menjawab, memberi penilaian kejelasan, lalu mengunduh hasilnya sebagai PDF. |
 
 Daftar ini diperbarui setiap kali game baru ditambahkan.
