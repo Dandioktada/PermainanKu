@@ -185,16 +185,19 @@ b, strong { font-weight: 400; color: var(--coklat-tua); }
   background: linear-gradient(180deg, #fff7df 0 52%, #cfe9c3 52% 100%) 0 0 / 100% 1.2em repeat-y;
   -webkit-background-clip: text; background-clip: text;
 }
-/* Logo di layar awal: dadu, judul, dan bintang berkilau di pojok */
+/* Logo di layar awal: dua dadu bertumpuk, bintang berkilau di kiri atas dan kanan bawah */
 .logo-game { position: relative; display: block; }
-.kilau { position: absolute; display: block; background: var(--px-kilau) center / contain no-repeat; animation: kilau 1.6s steps(1) infinite; z-index: 2; }
+.logo-dadu.rapat { position: relative; display: inline-block; width: 100px; height: 72px; margin: 6px 0 2px; }
+.logo-dadu.rapat span { position: absolute; width: 50px; height: 50px; background-size: 28px 28px; }
+.logo-dadu.rapat .c { left: 2px; top: 16px; transform: rotate(-11deg); z-index: 1; }
+.logo-dadu.rapat .h { left: 44px; top: 2px; transform: rotate(16deg); z-index: 2; background-size: 30px 27px; }
+.kilau { position: absolute; display: block; background: var(--px-kilau) center / contain no-repeat; animation: kilau 1.6s steps(1) infinite; z-index: 3; }
 .kilau.besar { width: 28px; height: 28px; }
-.kilau.kecil { width: 16px; height: 16px; background-image: var(--px-kilau-pink); animation-delay: -.8s; }
-/* Posisi dihitung dari tengah, supaya bintang menempel di sudut logo di semua lebar layar */
-.kilau.kanan-atas   { top: 6px;   left: calc(50% + 60px); }
-.kilau.kanan-atas-2 { top: -8px;  left: calc(50% + 92px); }
-.kilau.kiri-bawah   { bottom: -10px; right: calc(50% + 120px); animation-delay: -.4s; }
-.kilau.kiri-bawah-2 { bottom: 26px; right: calc(50% + 136px); animation-delay: -1.2s; }
+.kilau.kecil { width: 17px; height: 17px; animation-delay: -.8s; }
+.kilau.kiri-atas     { left: -30px; top: -6px; }
+.kilau.kiri-atas-2   { left: -40px; top: 26px; animation-delay: -1.2s; }
+.kilau.kanan-bawah   { right: -30px; bottom: 4px; animation-delay: -.4s; }
+.kilau.kanan-bawah-2 { right: -10px; bottom: -22px; }
 @keyframes kilau { 0% { transform: scale(1); } 50% { transform: scale(.55); } 75% { transform: scale(.8); } }
 
 .judul.kecil h1 { font-size: 26px; }
