@@ -91,6 +91,41 @@ GEMBOK = [
     "XXXXXXXX",
 ]
 
+KUCING = [
+    ".............X....X.",
+    "............XOX..XOX",
+    "............XOOXXOOX",
+    "............XOOOOOOX",
+    ".X..........XOXOOXOX",
+    "XOX.........XOOPPOOX",
+    "XOX..XXXXXXXXOOOOOOX",
+    ".XOXXOOOOOOOOXXXXXX.",
+    "..XOODOODOODOOOOOX..",
+    "...XOOOOOOOOOOOOOX..",
+    "...XOOXXXXXXXXOOX...",
+    "...XXX........XXX...",
+]
+SAYAP = [
+    "......XXX.",
+    "....XXWWWX",
+    "..XXWWWWBX",
+    ".XWWWWWBX.",
+    "XWWWWBBX..",
+    "XBBBBXX...",
+    ".XXXX.....",
+]
+KUPU = [
+    "...X...X...",
+    "....X.X....",
+    ".XXX.X.XXX.",
+    "XPPPXBXPPPX",
+    "XPWPXBXPWPX",
+    ".XPPXBXPPX.",
+    "..XPXBXPX..",
+    ".XPPXBXPPX.",
+    ".XXX.X.XXX.",
+]
+
 out = {
     "--px-bintang-nyala": svg(BINTANG, {"X": "#5b3a1e", "Y": "#f6c42a", "W": "#fff3b0"}),
     "--px-bintang-mati": svg(BINTANG, {"X": "#c4b398", "Y": "#efe4d0", "W": "#f7efe0"}),
@@ -101,6 +136,10 @@ out = {
     "--px-matahari": svg(MATAHARI, {"X": "#e7a01a", "Y": "#ffd84a", "W": "#fff6b8", "O": "#f5b52e"}),
     "--px-bunga-pink": svg(BUNGA, {"X": "#8f2f45", "P": "#f7a9bb", "Y": "#ffd84a", "G": "#3f7a35", "L": "#6fb257"}),
     "--px-bunga-biru": svg(BUNGA, {"X": "#2a4f9c", "P": "#a9c6f5", "Y": "#ffd84a", "G": "#3f7a35", "L": "#6fb257"}),
+    "--px-kucing": svg(KUCING, {"X": "#3b2616", "O": "#f3b26b", "D": "#d9823b", "P": "#f08aa0"}),
+    "--px-sayap": svg(SAYAP, {"X": "#5b7da3", "W": "#ffffff", "B": "#cfe6f7"}),
+    "--px-kupu-pink": svg(KUPU, {"X": "#5b2030", "P": "#f59ab0", "W": "#fff1c2", "B": "#3b2616"}),
+    "--px-kupu-biru": svg(KUPU, {"X": "#1f3f7a", "P": "#8fb8f2", "W": "#fff1c2", "B": "#3b2616"}),
     "--px-gembok": svg(GEMBOK, {"X": "#5b3a1e", "Y": "#f6c42a"}),
 }
 print(":root {")
