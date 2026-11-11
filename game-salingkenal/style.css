@@ -193,6 +193,13 @@ input::placeholder, textarea::placeholder { color: #a79f90; }
   display: grid; place-items: center;
 }
 .slot textarea { min-height: 54px; }
+.hapus-slot {
+  flex: none; width: 36px; height: 36px; margin-top: 8px; padding: 0; border-radius: 50%;
+  border: 1px solid #e3dccf; background: rgba(255,255,255,.7); color: var(--brown);
+  display: grid; place-items: center; cursor: pointer; transition: background .15s, color .15s;
+}
+.hapus-slot:hover, .hapus-slot:focus-visible { background: #f3ece1; color: #8a3b2a; }
+.slot:has(textarea:placeholder-shown) .hapus-slot { visibility: hidden; }
 
 /* ---------- Bank pertanyaan ---------- */
 .bank { background: url("gambar/box.jpg") center / cover, var(--kertas); border: 1px solid #ebe5da; border-radius: 4px; box-shadow: var(--bayang); padding: 20px; display: flex; flex-direction: column; gap: 12px; }
