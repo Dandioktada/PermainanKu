@@ -41,8 +41,9 @@
   let timerSambung = null;
   let sengajaKeluar = false;
   let pesanTerakhir = 0;
-  let draftNilai = {};       // { indeksKartu: { bintang, catatan } } milik pemain ini, sebelum dikirim
-  let kunciFormNilai = "";   // penanda daftar kartu yang sedang ditampilkan di pop-up
+  let bintangDipilih = 0;
+  let popupDilihat = "";
+  let tandaTerakhir = "";     // sesi yang pop-up feedback-nya sudah ditutup di HP ini
 
   const $ = (id) => document.getElementById(id);
 
@@ -172,7 +173,6 @@
       rollId: 0,
       ronde: ronde || 0,
       sesi: 1,
-      siapNilai: [false, false],
       selesaiPada: null,
     };
   }
@@ -186,11 +186,9 @@
   }
   function bolehPutar(s, oleh) {
     if (s.fase !== "main" || s.giliran !== oleh || sisaTotal(s) === 0) return false;
-    return true;
-  }
-  // Kartu yang harus dinilai pemain ini: kartu yang dijawab pasangannya dan belum diberi bintang.
-  function kartuUntukDinilai(s, penilai) {
-    return s.riwayat.map((r, i) => ({ r, i })).filter((x) => x.r.oleh !== penilai && !x.r.bintang);
+    // Kartu terakhir harus sudah dinilai pendengar sebelum dadu diputar lagi
+    const k = kartuKini(s);
+    return !k || !!k.bintang;
   }
 
   function jadwalkanRahasia() {
@@ -261,44 +259,28 @@
       case "putar":
         putar(oleh);
         return;
+      case "nilai": {
+        const k = kartuKini(state);
+        const n = Math.round(Number(d.bintang));
+        if (state.fase !== "main" || !k || k.bintang || k.oleh === oleh || !(n >= 1 && n <= 5)) return;
+        k.bintang = n;
+        k.catatan = String(d.catatan || "").trim().slice(0, 300);
+        break;
+      }
       case "akhiri": {
         if (state.fase !== "main") return;
         const k = kartuKini(state);
         if (k && !k.waktuSelesai) k.waktuSelesai = Date.now();
-        state.fase = "penilaian";
-        state.siapNilai = [false, false];
-        // Pemain yang tidak punya kartu untuk dinilai langsung dianggap selesai
-        [0, 1].forEach((i) => { if (!kartuUntukDinilai(state, i).length) state.siapNilai[i] = true; });
-        cekSelesaiNilai();
+        state.fase = "ringkasan";
+        state.selesaiPada = Date.now();
         break;
       }
-      case "nilaiSemua": {
-        if (state.fase !== "penilaian" || state.siapNilai[oleh]) return;
-        const wajib = kartuUntukDinilai(state, oleh);
-        const masuk = Array.isArray(d.nilai) ? d.nilai : [];
-        const valid = wajib.every(({ i }) => {
-          const n = masuk.find((x) => x && x.i === i);
-          return n && Math.round(Number(n.bintang)) >= 1 && Math.round(Number(n.bintang)) <= 5;
-        });
-        if (!valid) return;
-        wajib.forEach(({ i }) => {
-          const n = masuk.find((x) => x.i === i);
-          state.riwayat[i].bintang = Math.round(Number(n.bintang));
-          state.riwayat[i].catatan = String(n.catatan || "").trim().slice(0, 300);
-        });
-        state.siapNilai[oleh] = true;
-        cekSelesaiNilai();
-        break;
-      }
-      case "batalAkhiri":
-        if (state.fase !== "penilaian") return;
-        state.fase = "main";
-        state.siapNilai = [false, false];
-        break;
       case "lanjut":
         if (state.fase !== "ringkasan") return;
         state.fase = "main";
         state.sesi += 1;
+        // Kartu terakhir yang belum sempat dinilai ikut dinilai di sesi baru
+        { const k = kartuKini(state); if (k && !k.bintang) k.sesi = state.sesi; }
         break;
       case "ulang": {
         const nama = state.nama;
@@ -310,13 +292,6 @@
         return;
     }
     kirimDanTerapkan(false);
-  }
-
-  function cekSelesaiNilai() {
-    if (state.siapNilai[0] && state.siapNilai[1]) {
-      state.fase = "ringkasan";
-      state.selesaiPada = Date.now();
-    }
   }
 
   function kirimDanTerapkan(animasi) {
@@ -377,83 +352,70 @@
     if (balik) { void box.offsetWidth; box.classList.add("balik"); }
   }
 
-  // ---------- Pop-up penilaian di akhir permainan ----------
-  function tampilPenilaian() {
-    const modal = $("modal-nilai");
-    if (state.fase !== "penilaian") {
+  // ---------- Panel penilaian (selama permainan, hanya untuk pendengar) ----------
+  function perbaruiPanelNilai() {
+    const k = kartuKini(state);
+    const saya = indeksSaya();
+    const tampil = state.fase === "main" && k && !k.bintang && k.oleh !== saya && Date.now() >= animasiSampai;
+    const panel = $("panel-nilai");
+    if (tampil && panel.hidden) {
+      $("input-catatan").value = "";
+      aturBintangPilih(0);
+    }
+    panel.hidden = !tampil;
+    if (tampil) {
+      panel.querySelectorAll(".nama-penjawab").forEach((e) => { e.textContent = namaPemain(k.oleh); });
+      $("btn-nilai").disabled = !bintangDipilih || !terhubung;
+    }
+  }
+
+  function aturBintangPilih(n) {
+    bintangDipilih = n;
+    $("bintang-pilih").querySelectorAll("button").forEach((b) => b.classList.toggle("nyala", Number(b.dataset.n) <= n));
+    $("btn-nilai").disabled = !n || !terhubung;
+  }
+
+  // ---------- Pop-up feedback (muncul saat permainan diakhiri) ----------
+  // Menampilkan bintang dan kalimat feedback yang DITERIMA pemain ini pada sesi yang baru selesai.
+  function tampilPopupFeedback() {
+    const modal = $("modal-feedback");
+    const kunci = state.ronde + ":" + state.sesi;
+    if (state.fase !== "ringkasan" || popupDilihat === kunci) {
       modal.hidden = true;
-      kunciFormNilai = "";
       document.body.classList.remove("modal-buka");
       return;
     }
+    if (!modal.hidden) return;
     const saya = indeksSaya();
     const lawan = namaPemain(1 - saya);
-    const daftar = kartuUntukDinilai(state, saya);
+    modal.querySelectorAll(".nama-lawan").forEach((e) => { e.textContent = lawan; });
+    const wadah = $("daftar-feedback");
+    wadah.innerHTML = "";
+    const milik = state.riwayat.filter((r) => r.oleh === saya && r.sesi === state.sesi);
+    if (!milik.length) wadah.appendChild(el("p", "nilai-tunggu", "Di sesi ini kamu belum menjawab kartu."));
+    milik.forEach((r, urut) => {
+      const item = el("div", "item-nilai " + r.warna);
+      const asal = r.jenis === "rahasia" ? "Kartu rahasia" : "Kartu " + NAMA_WARNA[r.warna];
+      item.appendChild(el("p", "item-nilai-label", (urut + 1) + ". " + asal));
+      item.appendChild(el("p", "item-nilai-teks", teksPolos(teksKartu(state, r), namaPemain(r.oleh), namaPemain(1 - r.oleh))));
+      if (r.bintang) {
+        const bt = el("div", "bintang-hasil");
+        bt.setAttribute("aria-label", r.bintang + " dari 5 bintang");
+        for (let n = 1; n <= 5; n++) bt.appendChild(el("span", n <= r.bintang ? "nyala" : "", "★"));
+        item.appendChild(bt);
+        item.appendChild(r.catatan ? el("p", "item-feedback", r.catatan) : el("p", "item-feedback kosong", "Tanpa kalimat feedback."));
+      } else {
+        item.appendChild(el("p", "item-feedback kosong", "Kartu ini belum sempat dinilai."));
+      }
+      wadah.appendChild(item);
+    });
     modal.hidden = false;
     document.body.classList.add("modal-buka");
-    modal.querySelectorAll(".nama-lawan").forEach((e) => { e.textContent = lawan; });
-
-    const sudah = state.siapNilai[saya];
-    const kunci = state.ronde + ":" + state.sesi + ":" + daftar.map((x) => x.i).join(",") + ":" + sudah;
-    if (kunci !== kunciFormNilai) {
-      kunciFormNilai = kunci;
-      const wadah = $("daftar-nilai");
-      wadah.innerHTML = "";
-      if (sudah) {
-        wadah.appendChild(el("p", "nilai-tunggu", !state.riwayat.some((r) => r.oleh !== saya && r.sesi === state.sesi)
-          ? "Tidak ada kartu dari " + lawan + " yang perlu kamu nilai."
-          : "Penilaianmu sudah terkirim."));
-      }
-      if (!sudah) {
-        daftar.forEach(({ r, i }, urut) => {
-          const d = draftNilai[i] || (draftNilai[i] = { bintang: 0, catatan: "" });
-          const item = el("div", "item-nilai " + r.warna);
-          const asal = r.jenis === "rahasia" ? "Kartu rahasia" : "Kartu " + NAMA_WARNA[r.warna];
-          item.appendChild(el("p", "item-nilai-label", (urut + 1) + ". " + asal));
-          item.appendChild(el("p", "item-nilai-teks", teksPolos(teksKartu(state, r), namaPemain(r.oleh), namaPemain(1 - r.oleh))));
-          const bintang = el("div", "bintang-pilih");
-          bintang.setAttribute("role", "radiogroup");
-          bintang.setAttribute("aria-label", "Bintang untuk kartu " + (urut + 1));
-          for (let n = 1; n <= 5; n++) {
-            const b = el("button", n <= d.bintang ? "nyala" : "", "★");
-            b.type = "button";
-            b.setAttribute("aria-label", n + " bintang");
-            b.addEventListener("click", () => {
-              d.bintang = n;
-              bintang.querySelectorAll("button").forEach((x, j) => x.classList.toggle("nyala", j < n));
-              perbaruiTombolNilai();
-            });
-            bintang.appendChild(b);
-          }
-          item.appendChild(bintang);
-          const ta = el("textarea");
-          ta.rows = 2;
-          ta.maxLength = 300;
-          ta.placeholder = "Feedback untuk jawaban " + namaPemain(r.oleh) + " (boleh dikosongkan)";
-          ta.value = d.catatan;
-          ta.addEventListener("input", () => { d.catatan = ta.value; });
-          item.appendChild(ta);
-          wadah.appendChild(item);
-        });
-      }
-    }
-    $("aksi-nilai").hidden = sudah;
-    const status = $("status-nilai");
-    if (sudah && !state.siapNilai[1 - saya]) status.textContent = "Menunggu " + lawan + " selesai menilai...";
-    else status.textContent = "";
-    perbaruiTombolNilai();
-  }
-
-  function perbaruiTombolNilai() {
-    if (!state || state.fase !== "penilaian") return;
-    const daftar = kartuUntukDinilai(state, indeksSaya());
-    const terisi = daftar.filter(({ i }) => draftNilai[i] && draftNilai[i].bintang).length;
-    $("progres-nilai").textContent = terisi + " dari " + daftar.length + " kartu sudah diberi bintang";
-    $("btn-kirim-nilai").disabled = terisi < daftar.length || !terhubung;
+    wadah.scrollTop = 0;
   }
 
   function perbaruiKontrol() {
-    if (!state || (state.fase !== "main" && state.fase !== "penilaian")) return;
+    if (!state || state.fase !== "main") return;
     const saya = indeksSaya();
     const sedangAnimasi = Date.now() < animasiSampai;
     const habis = sisaTotal(state) === 0;
@@ -478,8 +440,8 @@
     if (sedangAnimasi) teks = "Dadu sedang berputar...";
     else if (!terhubung) teks = "Menunggu koneksi dengan " + lawan + "...";
     else if (habis) teks = "Semua kartu sudah keluar. Tekan Akhiri permainan untuk menilai dan melihat ringkasan.";
-    else if (k && k.oleh === saya) teks = "Giliran kamu bercerita. Setelah selesai, " + lawan + " yang memutar dadu berikutnya.";
-    else if (k && state.giliran === saya) { teks = "Dengarkan cerita " + lawan + ". Kalau sudah selesai, putar dadu untuk kartu berikutnya."; sorot = true; }
+    else if (k && !k.bintang && k.oleh === saya) teks = "Giliran kamu bercerita. Setelah selesai, " + lawan + " mengisi penilaian.";
+    else if (k && !k.bintang) { teks = "Dengarkan cerita " + lawan + ", lalu isi penilaian di bawah."; sorot = true; }
     else if (state.giliran === saya) { teks = "Giliran kamu memutar dadu"; sorot = true; }
     else teks = "Menunggu " + lawan + " memutar dadu";
 
@@ -488,6 +450,7 @@
     btn.hidden = habis;
     btn.disabled = !bolehPutar(state, saya) || !terhubung || sedangAnimasi;
     $("btn-akhiri").disabled = !terhubung;
+    perbaruiPanelNilai();
   }
 
   function perbaruiSisaDanRiwayat() {
@@ -499,7 +462,6 @@
     state.riwayat.slice().reverse().forEach((r) => {
       const li = el("li", r.warna);
       const kecil = el("small", null, NAMA_WARNA[r.warna] + " " + r.nomor + " · dijawab " + namaPemain(r.oleh) + " ");
-      if (r.bintang) kecil.appendChild(el("span", "bt", bintangTeks(r.bintang)));
       li.appendChild(kecil);
       li.appendChild(document.createTextNode(teksPolos(teksKartu(state, r), namaPemain(r.oleh), namaPemain(1 - r.oleh))));
       ol.appendChild(li);
@@ -531,7 +493,7 @@
 
   function layarUntuk(s) {
     if (!s.nama[1]) return "layar-tunggu";
-    return { persiapan: "layar-persiapan", main: "layar-main", penilaian: "layar-main", ringkasan: "layar-ringkasan" }[s.fase];
+    return { persiapan: "layar-persiapan", main: "layar-main", ringkasan: "layar-ringkasan" }[s.fase];
   }
 
   function terapkanState(s, animasi) {
@@ -548,8 +510,15 @@
     const layar = layarUntuk(s);
     if (layar === "layar-tunggu") { if (peran === "host") tampilkanRuanganTunggu(); return; }
     tampilkanLayar(layar);
-    if (rondeBaru) draftNilai = {};
-    tampilPenilaian();
+    tampilPopupFeedback();
+
+    // Beri tahu yang menjawab bahwa penilaian sudah masuk, tanpa menunjukkan isinya
+    const kk = kartuKini(s);
+    const tandaNilai = kk ? s.ronde + ":" + s.rollId + ":" + !!kk.bintang : "";
+    if (kk && kk.bintang && kk.oleh === indeksSaya() && tandaTerakhir && tandaTerakhir !== tandaNilai && s.fase === "main") {
+      toast(namaPemain(1 - kk.oleh) + " sudah mengisi penilaian. Hasilnya bisa dilihat saat permainan diakhiri.");
+    }
+    tandaTerakhir = tandaNilai;
 
     if (s.fase === "persiapan") { perbaruiPersiapan(); return; }
     if (s.fase === "ringkasan") { tampilRingkasan(); return; }
@@ -581,7 +550,6 @@
   function aturTerhubung(v) {
     terhubung = v;
     if (state && state.fase === "main") perbaruiKontrol();
-    if (state && state.fase === "penilaian") perbaruiTombolNilai();
   }
 
   // =====================================================================
@@ -661,7 +629,7 @@
     }
 
     if (R.rataMenit != null && R.rataMenit < 5 && R.dinilai.length >= 3) {
-      saran.push(`Rata-rata satu kartu selesai dalam ${formatMenit(R.rataMenit)}. Coba beri ruang lebih lama untuk bercerita. Pendengar juga boleh bertanya "Terus?" atau "Kenapa begitu?" sebelum memutar dadu berikutnya.`);
+      saran.push(`Rata-rata satu kartu selesai dalam ${formatMenit(R.rataMenit)}. Coba beri ruang lebih lama untuk bercerita. Pendengar juga boleh bertanya "Terus?" atau "Kenapa begitu?" sebelum mengisi penilaian.`);
     }
 
     if (R.berkesan.length) {
@@ -1165,17 +1133,25 @@
     minta({ t: "putar" });
   });
 
-  $("btn-kirim-nilai").addEventListener("click", () => {
-    const daftar = kartuUntukDinilai(state, indeksSaya());
-    const nilai = daftar.map(({ i }) => ({ i, bintang: (draftNilai[i] || {}).bintang, catatan: (draftNilai[i] || {}).catatan || "" }));
-    if (nilai.some((x) => !x.bintang)) { toast("Beri bintang untuk semua kartu dulu, ya."); return; }
-    $("btn-kirim-nilai").disabled = true;
-    minta({ t: "nilaiSemua", nilai });
+  $("bintang-pilih").addEventListener("click", (e) => {
+    const b = e.target.closest("button");
+    if (b) aturBintangPilih(Number(b.dataset.n));
   });
-  $("btn-batal-nilai").addEventListener("click", () => minta({ t: "batalAkhiri" }));
+  $("btn-nilai").addEventListener("click", () => {
+    if (!bintangDipilih) return;
+    $("btn-nilai").disabled = true;
+    minta({ t: "nilai", bintang: bintangDipilih, catatan: $("input-catatan").value });
+  });
+  $("btn-tutup-feedback").addEventListener("click", () => {
+    popupDilihat = state.ronde + ":" + state.sesi;
+    tampilPopupFeedback();
+    window.scrollTo(0, 0);
+  });
 
   $("btn-akhiri").addEventListener("click", () => {
-    if (confirm("Akhiri permainan sekarang? Kalian akan menilai jawaban masing-masing, lalu melihat ringkasan. Sisa kartu tetap tersimpan dan bisa dilanjutkan nanti.")) minta({ t: "akhiri" });
+    const k = state && kartuKini(state);
+    const peringatan = k && !k.bintang ? " Kartu terakhir belum dinilai dan tidak akan masuk penilaian." : "";
+    if (confirm("Akhiri permainan sekarang dan lihat hasil feedback?" + peringatan + " Sisa kartu tetap tersimpan dan bisa dilanjutkan nanti.")) minta({ t: "akhiri" });
   });
   $("btn-lanjut-main").addEventListener("click", () => minta({ t: "lanjut" }));
 

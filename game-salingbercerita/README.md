@@ -13,8 +13,8 @@ Game ini hanya menampilkan permainan. Obrolannya dilakukan lewat telepon WhatsAp
 4. Masing-masing menulis 1 sampai 3 **pertanyaan rahasia** untuk pasangannya. Pertanyaan ini muncul diam-diam sebagai kartu rahasia pada giliran ke-2 sampai ke-6 pasangannya.
 5. Pemain bergiliran menekan **Putar Dadu**. Dadu punya 3 sisi Cokelat dan 3 sisi Hijau. Warna yang keluar menentukan kartu yang diambil.
 6. **Yang memutar dadu menjawab kartu.** Nama di kartu otomatis mengikuti nama pemain.
-7. Setelah yang menjawab selesai bercerita, pasangannya memutar dadu untuk kartu berikutnya. Tidak ada penilaian selama permainan berlangsung.
-8. Tekan **Akhiri permainan** kapan saja. Muncul pop-up penilaian: setiap pemain memberi **bintang 1 sampai 5** dan kalimat feedback untuk setiap kartu yang dijawab pasangannya pada sesi itu. Setelah keduanya mengirim penilaian, muncul ringkasan: statistik, jawaban paling berkesan, kartu yang perlu dibahas lagi, kalimat feedback, serta saran dan masukan. Ringkasan bisa dikirim ke WhatsApp.
+7. Setelah yang menjawab selesai bercerita, pasangan yang mendengarkan mengisi **bintang 1 sampai 5** dan kalimat feedback. Penilaian ini disembunyikan dari yang menjawab. Dadu baru bisa diputar lagi setelah penilaian disimpan.
+8. Tekan **Akhiri permainan** kapan saja. Masing-masing melihat pop-up **Feedback untukmu** berisi bintang dan kalimat feedback untuk setiap kartu yang dijawabnya di sesi itu. Setelah pop-up ditutup, tampil ringkasan: statistik, jawaban paling berkesan, kartu yang perlu dibahas lagi, kalimat feedback, serta saran dan masukan. Ringkasan bisa dikirim ke WhatsApp.
 9. Sisa kartu tetap tersimpan. Tekan **Lanjutkan bermain** untuk sesi berikutnya.
 
 Satu kartu biasanya dijawab 10 sampai 15 menit. Topik berisi 60 kartu butuh sekitar 10 sampai 15 jam, jadi sebaiknya dimainkan beberapa sesi, 4 sampai 6 kartu sekali main.
