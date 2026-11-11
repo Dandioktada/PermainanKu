@@ -7,28 +7,34 @@ Game ini hanya menampilkan permainan. Obrolannya dilakukan lewat telepon WhatsAp
 
 ## Cara Bermain
 
-1. Pemain pertama menulis nama, lalu menekan **Buat Ruangan**.
+1. Pemain pertama menulis nama, memilih topik, lalu menekan **Buat Ruangan**.
 2. Kode ruangan atau tautannya dikirim ke pemain kedua, misalnya lewat WhatsApp.
 3. Pemain kedua membuka tautan, menulis nama, lalu menekan **Gabung**.
-4. Pemain bergiliran menekan **Putar Dadu**. Dadu punya 3 sisi Cokelat dan 3 sisi Hijau.
-5. Warna yang keluar menentukan kartu yang diambil. Kalimat di kartu menjadi topik obrolan.
-6. Kartu yang sudah keluar tidak muncul lagi sampai semua 50 kartu habis atau dikocok ulang.
+4. Masing-masing menulis 1 sampai 3 **pertanyaan rahasia** untuk pasangannya. Pertanyaan ini muncul diam-diam sebagai kartu rahasia pada giliran ke-2 sampai ke-6 pasangannya.
+5. Pemain bergiliran menekan **Putar Dadu**. Dadu punya 3 sisi Cokelat dan 3 sisi Hijau. Warna yang keluar menentukan kartu yang diambil.
+6. **Yang memutar dadu menjawab kartu.** Nama di kartu otomatis mengikuti nama pemain.
+7. Setelah selesai bercerita, pasangan yang mendengarkan memberi **bintang 1 sampai 5** dan boleh menambah catatan. Dadu baru bisa diputar lagi setelah penilaian dikirim.
+8. Tekan **Akhiri permainan** kapan saja untuk melihat ringkasan: statistik, jawaban paling berkesan, kartu yang perlu dibahas lagi, serta saran dan masukan. Ringkasan bisa dikirim ke WhatsApp.
+9. Sisa kartu tetap tersimpan. Tekan **Lanjutkan bermain** untuk sesi berikutnya.
+
+Satu kartu biasanya dijawab 10 sampai 15 menit. Topik berisi 60 kartu butuh sekitar 10 sampai 15 jam, jadi sebaiknya dimainkan beberapa sesi, 4 sampai 6 kartu sekali main.
 
 ## Isi Kartu
 
-| Warna | Jumlah | Tema |
-|---|---|---|
-| Cokelat | 25 | Masa depan, rencana, dan mimpi |
-| Hijau | 25 | Komitmen, kejujuran, dan kasih sayang |
+Kartu dikelompokkan per topik. Saat ini tersedia satu topik:
 
-Semua kalimat kartu ada di file `kartu.js` dan bisa diubah langsung.
+| Topik | Cokelat | Hijau |
+|---|---|---|
+| Calon Pengantin | 30 kartu: masa depan, rencana, mimpi | 30 kartu: komitmen, kejujuran, kasih sayang |
+
+Semua kalimat ada di file `kartu.js`. Penanda `{A}` diganti nama yang menjawab, `{B}` diganti nama pasangannya. Topik baru ditambahkan dengan menyalin satu blok topik di file tersebut.
 
 ## File
 
 - `index.html` : susunan halaman
 - `style.css` : tampilan
 - `game.js` : jalannya permainan dan koneksi online
-- `kartu.js` : isi 50 kartu
+- `kartu.js` : daftar topik dan isi kartu
 
 ## Catatan Teknis
 
