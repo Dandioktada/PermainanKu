@@ -439,7 +439,7 @@
     const tanya = state.pemain[saya].pertanyaan;
     const jawab = state.jawaban[1 - saya];
     wadah.appendChild(panelJudul("Nilai jawaban " + lawan,
-      "Bintang wajib diisi untuk menilai kejelasan jawaban. Catatan boleh dikosongkan. Tandai \"Minta diperjelas\" kalau kamu ingin " + lawan + " menambahkan penjelasan."));
+      "Beri nilai 1 sampai 5 untuk kejelasan setiap jawaban. Catatan boleh dikosongkan. Tandai \"Minta diperjelas\" kalau kamu ingin " + lawan + " menambahkan penjelasan."));
     const kontrol = tanya.map((q, i) => {
       const n = d.nilai[i] || (d.nilai[i] = { bintang: 0, catatan: "", perjelas: false });
       const it = el("div", "item");
@@ -452,13 +452,13 @@
       const cekPerjelas = el("input"); cekPerjelas.type = "checkbox"; cekPerjelas.checked = n.perjelas;
       const gambar = () => {
         bt.querySelectorAll("button").forEach((b, k) => b.classList.toggle("nyala", k < n.bintang));
-        arti.textContent = n.bintang ? n.bintang + " bintang: " + ARTI_BINTANG[n.bintang] : "Pilih bintang, 1 = tidak jelas sampai 5 = sangat jelas";
+        arti.textContent = n.bintang ? n.bintang + " dari 5: " + ARTI_BINTANG[n.bintang] : "Pilih nilai, 1 = tidak jelas sampai 5 = sangat jelas";
       };
       for (let k = 1; k <= 5; k++) {
-        const b = el("button", null, "★"); b.type = "button"; b.setAttribute("aria-label", k + " bintang, " + ARTI_BINTANG[k]);
+        const b = el("button", null, "★"); b.type = "button"; b.setAttribute("aria-label", "Nilai " + k + ", " + ARTI_BINTANG[k]);
         b.addEventListener("click", () => {
           n.bintang = k;
-          n.perjelas = k <= 2;       // bintang 1 sampai 2 otomatis meminta penjelasan, tetap bisa diubah
+          n.perjelas = k <= 2;       // nilai 1 sampai 2 otomatis meminta penjelasan, tetap bisa diubah
           cekPerjelas.checked = n.perjelas;
           gambar(); cek(); simpanDrafNanti();
         });
@@ -478,7 +478,7 @@
     });
     const kirim = el("button", "btn utama", "Kirim penilaian"); kirim.type = "button";
     kirim.addEventListener("click", () => {
-      if (kontrol.some((n) => !n.bintang)) { toast("Beri bintang untuk semua jawaban dulu, ya."); return; }
+      if (kontrol.some((n) => !n.bintang)) { toast("Beri nilai untuk semua jawaban dulu, ya."); return; }
       minta({ t: "nilai", nilai: kontrol.map((n) => ({ bintang: n.bintang, catatan: (n.catatan || "").trim(), perjelas: n.perjelas })) });
     });
     wadah.appendChild(kirim);
@@ -521,14 +521,15 @@
   function barisBintang(n) {
     const p = el("p", "arti-bintang");
     const b = el("span", "hasil-bintang");
-    b.appendChild(document.createTextNode("★".repeat(n)));
-    b.appendChild(el("span", "mati", "★".repeat(5 - n)));
-    p.append(b, document.createTextNode(" " + ARTI_BINTANG[n]));
+    b.setAttribute("aria-label", n + " dari 5");
+    for (let k = 1; k <= 5; k++) b.appendChild(el("span", k <= n ? "nyala" : "mati"));
+    p.append(b, document.createTextNode(n + " dari 5: " + ARTI_BINTANG[n]));
     return p;
   }
 
   // ---------- Tahap 5: selesai ----------
   function renderSelesai(wadah) {
+    wadah.appendChild(el("div", "ilustrasi"));
     const p = panelJudul("Alhamdulillah, semua tahap sudah selesai",
       "Berikut seluruh pertanyaan, jawaban, dan penilaian kalian berdua. Unduh PDF-nya untuk disimpan atau dibaca bersama perantara dan wali.");
     const unduh = el("button", "btn utama", "Unduh PDF"); unduh.type = "button";
@@ -604,7 +605,7 @@
     tulis("Mulai Mengenal dari Bercerita", { miring: true, warna: [102, 115, 111], jarak: 4 });
     tulis("Catatan proses ta'aruf antara " + namaPemain(0) + " dan " + namaPemain(1) + ".", { jarak: 0.5 });
     tulis("Tanggal: " + tgl, { warna: [102, 115, 111], jarak: 0.5 });
-    tulis("Penilaian bintang menunjukkan kejelasan jawaban: 1 tidak jelas, 2 cukup tidak jelas, 3 cukup jelas, 4 jelas, 5 sangat jelas.", { warna: [102, 115, 111], ukuran: 9.5, jarak: 4 });
+    tulis("Nilai 1 sampai 5 menunjukkan kejelasan jawaban: 1 tidak jelas, 2 cukup tidak jelas, 3 cukup jelas, 4 jelas, 5 sangat jelas.", { warna: [102, 115, 111], ukuran: 9.5, jarak: 4 });
     garis();
 
     [0, 1].forEach((penanya) => {

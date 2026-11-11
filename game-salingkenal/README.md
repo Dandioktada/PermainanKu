@@ -12,9 +12,9 @@ Alat bantu bertanya untuk muslim dan muslimah yang sedang menjalani proses ta'ar
 2. Calon membuka tautan, menulis nama, lalu menekan **Gabung**. Keduanya harus online bersamaan.
 3. **Susun.** Masing-masing memilih jumlah pertanyaan (3, 5, 7, atau 10), memilih "Baru kenal" atau "Sudah kenal lama", lalu menyusun pertanyaan. Pertanyaan boleh ditulis sendiri atau dipilih dari bantuan pertanyaan, lalu disunting.
 4. **Jawab.** Setelah keduanya mengirim pertanyaan, masing-masing menjawab pertanyaan dari calonnya.
-5. **Nilai.** Setiap jawaban yang diterima tampil bersama pertanyaannya. Bintang wajib diisi untuk menilai kejelasan jawaban:
+5. **Nilai.** Setiap jawaban yang diterima tampil bersama pertanyaannya. Nilai 1 sampai 5 (ikon bunga) wajib diisi untuk menilai kejelasan jawaban:
    1 Tidak jelas, 2 Cukup tidak jelas, 3 Cukup jelas, 4 Jelas, 5 Sangat jelas.
-   Catatan tertulis boleh dikosongkan. Jawaban bisa ditandai **Minta diperjelas** (otomatis tercentang untuk bintang 1 sampai 2).
+   Catatan tertulis boleh dikosongkan. Jawaban bisa ditandai **Minta diperjelas** (otomatis tercentang untuk nilai 1 sampai 2).
 6. **Perjelas.** Kalau ada jawaban yang diminta diperjelas, penjawab menulis penjelasan tambahan.
 7. **Selesai.** Semua pertanyaan, jawaban, penilaian, catatan, dan penjelasan dari kedua pihak tampil di layar dan bisa diunduh sebagai **PDF**.
 
@@ -29,7 +29,7 @@ Ada di `pertanyaan.js`: 18 kategori dengan tiga tingkat (dasar, menengah, lanjut
 Modern dan elegan bernuansa undangan: latar gradasi hijau ke cokelat, panel krem berbingkai garis ganda, serta ornamen bunga di sudut.
 Palet: Green Fern `#34420D`, Lichen `#90967A`, Creme `#F8F5F0`, Brown `#6B553D`, Dark Brown `#342B1C`.
 Huruf (folder `font/`, lisensi SIL OFL 1.1): Pinyon Script untuk judul, Cormorant Garamond untuk subjudul, Jost untuk teks dan tombol.
-Ornamen bunga ada di folder `gambar/` dan digambar khusus untuk game ini.
+Logo, ornamen sudut, ikon nilai (bunga), dan ilustrasi di folder `gambar/` berasal dari gambar milik pemilik game (sumber aslinya di `bahan/salingkenal-ui/`), lalu dipotong, dikecilkan, dan dioptimalkan supaya cepat dimuat di HP.
 
 ## Mode pengembangan
 

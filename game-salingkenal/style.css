@@ -70,14 +70,15 @@ body {
   letter-spacing: .16em; white-space: nowrap; text-transform: uppercase; color: #e9e3d6;
 }
 .tagline i { font-style: italic; text-transform: lowercase; letter-spacing: .02em; font-size: 1.2em; }
-.logo { display: block; width: 74px; height: 40px; margin: 0 auto; background: url("gambar/hiasan-kepala.svg") center / contain no-repeat; }
+.logo { display: block; width: 86px; height: 85px; margin: 0 auto -4px; background: url("gambar/logo.png") center / contain no-repeat; filter: drop-shadow(0 4px 10px rgba(0, 0, 0, .25)); }
+.ilustrasi { width: 150px; height: 154px; margin: -8px auto 4px; background: url("gambar/ilustrasi.png") center / contain no-repeat; }
 
 /* ---------- Panel berbingkai dengan ornamen bunga di sudut ---------- */
 .kartu-panel {
   position: relative;
   background:
-    url("gambar/bunga-kiri-atas.svg") left 1px top 1px / 78px no-repeat,
-    url("gambar/bunga-kanan-bawah.svg") right 1px bottom 1px / 78px no-repeat,
+    url("gambar/ornamen-kiri-atas.png") left 3px top 3px / 92px no-repeat,
+    url("gambar/ornamen-kanan-bawah.png") right 3px bottom 3px / 92px no-repeat,
     var(--kertas);
   border-radius: 4px;
   box-shadow: var(--bayang);
@@ -228,15 +229,22 @@ input::placeholder, textarea::placeholder { color: #a79f90; }
 .label-isi { display: block; font-size: 11px; font-weight: 600; color: var(--brown); margin-bottom: 3px; text-transform: uppercase; letter-spacing: .18em; }
 
 .bintang { display: flex; gap: 6px; }
-.bintang button { font-size: 32px; line-height: 1; background: none; border: 0; padding: 2px; cursor: pointer; color: #d8d0c2; transition: color .12s, transform .1s; }
+/* Ikon nilai berupa bunga; yang belum dipilih tampil pudar */
+.bintang { gap: 8px; }
+.bintang button {
+  width: 34px; height: 54px; padding: 0; border: 0; cursor: pointer; font-size: 0; color: transparent;
+  background: url("gambar/ikon-nilai.png") center / contain no-repeat;
+  filter: grayscale(1) opacity(.28); transition: filter .15s, transform .1s;
+}
 .bintang button:active { transform: scale(.9); }
-.bintang button.nyala { color: var(--emas); }
+.bintang button.nyala { filter: none; }
 .arti-bintang { margin: 0; font-family: var(--huruf-serif); font-style: italic; font-size: 18px; color: var(--brown); min-height: 1.3em; }
 .cek { display: flex; align-items: center; gap: 10px; font-weight: 500; color: var(--tinta); font-size: 14px; text-transform: none; letter-spacing: normal; }
 .cek input { width: 18px; height: 18px; accent-color: var(--fern); }
 .lencana { display: inline-block; font-size: 10px; font-weight: 600; letter-spacing: .14em; padding: 3px 9px; border-radius: 999px; background: var(--bahaya-muda); color: var(--bahaya); vertical-align: middle; }
-.hasil-bintang { color: var(--emas); letter-spacing: 2px; font-style: normal; }
-.hasil-bintang .mati { color: #d8d0c2; }
+.hasil-bintang { display: inline-flex; gap: 3px; vertical-align: -6px; margin-right: 4px; }
+.hasil-bintang span { width: 15px; height: 24px; background: url("gambar/ikon-nilai.png") center / contain no-repeat; }
+.hasil-bintang span.mati { filter: grayscale(1) opacity(.28); }
 
 .blok-ringkasan { display: flex; flex-direction: column; gap: 14px; }
 .blok-ringkasan h3 { margin: 10px 0 0; font-family: var(--huruf-serif); font-weight: 600; font-size: 24px; color: var(--creme); text-align: center; }
@@ -260,6 +268,7 @@ input::placeholder, textarea::placeholder { color: #a79f90; }
 .toast.tampil { opacity: 1; transform: translate(-50%, 0); }
 
 @media (max-width: 380px) {
+  .bintang button { width: 30px; height: 48px; }
   .kepala h1 { font-size: 54px; }
   .kartu-panel { padding: 58px 18px 60px; background-size: 70px, 70px, auto; }
   .langkah li::before { content: counter(l) ""; }
