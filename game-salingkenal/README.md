@@ -22,7 +22,14 @@ Data hanya berpindah langsung antara dua HP lewat koneksi WebRTC. Tidak ada jawa
 
 ## Bantuan pertanyaan
 
-Ada di `pertanyaan.js`: 15 kategori dengan tiga tingkat (dasar, menengah, lanjutan). "Baru kenal" disarankan mulai dari tingkat dasar, "Sudah kenal lama" mulai dari tingkat lanjutan, tapi semua tingkat bisa dibuka. Semua kalimat ditulis sendiri; cakupan topiknya mengacu pada topik umum lembar profil diri sebelum menikah. Kalimat bisa ditambah, diubah, atau dihapus.
+Ada di `pertanyaan.js`: 18 kategori dengan tiga tingkat (dasar, menengah, lanjutan), total 125 pertanyaan. Tombol **Pilihkan untukku** mengisi kolom kosong secara seimbang, satu pertanyaan dari setiap kategori penting. Cakupan topik diperkuat dari riset Kemenag, Kemenkes, BKKBN, penelitian pranikah, dan kajian ta'aruf (lihat `bahan/riset-pertanyaan-salingkenal.md`). "Baru kenal" disarankan mulai dari tingkat dasar, "Sudah kenal lama" mulai dari tingkat lanjutan, tapi semua tingkat bisa dibuka. Semua kalimat ditulis sendiri; cakupan topiknya mengacu pada topik umum lembar profil diri sebelum menikah. Kalimat bisa ditambah, diubah, atau dihapus.
+
+## Tampilan
+
+Modern dan elegan bernuansa undangan: latar gradasi hijau ke cokelat, panel krem berbingkai garis ganda, serta ornamen bunga di sudut.
+Palet: Green Fern `#34420D`, Lichen `#90967A`, Creme `#F8F5F0`, Brown `#6B553D`, Dark Brown `#342B1C`.
+Huruf (folder `font/`, lisensi SIL OFL 1.1): Pinyon Script untuk judul, Cormorant Garamond untuk subjudul, Jost untuk teks dan tombol.
+Ornamen bunga ada di folder `gambar/` dan digambar khusus untuk game ini.
 
 ## Mode pengembangan
 
@@ -38,6 +45,7 @@ Tambahkan `?dev=1` di akhir alamat. Kedua pemain disimulasikan di satu layar tan
 - `style.css` : tampilan minimalis
 - `app.js` : alur permainan, koneksi dua pemain, mode pengembangan, dan pembuatan PDF
 - `pertanyaan.js` : bank bantuan pertanyaan
+- `font/` dan `gambar/` : huruf dan ornamen bunga
 - `netlify.toml` : pengaturan Netlify (Base directory: `game-salingkenal`)
 
 ## Catatan teknis

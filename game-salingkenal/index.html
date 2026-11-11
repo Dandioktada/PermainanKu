@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Saling Kenal</title>
 <meta name="description" content="Alat bantu bertanya untuk proses ta'aruf. Mulai Mengenal dari Bercerita.">
-<meta name="theme-color" content="#f5f6f2">
+<meta name="theme-color" content="#34420D">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 32 32%27%3E%3Ccircle cx=%2712%27 cy=%2716%27 r=%278%27 fill=%27none%27 stroke=%27%232f6f62%27 stroke-width=%273%27/%3E%3Ccircle cx=%2720%27 cy=%2716%27 r=%278%27 fill=%27none%27 stroke=%27%23e0a526%27 stroke-width=%273%27/%3E%3C/svg%3E">
 <link rel="stylesheet" href="style.css">
 </head>
@@ -26,15 +26,15 @@
   <!-- ====== LAYAR AWAL ====== -->
   <section id="layar-awal" class="layar aktif">
     <header class="kepala">
-      <div class="logo" aria-hidden="true"><span></span><span></span></div>
+      <div class="logo" aria-hidden="true"></div>
       <h1>Saling Kenal</h1>
-      <p class="tagline">Mulai Mengenal dari Bercerita</p>
+      <p class="tagline">Mulai Mengenal <i>dari</i> Bercerita</p>
     </header>
 
     <div class="kartu-panel">
-      <p class="pengantar">Alat bantu bertanya untuk proses ta'aruf. Kalian saling mengajukan pertanyaan, menjawab, lalu memberi penilaian. Hasilnya bisa diunduh sebagai PDF untuk dibaca bersama perantara atau wali.</p>
+      <p class="pengantar">Sudah bertukar CV, tapi masih ada yang ingin ditanyakan? Di sini kalian bisa saling bertanya, menjawab, dan memberi tanggapan dengan tertib. Hasilnya bisa diunduh sebagai PDF untuk dibaca bersama perantara atau wali.</p>
 
-      <label for="input-nama">Nama kamu</label>
+      <label for="input-nama">Namamu</label>
       <input id="input-nama" type="text" maxlength="30" placeholder="Tulis namamu" autocomplete="off">
       <button id="btn-buat" class="btn utama">Buat Ruangan</button>
 
@@ -52,15 +52,16 @@
   <!-- ====== LAYAR MENUNGGU ====== -->
   <section id="layar-tunggu" class="layar">
     <header class="kepala kecil">
-      <h1>Ruangan siap</h1>
-      <p class="tagline">Kirim kode atau tautan ini kepada calonmu.</p>
+      <div class="logo" aria-hidden="true"></div>
+      <h1>Ruangan Siap</h1>
+      <p class="tagline">Bagikan kepada calonmu</p>
     </header>
     <div class="kartu-panel tengah">
       <p class="label-kecil">Kode ruangan</p>
       <p id="tampil-kode" class="kode">-----</p>
       <a id="btn-wa" class="btn utama" target="_blank" rel="noopener">Kirim lewat WhatsApp</a>
       <button id="btn-salin" class="btn kedua">Salin tautan</button>
-      <p class="menunggu"><span class="titik"></span><span class="titik"></span><span class="titik"></span> Menunggu calonmu bergabung</p>
+      <p class="menunggu"><span class="titik"></span><span class="titik"></span><span class="titik"></span> Menunggu calonmu masuk ke ruangan</p>
     </div>
     <button id="btn-batal" class="btn tipis">Batalkan</button>
   </section>
@@ -87,7 +88,7 @@
       <p class="menunggu"><span class="titik"></span><span class="titik"></span><span class="titik"></span> <span id="teks-tunggu">Menunggu</span></p>
     </div>
 
-    <button id="btn-keluar" class="btn tipis">Keluar dari ruangan</button>
+    <button id="btn-keluar" class="btn tipis">Keluar dari Ruangan</button>
   </section>
 
 </main>

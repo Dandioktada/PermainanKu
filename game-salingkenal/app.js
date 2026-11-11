@@ -282,7 +282,7 @@
   function renderAtur(wadah, saya, d) {
     const lawan = namaPemain(1 - saya);
     if (d.langkahAtur === "jumlah") {
-      const p = panelJudul("Berapa pertanyaan yang ingin kamu ajukan?", "Pilih jumlah pertanyaan untuk " + lawan + ". Jumlah kalian boleh berbeda.");
+      const p = panelJudul("Berapa pertanyaan yang ingin kamu ajukan?", "Pilih jumlah pertanyaan untuk " + lawan + ". Tidak harus sama, sesuaikan saja dengan kebutuhanmu.");
       const pil = el("div", "pilihan");
       PILIHAN_JUMLAH.forEach((n) => {
         const b = el("button", "opsi-angka"); b.type = "button";
@@ -296,7 +296,7 @@
       return;
     }
     if (d.langkahAtur === "kenal") {
-      const p = panelJudul("Seberapa jauh kamu sudah mengenal " + lawan + "?", "Jawabanmu menentukan bantuan pertanyaan yang disarankan. Semua tingkat tetap bisa kamu buka.");
+      const p = panelJudul("Seberapa jauh kamu sudah mengenal " + lawan + "?", "Pilihan ini membantu kami menyarankan pertanyaan yang pas. Semua tingkat tetap bisa kamu buka.");
       const pil = el("div", "pilihan");
       [["baru", "Baru kenal", "Disarankan mulai dari pertanyaan dasar"], ["lama", "Sudah kenal lama", "Disarankan pertanyaan yang lebih konkret dan mendalam"]].forEach(([id, judul, ket]) => {
         const b = el("button", "opsi-besar"); b.type = "button";
@@ -317,7 +317,24 @@
 
     // Susun
     const p = panelJudul("Susun " + d.jumlah + " pertanyaan untuk " + lawan,
-      "Tulis sendiri, atau pilih dari bantuan pertanyaan di bawah lalu sunting sesukamu.");
+      "Tulis sendiri, pilih dari bantuan pertanyaan di bawah, atau biarkan kami pilihkan. Semua pertanyaan tetap bisa kamu sunting.");
+    const pilihkan = el("button", "btn kedua", "Pilihkan untukku"); pilihkan.type = "button";
+    pilihkan.addEventListener("click", () => {
+      // Isi kolom kosong dengan satu pertanyaan per kategori penting, sesuai tingkat yang dipilih
+      const dipakai = new Set(slots.map((t) => t.value.trim()));
+      const urutan = URUTAN_PRIORITAS.map((id) => BANK_PERTANYAAN.find((k) => k.id === id)).filter(Boolean);
+      let terisi = 0;
+      for (const kat of urutan) {
+        const kosong = slots.findIndex((t) => !t.value.trim());
+        if (kosong < 0) break;
+        const calon = (kat[d.tingkat] || []).concat(kat.menengah || [], kat.dasar || [], kat.lanjutan || []).find((q) => !dipakai.has(q));
+        if (!calon) continue;
+        slots[kosong].value = calon; d.pertanyaan[kosong] = calon; dipakai.add(calon); sesuaikanTinggi(slots[kosong]); terisi++;
+      }
+      perbaruiTombolAtur(); tandaiBank(); simpanDrafNanti();
+      toast(terisi ? terisi + " pertanyaan sudah dipilihkan. Silakan sunting kalau perlu." : "Semua kolom sudah terisi.");
+    });
+    p.appendChild(pilihkan);
     const slots = [];
     for (let i = 0; i < d.jumlah; i++) {
       const s = el("div", "slot");
@@ -394,7 +411,7 @@
   function renderJawab(wadah, saya, d) {
     const lawan = namaPemain(1 - saya);
     const daftar = state.pemain[1 - saya].pertanyaan;
-    wadah.appendChild(panelJudul("Jawab pertanyaan dari " + lawan, daftar.length + " pertanyaan. Jawablah dengan jujur dan secukupnya."));
+    wadah.appendChild(panelJudul("Jawab pertanyaan dari " + lawan, daftar.length + " pertanyaan menunggu jawabanmu. Jawab dengan jujur dan secukupnya, tidak perlu terburu-buru."));
     const kolom = daftar.map((q, i) => {
       const it = el("div", "item");
       it.appendChild(el("p", "item-no", "Pertanyaan " + (i + 1)));
@@ -512,7 +529,7 @@
 
   // ---------- Tahap 5: selesai ----------
   function renderSelesai(wadah) {
-    const p = panelJudul("Alhamdulillah, semua tahap selesai",
+    const p = panelJudul("Alhamdulillah, semua tahap sudah selesai",
       "Berikut seluruh pertanyaan, jawaban, dan penilaian kalian berdua. Unduh PDF-nya untuk disimpan atau dibaca bersama perantara dan wali.");
     const unduh = el("button", "btn utama", "Unduh PDF"); unduh.type = "button";
     unduh.addEventListener("click", unduhPDF);
@@ -569,7 +586,7 @@
       o = o || {};
       doc.setFont("helvetica", o.tebal ? "bold" : o.miring ? "italic" : "normal");
       doc.setFontSize(o.ukuran || 10.5);
-      doc.setTextColor.apply(doc, o.warna || [34, 48, 44]);
+      doc.setTextColor.apply(doc, o.warna || [52, 43, 28]);
       const kiri = KIRI + (o.indent || 0);
       const baris = doc.splitTextToSize(teksPDF(teks), LEBAR - (o.indent || 0));
       const tinggi = (o.ukuran || 10.5) * 0.45;
@@ -580,10 +597,10 @@
       });
       y += o.jarak != null ? o.jarak : 1.5;
     };
-    const garis = () => { if (y + 4 > BAWAH) halamanBaru(); doc.setDrawColor(225, 229, 222); doc.line(KIRI, y, KIRI + LEBAR, y); y += 5; };
+    const garis = () => { if (y + 4 > BAWAH) halamanBaru(); doc.setDrawColor(144, 150, 122); doc.line(KIRI, y, KIRI + LEBAR, y); y += 5; };
 
     const tgl = new Date(state.selesaiPada || Date.now()).toLocaleDateString("id-ID", { day: "numeric", month: "long", year: "numeric" });
-    tulis("Saling Kenal", { tebal: true, ukuran: 20, warna: [47, 111, 98], jarak: 1 });
+    tulis("Saling Kenal", { tebal: true, ukuran: 20, warna: [52, 66, 13], jarak: 1 });
     tulis("Mulai Mengenal dari Bercerita", { miring: true, warna: [102, 115, 111], jarak: 4 });
     tulis("Catatan proses ta'aruf antara " + namaPemain(0) + " dan " + namaPemain(1) + ".", { jarak: 0.5 });
     tulis("Tanggal: " + tgl, { warna: [102, 115, 111], jarak: 0.5 });
@@ -592,13 +609,13 @@
 
     [0, 1].forEach((penanya) => {
       const penjawab = 1 - penanya;
-      tulis("Pertanyaan dari " + namaPemain(penanya) + " untuk " + namaPemain(penjawab), { tebal: true, ukuran: 13, warna: [34, 84, 74], jarak: 3 });
+      tulis("Pertanyaan dari " + namaPemain(penanya) + " untuk " + namaPemain(penjawab), { tebal: true, ukuran: 13, warna: [52, 66, 13], jarak: 3 });
       state.pemain[penanya].pertanyaan.forEach((q, i) => {
         const n = state.nilai[penanya][i] || {};
         tulis((i + 1) + ". " + q, { tebal: true, jarak: 1.5 });
         tulis("Jawaban " + namaPemain(penjawab) + ":", { tebal: true, ukuran: 9.5, warna: [102, 115, 111], indent: 5, jarak: 0.5 });
         tulis(state.jawaban[penjawab][i] || "-", { indent: 5, jarak: 1.5 });
-        if (n.bintang) tulis("Penilaian " + namaPemain(penanya) + ": " + n.bintang + " dari 5 (" + ARTI_BINTANG[n.bintang] + ")" + (n.perjelas ? ", diminta diperjelas" : ""), { indent: 5, ukuran: 9.5, warna: [176, 120, 20], jarak: 1 });
+        if (n.bintang) tulis("Penilaian " + namaPemain(penanya) + ": " + n.bintang + " dari 5 (" + ARTI_BINTANG[n.bintang] + ")" + (n.perjelas ? ", diminta diperjelas" : ""), { indent: 5, ukuran: 9.5, warna: [107, 85, 61], jarak: 1 });
         if (n.catatan) {
           tulis("Catatan " + namaPemain(penanya) + ":", { tebal: true, ukuran: 9.5, warna: [102, 115, 111], indent: 5, jarak: 0.5 });
           tulis(n.catatan, { indent: 5, jarak: 1.5 });

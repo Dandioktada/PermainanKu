@@ -1,7 +1,11 @@
 // Bank pertanyaan Saling Kenal.
 //
-// Dipakai untuk membantu menyusun pertanyaan ta'aruf. Semua kalimat ditulis sendiri,
-// cakupan topiknya mengacu pada topik umum lembar profil diri sebelum menikah.
+// Dipakai untuk membantu menyusun pertanyaan ta'aruf. Semua kalimat ditulis sendiri.
+// Cakupan topik diperkuat dari riset (rinciannya di bahan/riset-pertanyaan-salingkenal.md):
+//   - materi Bimbingan Perkawinan Kemenag (agama, komunikasi, konflik, hak dan kewajiban, ekonomi, kesehatan reproduksi)
+//   - skrining calon pengantin Kemenkes dan Elsimil BKKBN (kesehatan, talasemia, kesiapan kehamilan)
+//   - penelitian pranikah (komunikasi, penyelesaian konflik, keuangan, peran, harapan, keluarga asal)
+//   - kajian ta'aruf (agama, akhlak, latar belakang, kesamaan visi)
 //
 // Setiap kategori punya tiga tingkat:
 //   dasar     = cocok untuk yang baru kenal, pertanyaan pembuka
@@ -9,6 +13,9 @@
 //   lanjutan  = konkret dan mendalam, cocok untuk yang sudah kenal lama
 //
 // Silakan tambah, ubah, atau hapus kalimat. Jumlahnya bebas.
+
+// Urutan kategori untuk tombol "Pilihkan untukku": kategori paling penting dipilih lebih dulu
+const URUTAN_PRIORITAS = ["ibadah", "visi", "komunikasi", "konflik", "keluarga", "keuangan", "kesiapan", "hak", "tempat", "anak", "kesehatan", "diri", "pendidikan", "rumah-tangga", "kriteria", "rencana-nikah", "media", "pengembangan"];
 
 const TINGKAT = [
   { id: "dasar", nama: "Dasar" },
@@ -66,6 +73,7 @@ const BANK_PERTANYAAN = [
     menengah: [
       "Nilai apa dari keluargamu yang ingin kamu bawa ke rumah tangga nanti?",
       "Bagaimana suasana komunikasi di keluargamu sehari-hari?",
+      "Bagaimana orang tuamu biasanya menyelesaikan perbedaan pendapat, dan apa yang kamu pelajari dari situ?",
       "Apakah ada tanggung jawab khusus di keluarga yang sedang atau akan kamu pegang?",
     ],
     lanjutan: [
@@ -106,7 +114,9 @@ const BANK_PERTANYAAN = [
     ],
     lanjutan: [
       "Apakah ada riwayat penyakit, baik pada dirimu maupun keluarga, yang perlu diketahui sejak awal?",
-      "Bagaimana pandanganmu tentang pemeriksaan kesehatan sebelum menikah?",
+      "Bagaimana pandanganmu tentang pemeriksaan kesehatan sebelum menikah, termasuk cek talasemia dan anemia?",
+      "Apakah kamu bersedia kita sama-sama mengikuti skrining kesehatan calon pengantin di puskesmas?",
+      "Bagaimana kamu menjaga kesehatan mental, dan kepada siapa kamu biasanya bercerita saat sedang berat?",
     ],
   },
   {
@@ -236,7 +246,8 @@ const BANK_PERTANYAAN = [
     lanjutan: [
       "Bagaimana pola pengaturan keuangan keluarga yang kamu inginkan setelah menikah?",
       "Bagaimana pandanganmu tentang membantu keuangan keluarga besar setelah menikah?",
-      "Bagaimana sikapmu terhadap utang dan cicilan dalam rumah tangga?",
+      "Bagaimana sikapmu terhadap utang, cicilan, dan pinjaman online dalam rumah tangga?",
+      "Apakah kamu terbuka untuk saling mengetahui penghasilan dan pengeluaran masing-masing setelah menikah?",
     ],
   },
   {
@@ -268,6 +279,54 @@ const BANK_PERTANYAAN = [
     lanjutan: [
       "Bagaimana rencanamu agar ilmu dan iman keluarga terus bertambah?",
       "Apa satu target bersama yang ingin kamu capai di tahun pertama pernikahan?",
+    ],
+  },
+  {
+    id: "konflik",
+    nama: "Pengelolaan Konflik",
+    dasar: [
+      "Kalau sedang tidak sependapat dengan seseorang, biasanya kamu memilih bicara langsung atau menunggu suasana tenang dulu?",
+      "Bagaimana caramu meminta maaf ketika merasa bersalah?",
+    ],
+    menengah: [
+      "Menurutmu, kapan sebaiknya masalah dibicarakan: segera, atau setelah keduanya tenang?",
+      "Bagaimana sikapmu jika ternyata kamu yang keliru dalam sebuah perselisihan?",
+      "Siapa yang menurutmu boleh dilibatkan ketika suami istri belum menemukan jalan keluar?",
+    ],
+    lanjutan: [
+      "Hal apa yang menurutmu tidak boleh dilakukan atau diucapkan saat sedang berselisih dengan pasangan?",
+      "Bagaimana kamu ingin kita menjaga agar masalah rumah tangga tidak diumbar ke luar, termasuk ke media sosial?",
+      "Kalau ada perbedaan yang sulit dipertemukan, misalnya soal keluarga atau keuangan, bagaimana kamu ingin kita mengambil keputusan?",
+    ],
+  },
+  {
+    id: "hak",
+    nama: "Hak dan Kewajiban",
+    dasar: [
+      "Menurut pemahamanmu, apa kewajiban utama seorang suami dan seorang istri?",
+    ],
+    menengah: [
+      "Bagaimana kamu memahami nafkah: apa saja cakupannya dan bagaimana sebaiknya dikelola?",
+      "Bagaimana pandanganmu tentang izin dan musyawarah antara suami istri dalam kegiatan sehari-hari?",
+    ],
+    lanjutan: [
+      "Bagaimana kamu menyeimbangkan kewajiban kepada pasangan dengan bakti kepada orang tua?",
+      "Hak apa yang menurutmu paling penting untuk saling dijaga agar rumah tangga terasa adil dan tenang?",
+    ],
+  },
+  {
+    id: "media",
+    nama: "Media Sosial dan Batasan",
+    dasar: [
+      "Seberapa aktif kamu di media sosial, dan untuk apa biasanya kamu menggunakannya?",
+    ],
+    menengah: [
+      "Bagaimana pandanganmu tentang membagikan kehidupan pribadi atau keluarga di media sosial?",
+      "Bagaimana kamu menjaga batasan pergaulan dengan lawan jenis, baik langsung maupun di dunia maya?",
+    ],
+    lanjutan: [
+      "Setelah menikah, batasan apa yang ingin kamu sepakati bersama soal gawai dan media sosial?",
+      "Apakah ada kebiasaan seperti permainan daring atau judi online di sekitarmu, dan bagaimana sikapmu terhadapnya?",
     ],
   },
 ];
