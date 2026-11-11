@@ -126,6 +126,18 @@ KUPU = [
     ".XXX.X.XXX.",
 ]
 
+KILAU = [
+    "....X....",
+    "...XYX...",
+    "...XYX...",
+    ".XXYWYXX.",
+    "XYYWWWYYX",
+    ".XXYWYXX.",
+    "...XYX...",
+    "...XYX...",
+    "....X....",
+]
+
 out = {
     "--px-bintang-nyala": svg(BINTANG, {"X": "#5b3a1e", "Y": "#f6c42a", "W": "#fff3b0"}),
     "--px-bintang-mati": svg(BINTANG, {"X": "#c4b398", "Y": "#efe4d0", "W": "#f7efe0"}),
@@ -140,6 +152,8 @@ out = {
     "--px-sayap": svg(SAYAP, {"X": "#5b7da3", "W": "#ffffff", "B": "#cfe6f7"}),
     "--px-kupu-pink": svg(KUPU, {"X": "#5b2030", "P": "#f59ab0", "W": "#fff1c2", "B": "#3b2616"}),
     "--px-kupu-biru": svg(KUPU, {"X": "#1f3f7a", "P": "#8fb8f2", "W": "#fff1c2", "B": "#3b2616"}),
+    "--px-kilau": svg(KILAU, {"X": "#b8650f", "Y": "#ffd84a", "W": "#fffbe0"}),
+    "--px-kilau-pink": svg(KILAU, {"X": "#a33a57", "Y": "#f7a9bb", "W": "#fff1f4"}),
     "--px-gembok": svg(GEMBOK, {"X": "#5b3a1e", "Y": "#f6c42a"}),
 }
 print(":root {")
