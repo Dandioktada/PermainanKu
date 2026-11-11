@@ -1,0 +1,6 @@
+# Pengaturan Netlify untuk Saling Kenal.
+# Di Netlify, isi Base directory dengan: game-salingkenal
+# Game ini tidak perlu proses build, jadi isi folder langsung dipublikasikan.
+[build]
+  publish = "."
+  command = ""
