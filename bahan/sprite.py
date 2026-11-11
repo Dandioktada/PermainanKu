@@ -138,6 +138,32 @@ KILAU = [
     "....X....",
 ]
 
+CHAT = [
+    "..XXXXXXXXXX..",
+    ".XWWWWWWWWWWX.",
+    "XWWWWWWWWWWWWX",
+    "XWWDWWDWWDWWWX",
+    "XWWWWWWWWWWWWX",
+    "XWWWWWWWWWWWBX",
+    ".XWWWWWWWWWBX.",
+    "..XXWXXXXXXX..",
+    "...XWX........",
+    "...XX.........",
+]
+TELEPON = [
+    "..XXX.........",
+    ".XGGGX........",
+    ".XGGGX........",
+    ".XGGX.........",
+    "..XGGX........",
+    "...XGGX.......",
+    "....XGGX..XXX.",
+    ".....XGGXXGGGX",
+    "......XGGGGGGX",
+    ".......XXGGGX.",
+    ".........XXX..",
+]
+
 out = {
     "--px-bintang-nyala": svg(BINTANG, {"X": "#5b3a1e", "Y": "#f6c42a", "W": "#fff3b0"}),
     "--px-bintang-mati": svg(BINTANG, {"X": "#c4b398", "Y": "#efe4d0", "W": "#f7efe0"}),
@@ -154,6 +180,8 @@ out = {
     "--px-kupu-biru": svg(KUPU, {"X": "#1f3f7a", "P": "#8fb8f2", "W": "#fff1c2", "B": "#3b2616"}),
     "--px-kilau": svg(KILAU, {"X": "#b8650f", "Y": "#ffd84a", "W": "#fffbe0"}),
     "--px-kilau-pink": svg(KILAU, {"X": "#a33a57", "Y": "#f7a9bb", "W": "#fff1f4"}),
+    "--px-chat": svg(CHAT, {"X": "#3b2616", "W": "#ffffff", "D": "#a8683a", "B": "#d9e8f5"}),
+    "--px-telepon": svg(TELEPON, {"X": "#3b2616", "G": "#5ea34c"}),
     "--px-gembok": svg(GEMBOK, {"X": "#5b3a1e", "Y": "#f6c42a"}),
 }
 print(":root {")

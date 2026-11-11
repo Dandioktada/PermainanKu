@@ -6,7 +6,7 @@
 (function () {
   "use strict";
 
-  const VERSI = 3;
+  const VERSI = 4;
   const AWALAN_ID = "salingbercerita-";
   const HURUF_KODE = "ABCDEFGHJKMNPQRSTUVWXYZ23456789";
   const KUNCI_SESI = "salingbercerita-sesi";
@@ -32,6 +32,10 @@
   let kode = null;
   let namaSaya = "";
   let topikDipilih = TOPIK[0].id;
+  let modeDipilih = null;      // "teks" | "telepon", dipilih di layar awal
+  let infoModeTampil = false;
+  let ruangDariTautanAktif = false;
+  const NAMA_MODE = { teks: "Ngobrol lewat teks", telepon: "Ngobrol lewat telepon" };
   let state = null;
   let terhubung = false;
   let animasiSampai = 0;
@@ -156,16 +160,24 @@
   // =====================================================================
   // KEADAAN PERMAINAN (hanya diubah oleh host)
   // =====================================================================
-  function stateBaru(namaHost, topikId, ronde) {
+  // Daftar kalimat kartu sesuai mode: mode teks memakai kartu ringan (topik.teks)
+  function daftarKartu(t, mode, warna) {
+    if (mode === "teks" && t.teks && t.teks[warna] && t.teks[warna].length) return t.teks[warna];
+    return t[warna].kartu;
+  }
+
+  function stateBaru(namaHost, topikId, ronde, mode) {
     const t = cariTopik(topikId);
+    mode = mode === "teks" ? "teks" : "telepon";
     return {
       versi: VERSI,
+      mode,
       topik: t.id,
       nama: [namaHost, null],
       fase: "persiapan",          // persiapan | main | jeda
       siap: [false, false],
       rahasia: [],                // { dari, untuk, teks, posisi, keluar }
-      dek: { coklat: acak(urutan(t.coklat.kartu.length)), hijau: acak(urutan(t.hijau.kartu.length)) },
+      dek: { coklat: acak(urutan(daftarKartu(t, mode, "coklat").length)), hijau: acak(urutan(daftarKartu(t, mode, "hijau").length)) },
       giliran: 0,
       riwayat: [],                // kartu yang sudah keluar; kartu terakhir = kartu yang sedang dibahas
       rollId: 0,
@@ -182,7 +194,7 @@
   function sisaTotal(s) { return s.dek.coklat.length + s.dek.hijau.length + sisaRahasia(s); }
   function teksKartu(s, k) {
     if (k.jenis === "rahasia") return k.teks;
-    return cariTopik(s.topik)[k.warna].kartu[k.idx];
+    return daftarKartu(cariTopik(s.topik), s.mode, k.warna)[k.idx];
   }
   function bolehPutar(s, oleh) {
     if (s.fase !== "main" || s.giliran !== oleh || sisaTotal(s) === 0) return false;
@@ -235,9 +247,9 @@
       const pilihanSisi = Object.keys(SISI).filter((k) => SISI[k].warna === warna);
       const sisi = pilihanSisi[Math.floor(Math.random() * pilihanSisi.length)];
       const idx = state.dek[warna].pop();
-      kartu = { jenis: "biasa", warna, sisi, idx, nomor: t[warna].kartu.length - state.dek[warna].length };
+      kartu = { jenis: "biasa", warna, sisi, idx };
     }
-    Object.assign(kartu, { oleh, sesi: state.sesi, bintang: null, catatan: "", waktuBuka: sekarang + LAMA_ANIMASI, waktuSelesai: null });
+    Object.assign(kartu, { oleh, sesi: state.sesi, bintang: null, catatan: "", jawaban: null, waktuBuka: sekarang + LAMA_ANIMASI, waktuSelesai: null });
     const sebelumnya = kartuKini(state);
     if (sebelumnya && !sebelumnya.waktuSelesai) sebelumnya.waktuSelesai = sekarang;
 
@@ -269,10 +281,20 @@
       case "putar":
         putar(oleh);
         return;
+      case "jawab": {
+        // Mode teks: yang memutar dadu mengirim jawaban tertulis
+        const k = kartuKini(state);
+        const teks = String(d.jawaban || "").trim().slice(0, 600);
+        if (state.mode !== "teks" || state.fase !== "main" || !k || k.oleh !== oleh || k.jawaban || !teks) return;
+        k.jawaban = teks;
+        k.waktuJawab = Date.now();
+        break;
+      }
       case "nilai": {
         const k = kartuKini(state);
         const n = Math.round(Number(d.bintang));
         if (state.fase !== "main" || !k || k.bintang || k.oleh === oleh || !(n >= 1 && n <= 5)) return;
+        if (state.mode === "teks" && !k.jawaban) return;
         k.bintang = n;
         k.catatan = String(d.catatan || "").trim().slice(0, 300);
         break;
@@ -301,7 +323,7 @@
       case "ulang": {
         if (state.fase !== "main") return;
         const nama = state.nama;
-        state = stateBaru(nama[0], state.topik, state.ronde + 1);
+        state = stateBaru(nama[0], state.topik, state.ronde + 1, state.mode);
         state.nama = nama;
         break;
       }
@@ -363,8 +385,8 @@
       $("kartu-no").textContent = "Pertanyaan ini untuk " + A + ". Jawab dengan jujur, ya.";
     } else {
       $("kartu-tema").textContent = "";
-      isiNama($("kartu-teks"), t[k.warna].kartu[k.idx], A, B);
-      $("kartu-no").textContent = `Kartu ${NAMA_WARNA[k.warna]} ${k.nomor}/${t[k.warna].kartu.length} · dijawab ${A}`;
+      isiNama($("kartu-teks"), teksKartu(state, k), A, B);
+      $("kartu-no").textContent = `Kartu ${NAMA_WARNA[k.warna]} · dijawab ${A}`;
     }
     if (balik) { void box.offsetWidth; box.classList.add("balik"); }
   }
@@ -373,7 +395,8 @@
   function perbaruiPanelNilai() {
     const k = kartuKini(state);
     const saya = indeksSaya();
-    const tampil = state.fase === "main" && k && !k.bintang && k.oleh !== saya && Date.now() >= animasiSampai;
+    const tampil = state.fase === "main" && k && !k.bintang && k.oleh !== saya && Date.now() >= animasiSampai &&
+      (state.mode !== "teks" || !!k.jawaban);
     const panel = $("panel-nilai");
     if (tampil && panel.hidden) {
       $("input-catatan").value = "";
@@ -462,6 +485,7 @@
       if (r.bintang && r.bintang <= 2) label.appendChild(el("span", "lencana bahas", "perlu dibahas lagi"));
       item.appendChild(label);
       item.appendChild(el("p", "item-nilai-teks", teksPolos(teksKartu(state, r), namaPemain(r.oleh), namaPemain(1 - r.oleh))));
+      if (r.jawaban) item.appendChild(el("p", "item-jawaban", "Jawabanmu: " + r.jawaban));
       if (r.bintang) {
         const bt = el("div", "bintang-hasil");
         bt.setAttribute("aria-label", r.bintang + " dari 5 bintang");
@@ -516,6 +540,28 @@
     return saran;
   }
 
+  // ---------- Mode teks: kolom jawaban dan gelembung jawaban ----------
+  function perbaruiJawaban() {
+    const teksMode = state && state.mode === "teks" && state.fase === "main";
+    const k = state && kartuKini(state);
+    const saya = indeksSaya();
+    const siapTampil = teksMode && k && Date.now() >= animasiSampai;
+
+    const panel = $("panel-jawab");
+    const tulis = siapTampil && k.oleh === saya && !k.jawaban;
+    if (tulis && panel.hidden) { $("input-jawaban").value = ""; $("hitung-jawaban").textContent = "0"; }
+    panel.hidden = !tulis;
+    if (tulis) $("btn-kirim-jawaban").disabled = !$("input-jawaban").value.trim() || !terhubung;
+
+    const g = $("gelembung-jawaban");
+    g.hidden = !(siapTampil && k.jawaban);
+    if (!g.hidden) {
+      g.classList.toggle("milik-saya", k.oleh === saya);
+      $("gelembung-nama").textContent = k.oleh === saya ? "Jawabanmu" : "Jawaban " + namaPemain(k.oleh);
+      $("gelembung-teks").textContent = k.jawaban;
+    }
+  }
+
   function perbaruiKontrol() {
     if (!state || state.fase !== "main") return;
     const saya = indeksSaya();
@@ -542,6 +588,10 @@
     if (sedangAnimasi) teks = "Dadu sedang berputar...";
     else if (!terhubung) teks = "Menunggu koneksi dengan " + lawan + "...";
     else if (habis) teks = "Semua kartu sudah keluar. Tekan Akhiri permainan untuk melihat rangkuman.";
+    else if (state.mode === "teks" && k && !k.jawaban && k.oleh === saya) { teks = "Giliran kamu menjawab. Tulis jawabanmu, lalu kirim ke " + lawan + "."; sorot = true; }
+    else if (state.mode === "teks" && k && !k.jawaban) teks = lawan + " sedang menulis jawaban...";
+    else if (state.mode === "teks" && k && !k.bintang && k.oleh === saya) teks = "Jawaban terkirim. Menunggu " + lawan + " mengisi penilaian.";
+    else if (state.mode === "teks" && k && !k.bintang) { teks = "Baca jawaban " + lawan + ", lalu isi penilaian di bawah."; sorot = true; }
     else if (k && !k.bintang && k.oleh === saya) teks = "Giliran kamu bercerita. Setelah selesai, " + lawan + " mengisi penilaian.";
     else if (k && !k.bintang) { teks = "Dengarkan cerita " + lawan + ", lalu isi penilaian di bawah."; sorot = true; }
     else if (state.giliran === saya) { teks = "Giliran kamu memutar dadu"; sorot = true; }
@@ -552,18 +602,17 @@
     btn.hidden = habis;
     btn.disabled = !bolehPutar(state, saya) || !terhubung || sedangAnimasi;
     $("btn-akhiri").disabled = !terhubung;
+    perbaruiJawaban();
     perbaruiPanelNilai();
   }
 
   function perbaruiSisaDanRiwayat() {
-    $("sisa-coklat").textContent = state.dek.coklat.length;
-    $("sisa-hijau").textContent = state.dek.hijau.length;
     $("jumlah-riwayat").textContent = state.riwayat.length;
     const ol = $("daftar-riwayat");
     ol.innerHTML = "";
     state.riwayat.slice().reverse().forEach((r) => {
       const li = el("li", r.warna);
-      const kecil = el("small", null, NAMA_WARNA[r.warna] + " " + r.nomor + " · dijawab " + namaPemain(r.oleh) + " ");
+      const kecil = el("small", null, NAMA_WARNA[r.warna] + " · dijawab " + namaPemain(r.oleh));
       li.appendChild(kecil);
       li.appendChild(document.createTextNode(teksPolos(teksKartu(state, r), namaPemain(r.oleh), namaPemain(1 - r.oleh))));
       ol.appendChild(li);
@@ -583,14 +632,18 @@
       c.textContent = namaPemain(i) + (state.siap[i] ? ": siap" : ": sedang menulis");
       c.classList.toggle("ok", !!state.siap[i]);
     });
-    const t = cariTopik(state.topik);
-    const n = t.coklat.kartu.length + t.hijau.kartu.length;
     $("info-durasi").innerHTML = "";
-    $("info-durasi").append(
-      "Topik ", el("b", null, t.nama), " berisi " + n + " kartu. Setiap kartu biasanya dijawab 10 sampai 15 menit, jadi semua kartu butuh sekitar " +
-      formatMenit(n * 10) + " sampai " + formatMenit(n * 15) + ". Tidak perlu dihabiskan sekaligus. Tekan ",
-      el("b", null, "Akhiri permainan"), " kapan saja untuk jeda dan melihat rangkuman, lalu lanjutkan kapan pun dengan kode ruangan yang sama."
-    );
+    if (state.mode === "teks") {
+      $("info-durasi").append(
+        "Mode teks: jawab setiap kartu dengan mengetik beberapa kalimat singkat, lalu kirim ke pasanganmu. Tekan ",
+        el("b", null, "Akhiri permainan"), " kapan saja untuk jeda dan melihat rangkuman, lalu lanjutkan kapan pun dengan kode ruangan yang sama."
+      );
+    } else {
+      $("info-durasi").append(
+        "Mode telepon: setiap kartu biasanya dijawab 10 sampai 15 menit, jadi tidak perlu dihabiskan sekaligus. Tekan ",
+        el("b", null, "Akhiri permainan"), " kapan saja untuk jeda dan melihat rangkuman, lalu lanjutkan kapan pun dengan kode ruangan yang sama."
+      );
+    }
   }
 
   function layarUntuk(s) {
@@ -606,6 +659,10 @@
       pesan("pesan-persiapan", "");
     }
     state = s;
+    if (peran === "tamu" && !infoModeTampil) {
+      infoModeTampil = true;
+      if (modeDipilih && modeDipilih !== s.mode) toast("Ruangan ini memakai mode " + NAMA_MODE[s.mode].toLowerCase() + ".");
+    }
     rondeTerakhir = s.ronde;
     rollTerakhir = s.rollId;
 
@@ -740,7 +797,7 @@
   function tampilkanRuanganTunggu() {
     $("tampil-kode").textContent = kode;
     $("tampil-topik-tunggu").textContent = TOPIK.length > 1 ? "Topik: " + cariTopik(state.topik).nama : "";
-    const teks = "Yuk main Saling Bercerita bareng aku. Buka tautan ini: " + tautanRuangan() + " (kode ruangan: " + kode + ")";
+    const teks = "Yuk main Saling Bercerita (" + NAMA_MODE[state.mode].toLowerCase() + ") bareng aku. Buka tautan ini: " + tautanRuangan() + " (kode ruangan: " + kode + ")";
     $("btn-wa").href = "https://wa.me/?text=" + encodeURIComponent(teks);
     pesan("pesan-tunggu", location.protocol === "file:" ? "Halaman ini dibuka dari file lokal, jadi tautan tidak bisa dibuka orang lain. Bagikan kodenya saja, atau unggah game ke hosting." : "");
     tampilkanLayar("layar-tunggu");
@@ -913,7 +970,7 @@
     namaSaya = n;
     peran = "host";
     kode = buatKode();
-    state = stateBaru(n, topikDipilih, 0);
+    state = stateBaru(n, topikDipilih, 0, modeDipilih);
     rondeTerakhir = -1;
     rollTerakhir = -1;
     pesan("pesan-awal", "Membuat ruangan...", true);
@@ -935,6 +992,7 @@
     peran = "tamu";
     kode = k;
     state = null;
+    infoModeTampil = false;
     rondeTerakhir = -1;
     rollTerakhir = -1;
     pesan("pesan-awal", "Menyambung ke ruangan " + k + "...", true);
@@ -982,9 +1040,27 @@
     akhiriRuangan();
   }
 
+  // Layar awal punya dua langkah: pilih cara ngobrol, lalu isi nama.
+  // Tamu yang datang lewat tautan undangan langsung ke langkah nama, karena mode mengikuti ruangan.
+  function tampilLangkahAwal() {
+    const dariTautan = ruangDariTautanAktif && !modeDipilih;
+    const langkahNama = !!modeDipilih || dariTautan;
+    $("pilih-mode").hidden = langkahNama;
+    $("isi-nama").hidden = !langkahNama;
+    $("btn-buat").hidden = dariTautan;
+    document.querySelector("#isi-nama .pemisah").hidden = dariTautan;
+    $("label-mode").textContent = dariTautan ? "Mode mengikuti ruangan yang mengundangmu" : "Mode: " + NAMA_MODE[modeDipilih];
+    $("btn-ganti-mode").textContent = dariTautan ? "Buat ruangan sendiri" : "Ganti";
+    $("catatan-mode").textContent = !langkahNama ? "Pilih cara ngobrol yang paling nyaman untuk kalian berdua."
+      : modeDipilih === "teks" ? "Kalian cukup saling berkirim jawaban lewat game ini, tanpa perlu telepon."
+      : modeDipilih === "telepon" ? "Game ini hanya menampilkan permainan. Untuk ngobrol, gunakan telepon WhatsApp seperti biasa."
+      : "";
+  }
+
   function siapkanLayarAwal() {
     setTombolAwal(false);
     pesan("pesan-awal", "");
+    tampilLangkahAwal();
     tampilDaftarTopik();
     const s = bacaSesi();
     const btn = $("btn-lanjut");
@@ -1000,6 +1076,28 @@
   // PASANG TOMBOL
   // =====================================================================
   $("pilih-topik").addEventListener("change", (e) => { topikDipilih = e.target.value; });
+  document.querySelectorAll(".opsi-mode").forEach((b) => b.addEventListener("click", () => {
+    modeDipilih = b.dataset.mode;
+    pesan("pesan-awal", "");
+    tampilLangkahAwal();
+    $("input-nama").focus();
+  }));
+  $("btn-ganti-mode").addEventListener("click", () => {
+    modeDipilih = null;
+    ruangDariTautanAktif = false;
+    pesan("pesan-awal", "");
+    tampilLangkahAwal();
+  });
+  $("input-jawaban").addEventListener("input", (e) => {
+    $("hitung-jawaban").textContent = e.target.value.length;
+    $("btn-kirim-jawaban").disabled = !e.target.value.trim() || !terhubung;
+  });
+  $("btn-kirim-jawaban").addEventListener("click", () => {
+    const teks = $("input-jawaban").value.trim();
+    if (!teks) return;
+    $("btn-kirim-jawaban").disabled = true;
+    minta({ t: "jawab", jawaban: teks });
+  });
   $("btn-buat").addEventListener("click", buatRuangan);
   $("btn-gabung").addEventListener("click", gabungRuangan);
   $("btn-lanjut").addEventListener("click", lanjutkanSesi);
@@ -1070,6 +1168,7 @@
   // =====================================================================
   // MULAI
   // =====================================================================
+  ruangDariTautanAktif = !!bersihkanKode(new URLSearchParams(location.search).get("room"));
   const ruangDariTautan = bersihkanKode(new URLSearchParams(location.search).get("room"));
   const sesiLama = bacaSesi();
   if (sesiLama && sesiLama.nama) $("input-nama").value = sesiLama.nama;

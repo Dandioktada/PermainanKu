@@ -41,7 +41,22 @@
       <p class="tagline">Bercerita untuk Hidup Selamanya</p>
     </header>
 
-    <div class="panel">
+    <!-- Langkah 1: pilih cara ngobrol -->
+    <div id="pilih-mode" class="panel pilih-mode">
+      <p class="judul-langkah">Mau ngobrol lewat apa?</p>
+      <button type="button" class="opsi-mode" data-mode="teks">
+        <span class="ikon-mode chat" aria-hidden="true"></span>
+        <span><b>Ngobrol lewat teks</b><small>Jawab kartu dengan mengetik pesan. Kartunya ringan dan santai.</small></span>
+      </button>
+      <button type="button" class="opsi-mode" data-mode="telepon">
+        <span class="ikon-mode telepon" aria-hidden="true"></span>
+        <span><b>Ngobrol lewat telepon</b><small>Jawab kartu sambil telepon WhatsApp. Kartunya lebih dalam.</small></span>
+      </button>
+    </div>
+
+    <!-- Langkah 2: nama, buat atau gabung ruangan -->
+    <div id="isi-nama" class="panel" hidden>
+      <p class="chip-mode"><span id="label-mode">-</span> <button type="button" id="btn-ganti-mode" class="tautan">Ganti</button></p>
       <label for="input-nama">Nama kamu</label>
       <input id="input-nama" type="text" maxlength="20" placeholder="Tulis namamu" autocomplete="off">
 
@@ -58,13 +73,12 @@
       <label for="input-kode">Kode ruangan</label>
       <input id="input-kode" type="text" maxlength="5" placeholder="Contoh: K7M2Q" autocomplete="off" autocapitalize="characters">
       <button id="btn-gabung" class="btn kedua">Gabung</button>
-
-      <button id="btn-lanjut" class="btn tipis" hidden></button>
-
-      <p id="pesan-awal" class="pesan" role="status"></p>
     </div>
 
-    <p class="catatan">Game ini hanya menampilkan permainan. Untuk ngobrol, gunakan telepon WhatsApp seperti biasa.</p>
+    <button id="btn-lanjut" class="btn kedua" hidden></button>
+    <p id="pesan-awal" class="pesan" role="status"></p>
+
+    <p class="catatan" id="catatan-mode">Pilih cara ngobrol yang paling nyaman untuk kalian berdua.</p>
   </section>
 
   <!-- ====== LAYAR MENUNGGU ====== -->
@@ -122,7 +136,7 @@
     </div>
 
     <div class="kotak-info">
-      <b>Info durasi</b>
+      <b>Info</b>
       <p id="info-durasi">Setiap kartu biasanya dijawab 10 sampai 15 menit. Kalian tidak perlu menghabiskan semua kartu sekaligus. Tekan <b>Akhiri permainan</b> kapan saja untuk melihat rangkuman.</p>
     </div>
   </section>
@@ -159,6 +173,20 @@
       </div>
     </div>
 
+    <!-- Mode teks: jawaban yang sudah dikirim tampil seperti gelembung pesan -->
+    <div id="gelembung-jawaban" class="gelembung" hidden>
+      <p class="gelembung-nama" id="gelembung-nama">-</p>
+      <p class="gelembung-teks" id="gelembung-teks"></p>
+    </div>
+
+    <!-- Mode teks: kolom jawaban untuk yang memutar dadu -->
+    <div id="panel-jawab" class="panel panel-jawab" hidden>
+      <label for="input-jawaban">Tulis jawabanmu</label>
+      <textarea id="input-jawaban" maxlength="600" rows="4" placeholder="Ceritakan singkat saja, beberapa kalimat sudah cukup"></textarea>
+      <p class="hitung-huruf"><span id="hitung-jawaban">0</span>/600</p>
+      <button id="btn-kirim-jawaban" class="btn utama" disabled>Kirim jawaban</button>
+    </div>
+
     <!-- Panel penilaian: hanya tampil untuk pendengar. Hasilnya baru terlihat saat permainan diakhiri. -->
     <div id="panel-nilai" class="panel panel-nilai" hidden>
       <p class="judul-nilai">Seberapa puas kamu dengan jawaban <b class="nama-penjawab">-</b>?</p>
@@ -176,13 +204,9 @@
 
     <button id="btn-putar" class="btn utama besar" disabled>Putar Dadu</button>
 
-    <div class="sisa">
-      <div class="sisa-item coklat"><span class="bulat"></span><span class="sisa-label">Cokelat</span> <b id="sisa-coklat">30</b></div>
-      <div class="sisa-item hijau"><span class="bulat"></span><span class="sisa-label">Hijau</span> <b id="sisa-hijau">30</b></div>
-    </div>
-
+    <!-- Jumlah total kartu sengaja tidak ditampilkan, hanya kartu yang sudah terbuka -->
     <details class="riwayat">
-      <summary>Kartu yang sudah keluar (<span id="jumlah-riwayat">0</span>)</summary>
+      <summary>Kartu yang sudah terbuka (<span id="jumlah-riwayat">0</span>)</summary>
       <ol id="daftar-riwayat"></ol>
     </details>
 

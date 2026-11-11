@@ -5,6 +5,15 @@ Alamat permainan: https://salingbercerita.netlify.app
 Game kartu obrolan untuk dua orang yang terhubung lewat internet.
 Game ini hanya menampilkan permainan. Obrolannya dilakukan lewat telepon WhatsApp.
 
+## Dua Mode
+
+Di layar awal, pembuat ruangan memilih cara ngobrol:
+
+- **Ngobrol lewat teks**: jawaban diketik dan dikirim lewat game. Kartunya ringan dan cukup dijawab beberapa kalimat.
+- **Ngobrol lewat telepon**: jawaban diceritakan sambil telepon WhatsApp. Kartunya lebih dalam.
+
+Pasangan yang membuka tautan undangan otomatis mengikuti mode ruangan.
+
 ## Cara Bermain
 
 1. Pemain pertama menulis nama, lalu menekan **Buat Ruangan**. Kalau di `kartu.js` ada lebih dari satu topik, muncul dropdown untuk memilih topik.
@@ -12,21 +21,22 @@ Game ini hanya menampilkan permainan. Obrolannya dilakukan lewat telepon WhatsAp
 3. Pemain kedua membuka tautan, menulis nama, lalu menekan **Gabung**.
 4. Masing-masing menulis 1 atau 2 **pertanyaan rahasia** untuk pasangannya. Pertanyaan ini muncul diam-diam sebagai kartu rahasia saat giliran pasangannya. Sebelum kartu rahasia pertama dan di antara dua kartu rahasia selalu ada 2 atau 3 kartu biasa.
 5. Pemain bergiliran menekan **Putar Dadu**. Dadu punya 3 sisi Cokelat dan 3 sisi Hijau. Warna yang keluar menentukan kartu yang diambil.
-6. **Yang memutar dadu menjawab kartu.** Nama di kartu otomatis mengikuti nama pemain.
+6. **Yang memutar dadu menjawab kartu.** Nama di kartu otomatis mengikuti nama pemain. Di mode teks, jawaban diketik lalu dikirim, dan pasangannya membaca jawaban itu dalam bentuk gelembung pesan.
 7. Setelah yang menjawab selesai bercerita, pasangan yang mendengarkan mengisi **bintang 1 sampai 5** dan kalimat feedback. Penilaian ini disembunyikan dari yang menjawab. Dadu baru bisa diputar lagi setelah penilaian disimpan.
 8. **Akhiri permainan** berfungsi sebagai jeda. Masing-masing melihat pop-up rangkuman **khusus untuk dirinya sendiri**: jumlah kartu yang dijawab, rata-rata bintang, bintang dan kalimat feedback per kartu, serta saran. Pemain tidak bisa melihat rangkuman pasangannya.
 9. Permainan tersimpan di ruangan yang sama. Tekan **Lanjutkan permainan** (keduanya harus menekan) untuk melanjutkan sesi berikutnya. Kalau aplikasi sempat ditutup, pembuat ruangan menekan **Lanjutkan ruangan** di layar awal, lalu pasangannya bergabung lagi dengan kode yang sama.
 10. Permainan benar-benar selesai saat salah satu pemain menekan **Keluar dari permainan**.
 
-Satu kartu biasanya dijawab 10 sampai 15 menit. Topik berisi 60 kartu butuh sekitar 10 sampai 15 jam, jadi sebaiknya dimainkan beberapa sesi.
+Permainan tidak menampilkan jumlah total kartu, hanya jumlah kartu yang sudah terbuka. Karena itu kalimat kartu bisa ditambah sebanyak apa pun, sampai ratusan.
 
 ## Isi Kartu
 
 Kartu dikelompokkan per topik. Saat ini tersedia satu topik:
 
-| Topik | Cokelat | Hijau |
-|---|---|---|
-| Calon Pengantin | 30 kartu: masa depan, rencana, mimpi | 30 kartu: komitmen, kejujuran, kasih sayang |
+| Topik | Mode | Cokelat | Hijau |
+|---|---|---|---|
+| Calon Pengantin | Telepon | 30 kartu: masa depan, rencana, mimpi | 30 kartu: komitmen, kejujuran, kasih sayang |
+| Calon Pengantin | Teks | 30 kartu ringan | 30 kartu ringan |
 
 Semua kalimat ada di file `kartu.js`. Penanda `{A}` diganti nama yang menjawab, `{B}` diganti nama pasangannya. Topik baru ditambahkan dengan menyalin satu blok topik di file tersebut. Selama hanya ada satu topik, pilihan topik disembunyikan. Begitu ada topik kedua, layar awal otomatis menampilkan dropdown berisi nama topik.
 
