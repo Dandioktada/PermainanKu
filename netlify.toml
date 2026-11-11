@@ -1,0 +1,6 @@
+# Cadangan bila Base directory di Netlify dibiarkan kosong:
+# arahkan Netlify ke folder game Saling Bercerita.
+[build]
+  base = "game-salingbercerita"
+  publish = "."
+  command = ""
