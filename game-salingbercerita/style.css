@@ -258,7 +258,8 @@ textarea { resize: vertical; line-height: 1.4; }
 input:focus, textarea:focus { --garis: var(--coklat); background: #fff; }
 textarea:disabled { background: var(--kertas-gelap); color: var(--tinta-lembut); }
 input::placeholder, textarea::placeholder { color: #ad9a86; }
-#input-kode { font-family: var(--huruf-judul); font-weight: 700; text-transform: uppercase; letter-spacing: .3em; }
+/* Kode ruangan memakai Geist Pixel: huruf M, W, dan angka lebih mudah dibedakan */
+#input-kode { font-family: var(--huruf); font-weight: 400; font-size: 24px; text-transform: uppercase; letter-spacing: .3em; }
 #input-kode::placeholder { font-family: var(--huruf); text-transform: none; letter-spacing: normal; font-weight: 400; }
 
 .pemisah {
@@ -331,7 +332,7 @@ input::placeholder, textarea::placeholder { color: #ad9a86; }
 /* ---------- Layar menunggu ---------- */
 .label-kode { margin: 0; color: var(--tinta-lembut); font-weight: 400; font-size: 17px; }
 .kode {
-  margin: 0 0 6px; font-family: var(--huruf-judul); font-size: 44px; font-weight: 700; letter-spacing: .14em; padding-left: .14em;
+  margin: 0 0 6px; font-family: var(--huruf); font-size: 54px; font-weight: 400; letter-spacing: .14em; padding-left: .14em;
   color: var(--coklat);
   text-shadow: 3px 3px 0 var(--coklat-muda);
 }
