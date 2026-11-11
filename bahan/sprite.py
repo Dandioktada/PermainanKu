@@ -16,7 +16,7 @@ def svg(grid, pal):
                 x2 += 1
             rects.append(f'<rect x="{x}" y="{y}" width="{x2 - x + 1}" height="1" fill="{pal[c]}"/>')
             x = x2 + 1
-    s = f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {w} {h}" shape-rendering="crispEdges">' + ''.join(rects) + '</svg>'
+    s = f'<svg xmlns="http://www.w3.org/2000/svg" width="{w}" height="{h}" viewBox="0 0 {w} {h}" shape-rendering="crispEdges">' + ''.join(rects) + '</svg>'
     return 'url("data:image/svg+xml,' + urllib.parse.quote(s, safe='=/:"<> ') .replace('"', "'") + '")'
 
 BINTANG = [
@@ -164,6 +164,80 @@ TELEPON = [
     ".........XXX..",
 ]
 
+# ---- Digambar ulang dari referensi pengguna ----
+KUCING_HITAM = [
+    ".....X....X...........",
+    ".....XX..XX......XX...",
+    ".....XPXXPX.....XBBX..",
+    ".....XBBBBBX....XBBX..",
+    ".....XBEBBEX.....XBX..",
+    ".XXXXXBBNBBXX....XBX..",
+    "XHBBBXBBBBBBBX...XBX..",
+    "XBBBBBXXXBBBBBX..XBX..",
+    ".XXXBBBBBBBBBBBXXBBX..",
+    "..XBBBBBBBBBBBBBBBBX..",
+    "...XXXXDBBBBBBBBBBX...",
+    ".........XXDBBBBBBBX..",
+    "...........XXDBBBBBX..",
+    ".............XDBBBBX..",
+    "..............XDBBBX..",
+    ".............XDBXBBX..",
+    "............XBBX.XBX..",
+    "............XXX..XX...",
+]
+TELEPON_HIJAU = [
+    "..XXXX.........",
+    ".XGGGGX........",
+    "XGDGDGDX.......",
+    "XGGDGDGX.......",
+    "XGDGDGDX.......",
+    "XLGGGGX........",
+    "XLLXXX.........",
+    ".XLLX..........",
+    ".XLLLX.........",
+    "..XLLLX........",
+    "...XLLLX..XXX..",
+    "....XLLLXXGGGX.",
+    ".....XLLLGDGDGX",
+    "......XLLGGDGDX",
+    ".......XLGDGDGX",
+    "........XXGGGX.",
+    "..........XXX..",
+]
+GELEMBUNG_IKON = [
+    "...XXXXXXXXX...",
+    "..XWWWWWWWWWX..",
+    ".XWWWWWWWWWWWX.",
+    "XWWWWWWWWWWWWWX",
+    "XWWWWWWWWWWWWWX",
+    "XWWWWWWWWWWWWWX",
+    "XSWWWWWWWWWWWSX",
+    ".XSSWWWWWWWSSX.",
+    "..XXSXXXXXXXX..",
+    "...XSX.........",
+    "..XSX..........",
+    "..XX...........",
+]
+# Gelembung pesan untuk 9-slice: potong atas 4, kanan 4, bawah 5, kiri 8 (ekor ada di potongan kiri bawah)
+GELEMBUNG = [
+    "...XXXXXXXXXXXXXXXXXX...",
+    "..XWWWWWWWWWWWWWWWWWWX..",
+    ".XWWWWWWWWWWWWWWWWWWWWX.",
+    "XWWWWWWWWWWWWWWWWWWWWWWX",
+    "XWWWWWWWWWWWWWWWWWWWWWWX",
+    "XWWWWWWWWWWWWWWWWWWWWWWX",
+    "XWWWWWWWWWWWWWWWWWWWWWWX",
+    "XWWWWWWWWWWWWWWWWWWWWWWX",
+    "XWWWWWWWWWWWWWWWWWWWWWWX",
+    "XSWWWWWWWWWWWWWWWWWWWWSX",
+    ".XSSSSSSSSSSSSSSSSSSSSX.",
+    "..XXXSSSXXXXXXXXXXXXXX..",
+    "....XSSX................",
+    "....XSX.................",
+    "....XX..................",
+]
+GELEMBUNG_KANAN = [baris[::-1] for baris in GELEMBUNG]
+
 out = {
     "--px-bintang-nyala": svg(BINTANG, {"X": "#5b3a1e", "Y": "#f6c42a", "W": "#fff3b0"}),
     "--px-bintang-mati": svg(BINTANG, {"X": "#c4b398", "Y": "#efe4d0", "W": "#f7efe0"}),
@@ -182,6 +256,11 @@ out = {
     "--px-kilau-pink": svg(KILAU, {"X": "#a33a57", "Y": "#f7a9bb", "W": "#fff1f4"}),
     "--px-chat": svg(CHAT, {"X": "#3b2616", "W": "#ffffff", "D": "#a8683a", "B": "#d9e8f5"}),
     "--px-telepon": svg(TELEPON, {"X": "#3b2616", "G": "#5ea34c"}),
+    "--px-kucing-hitam": svg(KUCING_HITAM, {"X": "#16151c", "B": "#3a3846", "D": "#2a2833", "H": "#5a5870", "E": "#f2a65a", "P": "#e8a0a8", "N": "#16151c"}),
+    "--px-telepon-hijau": svg(TELEPON_HIJAU, {"X": "#1a4d10", "G": "#4c9a2a", "D": "#1e5c12", "L": "#79d13f"}),
+    "--px-gelembung-ikon": svg(GELEMBUNG_IKON, {"X": "#1b1b22", "W": "#ffffff", "S": "#c9c6f2"}),
+    "--px-gelembung": svg(GELEMBUNG, {"X": "#1b1b22", "W": "#ffffff", "S": "#c9c6f2"}),
+    "--px-gelembung-kanan": svg(GELEMBUNG_KANAN, {"X": "#1b1b22", "W": "#f1fbe9", "S": "#bfe3b0"}),
     "--px-gembok": svg(GEMBOK, {"X": "#5b3a1e", "Y": "#f6c42a"}),
 }
 print(":root {")

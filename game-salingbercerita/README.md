@@ -38,7 +38,7 @@ Kartu dikelompokkan per topik. Saat ini tersedia satu topik:
 | Topik | Mode | Cokelat | Hijau |
 |---|---|---|---|
 | Calon Pengantin | Telepon | 30 kartu: masa depan, rencana, mimpi | 30 kartu: komitmen, kejujuran, kasih sayang |
-| Calon Pengantin | Teks | 30 kartu ringan | 30 kartu ringan |
+| Calon Pengantin | Teks | 30 kartu ringan (dari `bahan/kalimat-kartu-salinbercerita-ringan`) | 30 kartu ringan |
 
 Semua kalimat ada di file `kartu.js`. Penanda `{A}` diganti nama yang menjawab, `{B}` diganti nama pasangannya. Topik baru ditambahkan dengan menyalin satu blok topik di file tersebut. Selama hanya ada satu topik, pilihan topik disembunyikan. Begitu ada topik kedua, layar awal otomatis menampilkan dropdown berisi nama topik.
 
@@ -61,5 +61,6 @@ Setiap perubahan yang di-push ke `main` otomatis ter-update di situs.
 
 Gaya pixel art yang cozy: langit bertingkat, awan bergerak, matahari di dekat kotak permainan, rumput dan bunga, serta bingkai kotak bertepi tegas.
 Judul memakai huruf Silkscreen dengan isi dua warna dan garis tepi gelap. Tombol bergaya tombol game dengan sorot di atas dan tepi bawah gelap.
-Kucing bersayap dan kupu-kupu sesekali terbang melintas di depan layar, dengan jeda acak 25 sampai 50 detik.
+Kupu-kupu, kucing hitam yang meloncat, dan kucing bersayap bergantian melintas di depan layar, dengan jeda acak 25 sampai 50 detik.
+Bintang, hati, gelembung pesan, ikon telepon, dan kucing hitam mengikuti gambar referensi dari pemilik game. Bintang dan hati dipotong dari referensi dengan `bahan/potong_sprite.py`, sedangkan sisanya digambar ulang sebagai grid di `bahan/sprite.py`.
 Semua ikon dan hewan pixel digambar sebagai grid di `bahan/sprite.py`, lalu hasilnya disimpan di bagian bawah `style.css`.
