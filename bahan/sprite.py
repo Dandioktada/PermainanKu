@@ -239,18 +239,20 @@ GELEMBUNG = [
 GELEMBUNG_KANAN = [baris[::-1] for baris in GELEMBUNG]
 
 BULAN = [
-    "....XXXX....",
-    "..XXYYYYXX..",
-    ".XYYYYWWYYX.",
-    ".XYYCYYWYYX.",
-    "XYYYYYYYYCYX",
-    "XYYYYYYYYYYX",
-    "XYCCYYYYYYYX",
-    "XYCYYYYCYYYX",
-    ".XYYYYYYYYX.",
-    ".XYYYYYYCYX.",
-    "..XXYYYYXX..",
-    "....XXXX....",
+    ".....XXXXX......",
+    "...XXYYYYX......",
+    "..XYWYYYX.......",
+    ".XYWYYYX........",
+    ".XYWYYX.........",
+    "XYWYYYX.........",
+    "XYWYYYX.........",
+    "XYWYYYX.........",
+    "XYYYYYYX........",
+    ".XYYYYYYX.......",
+    ".XYYYYYYYXX.....",
+    "..XYYYYYYYYXXX..",
+    "...XXYYYYYYYYYX.",
+    ".....XXXXXXXXX..",
 ]
 
 out = {
