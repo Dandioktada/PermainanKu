@@ -26,7 +26,7 @@ Ada di `pertanyaan.js`: 18 kategori dengan tiga tingkat (dasar, menengah, lanjut
 
 ## Tampilan
 
-Modern dan elegan bernuansa undangan: latar gradasi hijau ke cokelat, panel krem berbingkai garis ganda, serta ornamen bunga di sudut.
+Modern dan elegan bernuansa undangan: latar putih, kotak bertekstur kertas bunga timbul (`gambar/box.jpg`) berbingkai garis ganda, serta ornamen bunga di sudut. PDF memakai latar `gambar/background-pdf.jpg` di setiap halaman, dengan logo dan tulisan "Saling Kenal" di tengah halaman pertama.
 Palet: Green Fern `#34420D`, Lichen `#90967A`, Creme `#F8F5F0`, Brown `#6B553D`, Dark Brown `#342B1C`.
 Huruf (folder `font/`, lisensi SIL OFL 1.1): Pinyon Script untuk judul, Cormorant Garamond untuk subjudul, Jost untuk teks dan tombol.
 Logo, ornamen sudut, ikon nilai (bunga), dan ilustrasi di folder `gambar/` berasal dari gambar milik pemilik game (sumber aslinya di `bahan/salingkenal-ui/`), lalu dipotong, dikecilkan, dan dioptimalkan supaya cepat dimuat di HP.

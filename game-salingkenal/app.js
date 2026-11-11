@@ -577,12 +577,37 @@
       .replace(/[^\x09\x0A\x0D\x20-\x7E\u00A0-\u00FF]/g, "?");
   }
 
-  function unduhPDF() {
+  // Mengambil gambar dari folder game sebagai data URL untuk PDF
+  async function muatGambar(url) {
+    try {
+      const blob = await (await fetch(url)).blob();
+      return await new Promise((ok) => { const r = new FileReader(); r.onload = () => ok(r.result); r.onerror = () => ok(null); r.readAsDataURL(blob); });
+    } catch (e) { return null; }
+  }
+  // Tulisan "Saling Kenal" dengan huruf Pinyon Script, digambar ke kanvas lalu dimasukkan ke PDF sebagai gambar
+  async function gambarJudul() {
+    try { await document.fonts.load('140px "Pinyon Script"'); } catch (e) {}
+    const c = document.createElement("canvas"), x = c.getContext("2d");
+    const huruf = '140px "Pinyon Script", cursive';
+    x.font = huruf;
+    const lebar = Math.ceil(x.measureText("Saling Kenal").width) + 40;
+    c.width = lebar; c.height = 196;
+    x.font = huruf; x.fillStyle = "#34420D"; x.textBaseline = "middle";
+    x.fillText("Saling Kenal", 20, 98);
+    return { data: c.toDataURL("image/png"), rasio: c.height / c.width };
+  }
+
+  async function unduhPDF() {
     if (!window.jspdf || !window.jspdf.jsPDF) { toast("Komponen PDF belum termuat. Periksa koneksi lalu coba lagi."); return; }
+    toast("Menyiapkan PDF...");
+    const [latar, logo, judul] = await Promise.all([muatGambar("gambar/background-pdf.jpg"), muatGambar("gambar/logo.png"), gambarJudul()]);
     const doc = new window.jspdf.jsPDF({ unit: "mm", format: "a4" });
-    const KIRI = 18, LEBAR = 174, BAWAH = 280;
-    let y = 22;
-    const halamanBaru = () => { doc.addPage(); y = 20; };
+    // Area tulisan berada di dalam bingkai gambar latar
+    const KIRI = 24, LEBAR = 162, BAWAH = 264, TENGAH = 105;
+    const pasangLatar = () => { if (latar) doc.addImage(latar, "JPEG", 0, 0, 210, 297, "latar", "FAST"); };   // disimpan sekali, dipakai ulang di setiap halaman
+    pasangLatar();
+    let y = 28;
+    const halamanBaru = () => { doc.addPage(); pasangLatar(); y = 32; };
     const tulis = (teks, o) => {
       o = o || {};
       doc.setFont("helvetica", o.tebal ? "bold" : o.miring ? "italic" : "normal");
@@ -593,19 +618,23 @@
       const tinggi = (o.ukuran || 10.5) * 0.45;
       baris.forEach((b) => {
         if (y + tinggi > BAWAH) halamanBaru();
-        doc.text(b, kiri, y);
+        if (o.tengah) doc.text(b, TENGAH, y, { align: "center" }); else doc.text(b, kiri, y);
         y += tinggi;
       });
       y += o.jarak != null ? o.jarak : 1.5;
     };
-    const garis = () => { if (y + 4 > BAWAH) halamanBaru(); doc.setDrawColor(144, 150, 122); doc.line(KIRI, y, KIRI + LEBAR, y); y += 5; };
+    const garis = () => { if (y + 4 > BAWAH) halamanBaru(); doc.setDrawColor(144, 150, 122); doc.line(KIRI + 20, y, KIRI + LEBAR - 20, y); y += 6; };
+
+    // Kepala halaman pertama: logo dan tulisan Saling Kenal di tengah
+    if (logo) { const w = 22; doc.addImage(logo, "PNG", TENGAH - w / 2, y, w, w * 315 / 320, "logo", "FAST"); y += w * 315 / 320 + 2; }
+    if (judul) { const w = 62; doc.addImage(judul.data, "PNG", TENGAH - w / 2, y, w, w * judul.rasio, "judul", "FAST"); y += w * judul.rasio + 4; }
+    else tulis("Saling Kenal", { tebal: true, ukuran: 22, warna: [52, 66, 13], tengah: true, jarak: 2 });
+    tulis("MULAI MENGENAL dari BERCERITA", { ukuran: 9, warna: [107, 85, 61], tengah: true, jarak: 6 });
 
     const tgl = new Date(state.selesaiPada || Date.now()).toLocaleDateString("id-ID", { day: "numeric", month: "long", year: "numeric" });
-    tulis("Saling Kenal", { tebal: true, ukuran: 20, warna: [52, 66, 13], jarak: 1 });
-    tulis("Mulai Mengenal dari Bercerita", { miring: true, warna: [102, 115, 111], jarak: 4 });
-    tulis("Catatan proses ta'aruf antara " + namaPemain(0) + " dan " + namaPemain(1) + ".", { jarak: 0.5 });
-    tulis("Tanggal: " + tgl, { warna: [102, 115, 111], jarak: 0.5 });
-    tulis("Nilai 1 sampai 5 menunjukkan kejelasan jawaban: 1 tidak jelas, 2 cukup tidak jelas, 3 cukup jelas, 4 jelas, 5 sangat jelas.", { warna: [102, 115, 111], ukuran: 9.5, jarak: 4 });
+    tulis("Catatan proses ta'aruf antara " + namaPemain(0) + " dan " + namaPemain(1), { tengah: true, jarak: 0.5 });
+    tulis(tgl, { warna: [102, 115, 111], tengah: true, jarak: 1.5 });
+    tulis("Nilai 1 sampai 5 menunjukkan kejelasan jawaban: 1 tidak jelas, 2 cukup tidak jelas, 3 cukup jelas, 4 jelas, 5 sangat jelas.", { warna: [102, 115, 111], ukuran: 9, tengah: true, jarak: 5 });
     garis();
 
     [0, 1].forEach((penanya) => {
@@ -630,12 +659,12 @@
       });
       garis();
     });
-    tulis("Semoga Allah memudahkan setiap langkah ikhtiar kalian dan memberikan yang terbaik.", { miring: true, warna: [102, 115, 111], jarak: 0 });
+    tulis("Semoga Allah memudahkan setiap langkah ikhtiar kalian dan memberikan yang terbaik.", { miring: true, warna: [102, 115, 111], tengah: true, jarak: 0 });
 
     const total = doc.getNumberOfPages();
     for (let h = 1; h <= total; h++) {
-      doc.setPage(h); doc.setFont("helvetica", "normal"); doc.setFontSize(8.5); doc.setTextColor(150, 158, 154);
-      doc.text("Saling Kenal  |  halaman " + h + " dari " + total, KIRI, 290);
+      doc.setPage(h); doc.setFont("helvetica", "normal"); doc.setFontSize(8.5); doc.setTextColor(107, 85, 61);
+      doc.text("Saling Kenal  |  halaman " + h + " dari " + total, TENGAH, 272, { align: "center" });
     }
     const nama = (s) => teksPDF(s).replace(/[^A-Za-z0-9]+/g, "-").replace(/^-|-$/g, "") || "pemain";
     const d = new Date(state.selesaiPada || Date.now());
