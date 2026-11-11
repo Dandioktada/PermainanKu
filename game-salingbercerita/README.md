@@ -58,6 +58,12 @@ Koneksi antarpemain memakai PeerJS (WebRTC) dengan server sinyal gratis milik Pe
 Game di-hosting di Netlify (project `salingbercerita`) dan tersambung ke branch `main` dengan base directory `game-salingbercerita`.
 Setiap perubahan yang di-push ke `main` otomatis ter-update di situs.
 
+## Tema Siang dan Malam
+
+Game membaca jam di HP pemain. Pukul 06.00 sampai 17.59 memakai tema siang (langit biru, matahari, kupu-kupu), dan pukul 18.00 sampai 05.59 memakai tema malam (langit gelap, bulan, bintang berkelip, kunang-kunang). Tema dicek setiap menit, jadi berganti sendiri saat jamnya lewat.
+
+Untuk mencoba tema tertentu, tambahkan `?waktu=siang` atau `?waktu=malam` di akhir alamat. Di situs pengembangan (`pengembangan--salingbercerita.netlify.app`), tema malam selalu aktif supaya mudah dicoba.
+
 ## Tampilan
 
 Gaya pixel art yang cozy: langit bertingkat, awan bergerak, matahari di dekat kotak permainan, rumput dan bunga, serta bingkai kotak bertepi tegas.

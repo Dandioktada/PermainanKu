@@ -238,6 +238,23 @@ GELEMBUNG = [
 ]
 GELEMBUNG_KANAN = [baris[::-1] for baris in GELEMBUNG]
 
+BULAN = [
+    ".....XXXXX......",
+    "...XXYYYYX......",
+    "..XYWYYYX.......",
+    ".XYWYYYX........",
+    ".XYWYYX.........",
+    "XYWYYYX.........",
+    "XYWYYYX.........",
+    "XYWYYYX.........",
+    "XYYYYYYX........",
+    ".XYYYYYYX.......",
+    ".XYYYYYYYXX.....",
+    "..XYYYYYYYYXXX..",
+    "...XXYYYYYYYYYX.",
+    ".....XXXXXXXXX..",
+]
+
 out = {
     "--px-bintang-nyala": svg(BINTANG, {"X": "#5b3a1e", "Y": "#f6c42a", "W": "#fff3b0"}),
     "--px-bintang-mati": svg(BINTANG, {"X": "#c4b398", "Y": "#efe4d0", "W": "#f7efe0"}),
@@ -261,6 +278,7 @@ out = {
     "--px-gelembung-ikon": svg(GELEMBUNG_IKON, {"X": "#1b1b22", "W": "#ffffff", "S": "#c9c6f2"}),
     "--px-gelembung": svg(GELEMBUNG, {"X": "#1b1b22", "W": "#ffffff", "S": "#c9c6f2"}),
     "--px-gelembung-kanan": svg(GELEMBUNG_KANAN, {"X": "#1b1b22", "W": "#f1fbe9", "S": "#bfe3b0"}),
+    "--px-bulan": svg(BULAN, {"X": "#b9a96a", "Y": "#f6f0c8", "W": "#ffffff", "C": "#d8cf9e"}),
     "--px-gembok": svg(GEMBOK, {"X": "#5b3a1e", "Y": "#f6c42a"}),
 }
 print(":root {")
