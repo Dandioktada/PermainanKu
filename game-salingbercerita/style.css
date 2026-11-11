@@ -1,295 +1,675 @@
+/* =====================================================================
+   Saling Bercerita: tampilan pixel art yang cozy
+   Ikon pixel (--px-*) ada di bagian paling bawah file ini.
+   ===================================================================== */
 :root {
-  --latar: #f6efe4;
-  --kertas: #fffaf2;
-  --tinta: #3b2d23;
-  --tinta-lembut: #7a6a5c;
-  --garis: #e6d9c6;
-  --coklat: #8a5a3b;
-  --coklat-tua: #6b4329;
-  --coklat-muda: #f1e2d3;
-  --hijau: #4f7d52;
-  --hijau-tua: #3a5f3d;
-  --hijau-muda: #e1ecdc;
-  --wa: #25a35a;
-  --bahaya: #b4493c;
-  --bayang: 0 10px 30px rgba(80, 55, 30, .12);
+  --px: 3px;                         /* ukuran satu "pixel" bingkai */
+  --tinta: #3b2616;                  /* garis tepi gelap */
+  --tinta-lembut: #7b6450;
+  --kertas: #fff8ea;
+  --kertas-gelap: #f4e6cc;
+  --putih: #fffdf7;
+
+  --coklat: #a8683a;
+  --coklat-tua: #6e4123;
+  --coklat-muda: #f5dfc3;
+  --hijau: #5ea34c;
+  --hijau-tua: #33702f;
+  --hijau-muda: #dff0cd;
+  --emas: #f2c12e;
+  --emas-tua: #b07d0f;
+  --emas-muda: #fff2c2;
+  --pink: #ef8fa6;
+  --biru: #7fb3ea;
+  --wa: #3fae5a;
+  --bahaya: #c8463d;
+  --bintang: #f6c42a;
+
+  --langit-1: #8fcbee;
+  --langit-2: #a9d8f2;
+  --langit-3: #c4e5f5;
+  --langit-4: #dcf0f3;
+  --langit-5: #f2f1df;
+  --langit-6: #fbe9cd;
+
+  --huruf: "Geist Pixel", "Trebuchet MS", system-ui, sans-serif;    /* isi permainan */
+  --huruf-judul: "Silkscreen", "Trebuchet MS", system-ui, sans-serif; /* judul dan tombol */
 }
+
+/* ---------- Huruf (disimpan di folder font/, lisensi SIL OFL 1.1) ---------- */
+@font-face { font-family: "Geist Pixel"; font-weight: 400; font-display: swap; src: url("font/geist-pixel-400.woff2") format("woff2"); }
+@font-face { font-family: "Silkscreen"; font-weight: 400; font-display: swap; src: url("font/silkscreen-400.woff2") format("woff2"); }
+@font-face { font-family: "Silkscreen"; font-weight: 400; font-display: swap; src: url("font/silkscreen-700.woff2") format("woff2"); }
 
 * { box-sizing: border-box; }
 [hidden] { display: none !important; }
-
 html, body { margin: 0; }
+/* Matahari sengaja sedikit keluar layar; jangan sampai halaman bisa digeser ke samping */
+html { overflow-x: hidden; overflow-x: clip; }
+body { overflow-x: hidden; }
 
 body {
-  background: var(--latar);
-  background-image:
-    radial-gradient(circle at 10% 0%, rgba(138, 90, 59, .10), transparent 45%),
-    radial-gradient(circle at 100% 100%, rgba(79, 125, 82, .12), transparent 45%);
-  background-attachment: fixed;
+  font-family: var(--huruf);
+  font-variant-ligatures: none;
+  font-size: 19px;
+  line-height: 1.4;
   color: var(--tinta);
-  font-family: "Nunito", system-ui, -apple-system, "Segoe UI", sans-serif;
-  font-size: 16px;
-  line-height: 1.5;
   min-height: 100vh;
   min-height: 100dvh;
+  /* Langit bertingkat seperti senja pixel */
+  background: linear-gradient(180deg,
+    var(--langit-1) 0 14%, var(--langit-2) 14% 26%, var(--langit-3) 26% 38%,
+    var(--langit-4) 38% 52%, var(--langit-5) 52% 68%, var(--langit-6) 68% 100%) fixed;
+  background-color: var(--langit-6);
   -webkit-tap-highlight-color: transparent;
+  image-rendering: pixelated;
+  font-synthesis: none;   /* Geist Pixel hanya punya satu ketebalan; jangan ditebalkan buatan agar tetap tajam */
 }
+b, strong { font-weight: 400; color: var(--coklat-tua); }
+
+/* ---------- Dekorasi latar: awan, matahari, rumput, bunga ---------- */
+.dekor { position: fixed; inset: 0; pointer-events: none; z-index: 0; overflow: hidden; }
+.dekor .awan {
+  position: absolute; width: 120px; height: 48px;
+  background: var(--px-awan) center / contain no-repeat;
+  animation: melayang linear infinite;
+}
+.dekor .awan.a1 { top: 70px; left: -140px; animation-duration: 70s; }
+.dekor .awan.a2 { top: 18px; left: -140px; width: 80px; height: 32px; animation-duration: 95s; animation-delay: -40s; }
+.dekor .awan.a3 { top: 150px; left: -140px; width: 100px; height: 40px; animation-duration: 82s; animation-delay: -62s; }
+@keyframes melayang { from { transform: translateX(0); } to { transform: translateX(calc(100vw + 300px)); } }
+
+.dekor .tanah {
+  position: absolute; left: 0; right: 0; bottom: 0; height: 46px;
+  background:
+    linear-gradient(180deg, transparent 0 9px, #7cc25c 9px 15px, #5ea34c 15px 30px, #4b8c3e 30px 100%);
+}
+.dekor .tanah::before {
+  /* ujung rumput bergerigi */
+  content: ""; position: absolute; left: 0; right: 0; top: 3px; height: 6px;
+  background:
+    linear-gradient(90deg, #7cc25c 0 6px, transparent 6px 12px) 0 3px / 24px 3px repeat-x,
+    linear-gradient(90deg, transparent 0 12px, #7cc25c 12px 18px, transparent 18px) 0 0 / 24px 6px repeat-x;
+}
+.dekor .bunga {
+  position: absolute; bottom: 20px; width: 33px; height: 39px;
+  background: center / contain no-repeat;
+}
+.dekor .bunga.pink { background-image: var(--px-bunga-pink); }
+.dekor .bunga.biru { background-image: var(--px-bunga-biru); }
+.dekor .b1 { left: 4%; }
+.dekor .b2 { left: 14%; bottom: 16px; transform: scale(.8); }
+.dekor .b3 { right: 6%; }
+.dekor .b4 { right: 17%; bottom: 16px; transform: scale(.85); }
+
+/* Matahari menempel di pojok kanan atas area permainan, jadi terlihat di HP */
+.matahari-dekat {
+  position: absolute; top: 56px; right: -12px; width: 76px; height: 76px; z-index: 0;
+  background: var(--px-matahari) center / contain no-repeat;
+  animation: sinar 3s steps(2) infinite;
+}
+@keyframes sinar { 50% { transform: translateY(-3px); } }
+.app > .layar { position: relative; z-index: 1; }
+
+/* ---------- Hewan terbang (kucing bersayap, kupu-kupu) ---------- */
+.terbang { position: fixed; inset: 0; pointer-events: none; z-index: 15; overflow: hidden; }
+.terbang .lintas { position: absolute; left: 0; animation: lintas linear forwards; }
+.terbang .lintas.ke-kiri { animation-name: lintas-kiri; }
+@keyframes lintas { from { transform: translateX(-150px); } to { transform: translateX(calc(100vw + 150px)); } }
+@keyframes lintas-kiri { from { transform: translateX(calc(100vw + 150px)) scaleX(-1); } to { transform: translateX(-150px) scaleX(-1); } }
+.terbang .goyang { animation: goyang 2.4s steps(6) infinite; }
+@keyframes goyang { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-24px); } }
+.kucing-terbang { position: relative; width: 100px; height: 60px; background: var(--px-kucing) center / contain no-repeat; }
+.kucing-terbang::before {
+  content: ""; position: absolute; left: 22px; top: -17px; width: 52px; height: 37px;
+  background: var(--px-sayap) center / contain no-repeat;
+  transform-origin: 50% 100%;
+  animation: kepak .5s steps(1) infinite;
+}
+@keyframes kepak { 50% { transform: scaleY(-.8) translateY(-6px); } }
+/* Kucing hitam meloncat-loncat melintasi bagian bawah layar */
+.terbang .loncat-lintas { position: absolute; left: 0; bottom: 34px; top: auto; animation: lintas linear forwards; }
+.terbang .loncat-lintas.ke-kiri { animation-name: lintas-kiri-hadap; }
+.terbang .loncat-lintas.ke-kanan { animation-name: lintas-kanan-balik; }
+@keyframes lintas-kiri-hadap { from { transform: translateX(calc(100vw + 150px)); } to { transform: translateX(-150px); } }
+@keyframes lintas-kanan-balik { from { transform: translateX(-150px) scaleX(-1); } to { transform: translateX(calc(100vw + 150px)) scaleX(-1); } }
+.terbang .lompat { animation: lompat-kucing 1.1s infinite; }
+@keyframes lompat-kucing {
+  0%   { transform: translateY(0); animation-timing-function: cubic-bezier(.2, .7, .4, 1); }
+  45%  { transform: translateY(-90px) rotate(-6deg); animation-timing-function: cubic-bezier(.6, 0, .8, .3); }
+  90%  { transform: translateY(0) rotate(4deg); }
+  100% { transform: translateY(0); }
+}
+.kucing-hitam { width: 88px; height: 72px; background: var(--px-kucing-hitam) center / contain no-repeat; }
+.kupu-kupu { width: 44px; height: 36px; background: var(--px-kupu-pink) center / contain no-repeat; animation: kibas .35s steps(1) infinite; }
+.kupu-kupu.biru { background-image: var(--px-kupu-biru); }
+@keyframes kibas { 50% { transform: scaleX(.45); } }
 
 .app {
+  position: relative; z-index: 1;
   max-width: 440px;
   margin: 0 auto;
-  padding: max(20px, env(safe-area-inset-top)) 16px max(24px, env(safe-area-inset-bottom));
+  padding: max(20px, env(safe-area-inset-top)) 16px max(70px, calc(env(safe-area-inset-bottom) + 60px));
 }
 
-.layar { display: none; flex-direction: column; gap: 16px; animation: muncul .35s ease; }
-.layar.aktif { display: flex; }
-
+.layar { display: none; flex-direction: column; gap: 18px; }
+.layar.aktif { display: flex; animation: muncul .3s steps(4); }
 @keyframes muncul { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
 
-/* ---------- Judul ---------- */
-.judul { text-align: center; padding: 12px 0 4px; }
-.judul h1 {
-  font-family: "Lora", Georgia, serif;
-  font-weight: 600;
-  font-size: 30px;
-  margin: 10px 0 4px;
-  letter-spacing: -.01em;
+/* ---------- Bingkai pixel: tepi bertangga + bayangan blok ---------- */
+.panel, .kartu-dalam, .btn:not(.tipis), input, textarea, .pemain, .sisa-item, .riwayat,
+.kotak-info, .blok, .modal-kotak, .item-feedback, .toast, .chip-siap,
+.statistik div, .skor-baris, .item-kartu {
+  --garis: var(--tinta);
+  --bayang: rgba(59, 38, 22, .28);
+  border: 0;
+  border-radius: 0;
+  box-shadow:
+    0 calc(-1 * var(--px)) 0 0 var(--garis),
+    0 var(--px) 0 0 var(--garis),
+    calc(-1 * var(--px)) 0 0 0 var(--garis),
+    var(--px) 0 0 0 var(--garis),
+    var(--px) calc(2 * var(--px)) 0 0 var(--bayang),
+    calc(2 * var(--px)) var(--px) 0 0 var(--bayang);
 }
-.judul.kecil h1 { font-size: 24px; }
-.sub { margin: 0; color: var(--tinta-lembut); }
 
-.logo-dadu { display: inline-flex; gap: 8px; }
-.logo-dadu span {
-  width: 34px; height: 34px; border-radius: 9px;
-  box-shadow: inset 0 -3px 0 rgba(0,0,0,.18);
+/* ---------- Judul ---------- */
+.judul { text-align: center; padding: 8px 0 0; }
+.judul h1 {
+  /* Huruf judul seperti huruf game: isi dua warna (krem dan mint), garis tepi gelap, bayangan blok.
+     Lapisan garis tepi ada di ::before, lapisan isi dua warna di ::after. */
+  position: relative; isolation: isolate;
+  font-family: var(--huruf-judul); font-weight: 700; font-size: 34px; line-height: 1.2;
+  margin: 12px 0 16px; letter-spacing: .02em; text-transform: uppercase;
+  color: transparent;
 }
-.logo-dadu .c { background: var(--coklat); transform: rotate(-8deg); }
-.logo-dadu .h { background: var(--hijau); transform: rotate(8deg) translateY(4px); }
+.judul h1::before, .judul h1::after {
+  content: attr(data-teks); position: absolute; inset: 0; pointer-events: none;
+}
+.judul h1::before {
+  z-index: -1; color: #4a2630;
+  text-shadow:
+    3px 0 0 #4a2630, -3px 0 0 #4a2630, 0 3px 0 #4a2630, 0 -3px 0 #4a2630,
+    3px 3px 0 #4a2630, -3px -3px 0 #4a2630, 3px -3px 0 #4a2630, -3px 3px 0 #4a2630,
+    0 6px 0 #4a2630, 3px 6px 0 #4a2630, -3px 6px 0 #4a2630,
+    0 9px 0 #4a2630, 3px 9px 0 #4a2630, -3px 9px 0 #4a2630;
+}
+.judul h1::after {
+  z-index: 1; color: transparent;
+  background: linear-gradient(180deg, #fff7df 0 52%, #cfe9c3 52% 100%) 0 0 / 100% 1.2em repeat-y;
+  -webkit-background-clip: text; background-clip: text;
+}
+/* Logo di layar awal: dua dadu bertumpuk, bintang berkilau di kiri atas dan kanan bawah */
+.logo-game { position: relative; display: block; }
+.logo-dadu.rapat { position: relative; display: inline-block; width: 100px; height: 72px; margin: 6px 0 2px; }
+.logo-dadu.rapat span { position: absolute; width: 50px; height: 50px; background-size: 32px 32px; }
+.logo-dadu.rapat .c { left: 2px; top: 16px; transform: rotate(-11deg); z-index: 1; }
+.logo-dadu.rapat .h { left: 44px; top: 2px; transform: rotate(16deg); z-index: 2; background-size: 32px 32px; }
+.kilau { position: absolute; display: block; background: var(--px-kilau) center / contain no-repeat; animation: kilau 1.6s steps(1) infinite; z-index: 3; }
+.kilau.besar { width: 28px; height: 28px; }
+.kilau.kecil { width: 17px; height: 17px; animation-delay: -.8s; }
+.kilau.kiri-atas     { left: -30px; top: -6px; }
+.kilau.kiri-atas-2   { left: -40px; top: 26px; animation-delay: -1.2s; }
+.kilau.kanan-bawah   { right: -30px; bottom: 4px; animation-delay: -.4s; }
+.kilau.kanan-bawah-2 { right: -10px; bottom: -22px; }
+@keyframes kilau { 0% { transform: scale(1); } 50% { transform: scale(.55); } 75% { transform: scale(.8); } }
+
+.judul.kecil h1 { font-size: 26px; }
+.sub { margin: 0; color: var(--tinta); font-size: 19px; }
+.tagline {
+  /* Selalu satu baris: ukuran huruf mengikuti lebar layar HP */
+  display: inline-block; max-width: calc(100% - 12px); margin: 6px 0 0; padding: 6px 12px;
+  white-space: nowrap; font-style: italic; font-synthesis: style;
+  font-size: clamp(13px, 4.1vw, 18px); color: var(--tinta); background: var(--putih);
+  box-shadow: 0 -3px 0 0 var(--tinta), 0 3px 0 0 var(--tinta), -3px 0 0 0 var(--tinta), 3px 0 0 0 var(--tinta),
+    3px 6px 0 0 rgba(59, 38, 22, .28);
+}
+
+.logo-dadu { display: inline-flex; gap: 12px; }
+.logo-dadu span {
+  width: 42px; height: 42px; display: block;
+  box-shadow: 0 -3px 0 0 var(--tinta), 0 3px 0 0 var(--tinta), -3px 0 0 0 var(--tinta), 3px 0 0 0 var(--tinta),
+    inset 0 -6px 0 rgba(0,0,0,.18), 3px 6px 0 0 rgba(59,38,22,.28);
+  background-position: center; background-repeat: no-repeat; background-size: 24px 24px;
+}
+.logo-dadu .c { background-color: var(--coklat); background-image: var(--px-bintang-ref); transform: rotate(-8deg); }
+.logo-dadu .h { background-color: var(--hijau); background-image: var(--px-hati-ref); transform: rotate(8deg) translateY(5px); }
 
 /* ---------- Panel & form ---------- */
 .panel {
   background: var(--kertas);
-  border: 1px solid var(--garis);
-  border-radius: 20px;
-  padding: 20px;
-  box-shadow: var(--bayang);
+  padding: 20px 18px;
   display: flex; flex-direction: column; gap: 10px;
+  margin: 0 var(--px);
 }
-.panel.tengah { text-align: center; align-items: stretch; }
+.panel.tengah { text-align: center; }
 
-label { font-weight: 700; font-size: 14px; color: var(--tinta-lembut); }
+label, .label-blok { font-weight: 400; font-size: 18px; color: var(--tinta-lembut); margin: 4px 0 0; }
 
-input {
-  font: inherit;
-  font-size: 17px;
-  width: 100%;
-  padding: 13px 14px;
-  border-radius: 12px;
-  border: 1.5px solid var(--garis);
-  background: #fff;
-  color: var(--tinta);
+input, textarea {
+  font: inherit; font-size: 19px; width: 100%;
+  padding: 12px 14px;
+  background: var(--putih); color: var(--tinta);
   outline: none;
-  transition: border-color .15s;
+  --bayang: transparent;
+  margin: var(--px) 0;
 }
-input:focus { border-color: var(--coklat); }
-#input-kode { text-transform: uppercase; letter-spacing: .25em; font-weight: 800; }
-#input-kode::placeholder { text-transform: none; letter-spacing: normal; font-weight: 400; }
+textarea { resize: vertical; line-height: 1.4; }
+input:focus, textarea:focus { --garis: var(--coklat); background: #fff; }
+textarea:disabled { background: var(--kertas-gelap); color: var(--tinta-lembut); }
+input::placeholder, textarea::placeholder { color: #ad9a86; }
+/* Kode ruangan memakai Geist Pixel: huruf M, W, dan angka lebih mudah dibedakan */
+#input-kode { font-family: var(--huruf); font-weight: 400; font-size: 24px; text-transform: uppercase; letter-spacing: .3em; }
+#input-kode::placeholder { font-family: var(--huruf); text-transform: none; letter-spacing: normal; font-weight: 400; }
 
 .pemisah {
   display: flex; align-items: center; gap: 10px;
-  color: var(--tinta-lembut); font-size: 13px; margin: 8px 0 2px;
+  color: var(--tinta-lembut); font-size: 16px; margin: 10px 0 0;
 }
-.pemisah::before, .pemisah::after { content: ""; flex: 1; height: 1px; background: var(--garis); }
+.pemisah::before, .pemisah::after {
+  content: ""; flex: 1; height: 3px;
+  background: repeating-linear-gradient(90deg, var(--tinta-lembut) 0 6px, transparent 6px 12px);
+  opacity: .5;
+}
 
-.pesan { min-height: 1.5em; margin: 2px 0 0; font-size: 14px; color: var(--bahaya); text-align: center; }
+.pesan { min-height: 1.4em; margin: 2px 0 0; font-size: 17px; color: var(--bahaya); text-align: center; }
 .pesan.ok { color: var(--hijau-tua); }
+.catatan { font-size: 16px; color: var(--tinta); text-align: center; margin: 0 8px; }
 
-.catatan { font-size: 13px; color: var(--tinta-lembut); text-align: center; margin: 0 8px; }
-
-/* ---------- Tombol ---------- */
+/* ---------- Tombol: muka terang, sorot di atas, tepi bawah gelap ---------- */
 .btn {
-  font: inherit; font-weight: 800; font-size: 16px;
-  display: block; width: 100%; text-align: center; text-decoration: none;
-  padding: 14px 16px; border-radius: 14px; border: 0; cursor: pointer;
-  transition: transform .08s, filter .15s, opacity .15s;
+  font-family: var(--huruf-judul); font-weight: 700; font-size: 16px; letter-spacing: .04em;
+  text-transform: uppercase; color: var(--tinta);
+  display: block; width: calc(100% - 2 * var(--px)); margin: var(--px) auto calc(2 * var(--px));
+  text-align: center; text-decoration: none;
+  padding: 14px 14px 16px; cursor: pointer; border: 0; position: relative;
+  background: #ece8e1;
 }
-.btn:active:not(:disabled) { transform: scale(.98); }
-.btn:disabled { opacity: .45; cursor: not-allowed; }
+.btn:not(.tipis) {
+  box-shadow:
+    0 calc(-1 * var(--px)) 0 0 var(--tinta), 0 var(--px) 0 0 var(--tinta),
+    calc(-1 * var(--px)) 0 0 0 var(--tinta), var(--px) 0 0 0 var(--tinta),
+    inset 3px 3px 0 0 rgba(255, 255, 255, .8),
+    inset -3px -6px 0 0 rgba(0, 0, 0, .16),
+    0 calc(3 * var(--px)) 0 0 var(--tinta);
+}
+.btn:active:not(:disabled):not(.tipis) {
+  transform: translateY(var(--px));
+  box-shadow:
+    0 calc(-1 * var(--px)) 0 0 var(--tinta), 0 var(--px) 0 0 var(--tinta),
+    calc(-1 * var(--px)) 0 0 0 var(--tinta), var(--px) 0 0 0 var(--tinta),
+    inset 3px 4px 0 0 rgba(0, 0, 0, .12),
+    0 calc(2 * var(--px)) 0 0 var(--tinta);
+}
+.btn:disabled { cursor: not-allowed; opacity: .5; }
+.btn.utama { background: var(--coklat-muda); }
+.btn.kedua { background: var(--hijau-muda); }
+.btn.wa    { background: #c9efcf; }
+.btn.tipis {
+  background: transparent; font-size: 13px; padding: 8px;
+  text-decoration: underline; text-underline-offset: 5px; text-decoration-thickness: 2px;
+}
+.btn.besar { font-size: 21px; padding: 16px 14px 18px; }
+.btn.utama.besar { background: var(--emas); }
 
-.btn.utama { background: var(--coklat); color: #fff; box-shadow: 0 4px 0 var(--coklat-tua); }
-.btn.kedua { background: var(--hijau-muda); color: var(--hijau-tua); }
-.btn.wa    { background: var(--wa); color: #fff; }
-.btn.tipis { background: transparent; color: var(--tinta-lembut); font-weight: 700; padding: 10px; }
-.btn.besar { font-size: 18px; padding: 16px; }
+/* ---------- Pilihan topik (dropdown, hanya muncul kalau topik lebih dari satu) ---------- */
+.pilih-topik {
+  font: inherit; font-size: 19px; width: calc(100% - 2 * var(--px)); margin: var(--px) auto; display: block;
+  padding: 12px 40px 12px 14px; color: var(--tinta); background-color: var(--putih);
+  border: 0; border-radius: 0; appearance: none; -webkit-appearance: none; cursor: pointer;
+  /* panah pixel */
+  background-image:
+    linear-gradient(var(--tinta), var(--tinta)), linear-gradient(var(--tinta), var(--tinta)), linear-gradient(var(--tinta), var(--tinta));
+  background-size: 12px 3px, 6px 3px, 3px 3px;
+  background-position: right 14px top 50%, right 17px top calc(50% + 3px), right 19px top calc(50% + 6px);
+  background-repeat: no-repeat;
+  box-shadow: 0 -3px 0 0 var(--tinta), 0 3px 0 0 var(--tinta), -3px 0 0 0 var(--tinta), 3px 0 0 0 var(--tinta);
+}
+.pilih-topik:focus { outline: none; box-shadow: 0 -3px 0 0 var(--coklat), 0 3px 0 0 var(--coklat), -3px 0 0 0 var(--coklat), 3px 0 0 0 var(--coklat); }
+.topik-kecil { margin: -4px 0 8px; font-size: 17px; color: var(--tinta-lembut); }
+.topik-kecil:empty { display: none; }
 
 /* ---------- Layar menunggu ---------- */
-.label-kode { margin: 0; color: var(--tinta-lembut); font-weight: 700; font-size: 14px; }
+.label-kode { margin: 0; color: var(--tinta-lembut); font-weight: 400; font-size: 17px; }
 .kode {
-  margin: 0 0 8px;
-  font-size: 44px; font-weight: 800; letter-spacing: .2em;
+  margin: 0 0 6px; font-family: var(--huruf); font-size: 54px; font-weight: 400; letter-spacing: .14em; padding-left: .14em;
   color: var(--coklat);
-  padding-left: .2em;
+  text-shadow: 3px 3px 0 var(--coklat-muda);
 }
-.menunggu { margin-top: 10px; color: var(--tinta-lembut); font-size: 14px; }
-.menunggu p { margin: 6px 0 0; }
-.titik {
-  display: inline-block; width: 8px; height: 8px; margin: 0 3px; border-radius: 50%;
-  background: var(--coklat); animation: lompat 1.2s infinite ease-in-out;
+.menunggu { margin-top: 10px; color: var(--tinta-lembut); font-size: 17px; }
+.menunggu p { margin: 8px 0 0; }
+.titik { display: inline-block; width: 9px; height: 9px; margin: 0 4px; background: var(--coklat); animation: lompat 1.2s steps(3) infinite; }
+.titik:nth-child(2) { background: var(--hijau); animation-delay: .2s; }
+.titik:nth-child(3) { background: var(--emas); animation-delay: .4s; }
+@keyframes lompat { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-9px); } }
+
+/* ---------- Persiapan ---------- */
+.ikon-rahasia {
+  display: inline-grid; place-items: center; width: 56px; height: 56px;
+  background: var(--emas); color: var(--tinta);
+  font-size: 36px; font-weight: 400;
+  box-shadow: 0 -3px 0 0 var(--tinta), 0 3px 0 0 var(--tinta), -3px 0 0 0 var(--tinta), 3px 0 0 0 var(--tinta),
+    inset 0 -6px 0 rgba(0,0,0,.15), 3px 6px 0 0 rgba(59,38,22,.28);
+  transform: rotate(-6deg);
 }
-.titik:nth-child(2) { background: var(--hijau); animation-delay: .15s; }
-.titik:nth-child(3) { animation-delay: .3s; }
-@keyframes lompat { 0%, 80%, 100% { transform: translateY(0); opacity: .5; } 40% { transform: translateY(-6px); opacity: 1; } }
+.teks-panduan { margin: 0 0 4px; font-size: 18px; }
+.wajib { color: var(--bahaya); }
+.opsional { font-weight: 400; }
+.status-siap { display: flex; gap: 12px; margin: 6px var(--px) 0; }
+.chip-siap { flex: 1; text-align: center; font-size: 16px; font-weight: 400; padding: 8px 6px; background: var(--kertas-gelap); color: var(--tinta-lembut); --bayang: transparent; --garis: #cdb89a; }
+.chip-siap.ok { background: var(--hijau-muda); color: var(--hijau-tua); --garis: var(--hijau-tua); }
+.kotak-info { background: var(--emas-muda); padding: 12px 14px; font-size: 17px; margin: 0 var(--px); --garis: var(--emas-tua); }
+.kotak-info p { margin: 4px 0 0; }
 
 /* ---------- Bar pemain ---------- */
-.bar-atas { display: flex; align-items: center; gap: 8px; }
+.bar-atas { display: flex; align-items: center; gap: 12px; padding: 0 var(--px); }
 .pemain {
-  flex: 1; min-width: 0;
-  background: var(--kertas); border: 1.5px solid var(--garis);
-  border-radius: 999px; padding: 8px 12px; text-align: center;
-  font-weight: 700; font-size: 14px;
-  transition: border-color .2s, background .2s, box-shadow .2s;
+  flex: 1; min-width: 0; background: var(--kertas); padding: 7px 10px; text-align: center;
+  font-weight: 400; font-size: 17px; --bayang: transparent;
 }
 .pemain .nama { display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.pemain.giliran-ini { border-color: var(--coklat); background: var(--coklat-muda); box-shadow: 0 0 0 3px rgba(138,90,59,.12); }
+.pemain.giliran-ini { background: var(--emas); --garis: var(--tinta); animation: denyut 1s steps(2) infinite; }
+@keyframes denyut { 50% { background: var(--emas-muda); } }
 .pemain.offline { opacity: .5; }
+.koneksi span { display: block; width: 12px; height: 12px; background: #b9a88f; box-shadow: 0 0 0 3px var(--tinta); }
+.koneksi.on span { background: var(--wa); }
+.koneksi.off span { background: var(--bahaya); }
 
-.koneksi span {
-  display: block; width: 10px; height: 10px; border-radius: 50%;
-  background: #c7b8a6;
+.giliran {
+  text-align: center; margin: 0 auto; font-weight: 400; font-size: 18px; color: var(--tinta);
+  background: rgba(255, 248, 234, .75); padding: 6px 12px; min-height: 1.5em;
 }
-.koneksi.on span  { background: var(--wa); box-shadow: 0 0 0 4px rgba(37,163,90,.18); }
-.koneksi.off span { background: var(--bahaya); box-shadow: 0 0 0 4px rgba(180,73,60,.18); }
+.giliran.saya { background: var(--putih); color: var(--coklat-tua); }
 
-.giliran { text-align: center; margin: 0; font-weight: 700; color: var(--tinta-lembut); min-height: 1.5em; }
-.giliran.saya { color: var(--coklat); }
-
-/* ---------- Dadu 3D ---------- */
-.arena { display: flex; flex-direction: column; align-items: center; gap: 22px; padding: 6px 0; }
-
-.dadu-wadah { --u: 88px; position: relative; width: var(--u); height: var(--u); perspective: 600px; margin-top: 8px; }
-.dadu {
-  width: 100%; height: 100%; position: relative;
-  transform-style: preserve-3d;
-  transform: rotateX(-22deg) rotateY(28deg);
-  transition: transform 1.5s cubic-bezier(.2, .8, .2, 1);
-}
+/* ---------- Dadu 3D pixel ---------- */
+.arena { display: flex; flex-direction: column; align-items: center; gap: 24px; padding: 4px 0; }
+.dadu-wadah { --u: 84px; position: relative; width: var(--u); height: var(--u); perspective: 600px; margin-top: 10px; }
+.dadu { width: 100%; height: 100%; position: relative; transform-style: preserve-3d; transform: rotateX(-18deg) rotateY(24deg); transition: transform 1.5s cubic-bezier(.2, .8, .2, 1); }
 .sisi {
-  position: absolute; inset: 0;
-  border-radius: 16px;
-  display: grid; place-items: center;
-  box-shadow: inset 0 0 0 2px rgba(255,255,255,.18), inset 0 -6px 12px rgba(0,0,0,.18);
+  position: absolute; inset: 0; display: grid; place-items: center;
+  outline: 4px solid var(--tinta); outline-offset: -4px;
+  box-shadow: inset 0 -8px 0 rgba(0,0,0,.18), inset 0 6px 0 rgba(255,255,255,.18);
   backface-visibility: hidden;
 }
-.sisi.coklat { background: linear-gradient(145deg, #9c6845, var(--coklat-tua)); }
-.sisi.hijau  { background: linear-gradient(145deg, #5e9161, var(--hijau-tua)); }
-.sisi i { font-style: normal; color: rgba(255,255,255,.9); font-size: 34px; line-height: 1; }
-.sisi.coklat i::before { content: "\2726"; }
-.sisi.hijau  i::before { content: "\2665"; }
-
+.sisi.coklat { background: var(--coklat); }
+.sisi.hijau { background: var(--hijau); }
+.sisi i { display: block; width: 40px; height: 40px; background: center / contain no-repeat; }
+.sisi.coklat i { background-image: var(--px-bintang-ref); width: 44px; height: 46px; }
+.sisi.hijau i { background-image: var(--px-hati-ref); width: 44px; height: 44px; }
 .depan    { transform: translateZ(calc(var(--u) / 2)); }
 .belakang { transform: rotateY(180deg) translateZ(calc(var(--u) / 2)); }
 .kanan    { transform: rotateY(90deg)  translateZ(calc(var(--u) / 2)); }
 .kiri     { transform: rotateY(-90deg) translateZ(calc(var(--u) / 2)); }
 .atas     { transform: rotateX(90deg)  translateZ(calc(var(--u) / 2)); }
 .bawah    { transform: rotateX(-90deg) translateZ(calc(var(--u) / 2)); }
-
-.bayangan {
-  position: absolute; left: 10%; right: 10%; bottom: -18px; height: 12px;
-  background: radial-gradient(ellipse, rgba(60,40,20,.25), transparent 70%);
-  transition: transform 1.5s;
-}
-.dadu-wadah.berputar .bayangan { animation: bayang 1.5s ease; }
-@keyframes bayang { 30% { transform: scale(.6); opacity: .5; } 100% { transform: scale(1); opacity: 1; } }
+.bayangan { position: absolute; left: 12%; right: 12%; bottom: -20px; height: 9px; background: rgba(59,38,22,.25); }
+.dadu-wadah.berputar .bayangan { animation: bayang 1.5s steps(6); }
+@keyframes bayang { 30% { transform: scaleX(.5); } 100% { transform: scaleX(1); } }
 
 /* ---------- Kartu ---------- */
-.kartu {
-  width: 100%;
-  perspective: 1000px;
-}
+.kartu { width: 100%; padding: 0 var(--px); perspective: 1000px; }
 .kartu-dalam {
-  position: relative;
-  min-height: 210px;
-  border-radius: 22px;
-  padding: 26px 22px 20px;
+  position: relative; min-height: 220px; padding: 24px 20px 18px;
   background: var(--kertas);
-  border: 1.5px dashed var(--garis);
-  display: flex; flex-direction: column; justify-content: center; gap: 12px;
-  text-align: center;
-  transition: transform .6s, background .3s, border-color .3s;
-  transform-style: preserve-3d;
+  display: flex; flex-direction: column; justify-content: center; gap: 12px; text-align: center;
 }
-.kartu-tema {
-  margin: 0; font-size: 12px; font-weight: 800; letter-spacing: .14em; text-transform: uppercase;
-  color: var(--tinta-lembut);
+.kartu-dalam::before, .kartu-dalam::after {
+  /* hiasan sudut kartu */
+  content: ""; position: absolute; width: 12px; height: 12px; top: 10px; left: 10px;
+  background: var(--sudut, var(--kertas-gelap));
 }
-.kartu-teks {
-  margin: 0;
-  font-family: "Lora", Georgia, serif; font-weight: 500;
-  font-size: 21px; line-height: 1.45;
-}
-.kartu.kosong .kartu-teks { font-size: 16px; font-family: inherit; color: var(--tinta-lembut); }
-.kartu-no { margin: 0; font-size: 12px; font-weight: 700; color: var(--tinta-lembut); }
+.kartu-dalam::after { left: auto; right: 10px; }
+.kartu-tema:empty { display: none; }
+.kartu-tema { margin: 0; font-size: 15px; font-weight: 400; letter-spacing: .12em; text-transform: uppercase; color: var(--tinta-lembut); padding: 0 16px; }
+.kartu-teks { margin: 0; font-size: 25px; line-height: 1.35; }
+.kartu.kosong .kartu-teks { font-size: 18px; color: var(--tinta-lembut); }
+.kartu-no { margin: 0; font-size: 15px; font-weight: 400; color: var(--tinta-lembut); }
+.kartu-teks .nm { color: var(--coklat-tua); text-decoration: underline; text-decoration-thickness: 2px; text-underline-offset: 5px; }
 
-.kartu.coklat .kartu-dalam {
-  background: linear-gradient(160deg, #fffaf4, var(--coklat-muda));
-  border: 2px solid var(--coklat);
-  box-shadow: 0 6px 0 var(--coklat), var(--bayang);
+.kartu.coklat .kartu-dalam { background: linear-gradient(180deg, var(--coklat) 0 10px, var(--coklat-muda) 10px); --garis: var(--coklat-tua); --sudut: var(--coklat); }
+.kartu.coklat .kartu-tema, .kartu.coklat .kartu-no { color: var(--coklat-tua); }
+.kartu.hijau .kartu-dalam { background: linear-gradient(180deg, var(--hijau) 0 10px, var(--hijau-muda) 10px); --garis: var(--hijau-tua); --sudut: var(--hijau); }
+.kartu.hijau .kartu-tema, .kartu.hijau .kartu-no, .kartu.hijau .kartu-teks .nm { color: var(--hijau-tua); }
+.kartu.rahasia .kartu-dalam { background: linear-gradient(180deg, var(--emas) 0 10px, var(--emas-muda) 10px); --garis: var(--emas-tua); --sudut: var(--emas); }
+.kartu.rahasia .kartu-tema, .kartu.rahasia .kartu-no { color: var(--emas-tua); }
+.kartu.rahasia .kartu-tema::before {
+  content: ""; display: inline-block; width: 12px; height: 14px; margin-right: 6px; vertical-align: -2px;
+  background: var(--px-gembok) center / contain no-repeat;
 }
-.kartu.coklat .kartu-tema, .kartu.coklat .kartu-no { color: var(--coklat); }
-.kartu.hijau .kartu-dalam {
-  background: linear-gradient(160deg, #fbfdf9, var(--hijau-muda));
-  border: 2px solid var(--hijau);
-  box-shadow: 0 6px 0 var(--hijau), var(--bayang);
-}
-.kartu.hijau .kartu-tema, .kartu.hijau .kartu-no { color: var(--hijau-tua); }
-
-.kartu.balik .kartu-dalam { animation: balik .6s ease; }
-@keyframes balik {
-  0%   { transform: rotateY(90deg) scale(.95); opacity: .2; }
-  100% { transform: rotateY(0) scale(1); opacity: 1; }
-}
+.kartu.balik .kartu-dalam { animation: balik .5s steps(5); }
+@keyframes balik { 0% { transform: rotateY(90deg); } 100% { transform: rotateY(0); } }
 .kartu.tunggu .kartu-dalam { opacity: .5; }
 
-/* ---------- Sisa kartu ---------- */
-.sisa { display: flex; gap: 10px; }
-.sisa-item {
-  flex: 1; display: flex; align-items: center; gap: 8px;
-  background: var(--kertas); border: 1px solid var(--garis); border-radius: 12px;
-  padding: 10px 12px; font-size: 14px; font-weight: 600;
-}
-.sisa-item b { margin-left: auto; font-size: 16px; }
-.sisa-item .bulat { width: 12px; height: 12px; border-radius: 4px; flex: none; }
-.sisa-item.coklat .bulat { background: var(--coklat); }
-.sisa-item.hijau  .bulat { background: var(--hijau); }
+/* ---------- Panel penilaian ---------- */
+.panel-nilai { text-align: center; background: var(--putih); --garis: var(--emas-tua); }
+.judul-nilai { margin: 0; font-weight: 400; font-size: 18px; }
+.ket-rahasia { margin: 0; font-size: 16px; color: var(--tinta-lembut); }
 
-/* ---------- Riwayat ---------- */
-.riwayat {
-  background: var(--kertas); border: 1px solid var(--garis); border-radius: 14px;
-  padding: 4px 14px;
+.bintang-pilih { display: flex; gap: 6px; }
+.bintang-pilih.tengah { justify-content: center; }
+.bintang-pilih button {
+  width: 44px; height: 44px; padding: 0; border: 0; cursor: pointer;
+  font-size: 0; color: transparent;
+  background: var(--px-bintang-ref-mati) center / 36px 38px no-repeat;
+  transition: transform .05s steps(1);
 }
-.riwayat summary { cursor: pointer; font-weight: 700; padding: 10px 0; color: var(--tinta-lembut); }
-.riwayat ol { margin: 0 0 12px; padding-left: 0; list-style: none; display: flex; flex-direction: column; gap: 8px; }
-.riwayat li {
-  font-size: 14px; padding: 8px 10px 8px 12px; border-radius: 8px; background: #fff;
-  border-left: 4px solid var(--coklat);
-}
+.bintang-pilih button.nyala { background-image: var(--px-bintang-ref); }
+.bintang-pilih button:active { transform: translateY(2px); }
+.bintang-hasil { display: flex; gap: 4px; }
+.bintang-hasil span { width: 26px; height: 27px; font-size: 0; background: var(--px-bintang-ref-mati) center / contain no-repeat; }
+.bintang-hasil span.nyala { background-image: var(--px-bintang-ref); }
+
+/* ---------- Sisa kartu & riwayat ---------- */
+.sisa { display: flex; gap: 14px; padding: 0 var(--px); }
+.sisa-item { flex: 1; display: flex; align-items: center; gap: 8px; background: var(--kertas); padding: 9px 12px; font-size: 17px; font-weight: 400; --bayang: transparent; }
+.sisa-item b { margin-left: auto; font-size: 18px; }
+.sisa-item .bulat { width: 14px; height: 14px; flex: none; box-shadow: 0 0 0 2px var(--tinta); }
+.sisa-item.coklat .bulat { background: var(--coklat); }
+.sisa-item.hijau .bulat { background: var(--hijau); }
+
+.riwayat { background: var(--kertas); padding: 4px 14px; margin: 0 var(--px); --bayang: transparent; }
+.riwayat summary { cursor: pointer; font-weight: 400; padding: 10px 0; color: var(--tinta); }
+.riwayat ol { margin: 0 0 12px; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 8px; }
+.riwayat li { font-size: 17px; padding: 8px 10px 8px 12px; background: var(--putih); border-left: 6px solid var(--coklat); }
 .riwayat li.hijau { border-left-color: var(--hijau); }
-.riwayat li small { display: block; color: var(--tinta-lembut); font-weight: 700; font-size: 12px; }
+.riwayat li.rahasia { border-left-color: var(--emas); }
+.riwayat li small { display: block; color: var(--tinta-lembut); font-weight: 400; font-size: 15px; }
 
 .aksi-bawah { display: flex; gap: 8px; }
+.aksi-bawah .btn { background: transparent; }
+
+/* ---------- Pop-up feedback ---------- */
+body.modal-buka { overflow: hidden; }
+.modal {
+  position: fixed; inset: 0; z-index: 20;
+  background: rgba(59, 38, 22, .55);
+  display: flex; align-items: flex-end; justify-content: center;
+  padding: 0 var(--px);
+  animation: redup .2s steps(2);
+}
+@keyframes redup { from { opacity: 0; } to { opacity: 1; } }
+.modal-kotak {
+  width: 100%; max-width: 440px; max-height: 90vh; max-height: 90dvh;
+  background: var(--kertas); display: flex; flex-direction: column;
+  margin-bottom: calc(3 * var(--px));
+  animation: naik .25s steps(4);
+}
+@keyframes naik { from { transform: translateY(40px); } to { transform: none; } }
+.modal-kepala { padding: 18px 20px 12px; background: var(--emas-muda); border-bottom: 3px solid var(--tinta); }
+.modal-kepala h2 { font-family: var(--huruf-judul); font-weight: 700; text-transform: uppercase; font-size: 20px; margin: 0 0 4px; }
+.modal-kepala p { margin: 0; font-size: 17px; color: var(--tinta-lembut); }
+.daftar-nilai { overflow-y: auto; padding: 4px 20px; flex: 1; -webkit-overflow-scrolling: touch; }
+.item-nilai { padding: 16px 0; display: flex; flex-direction: column; gap: 10px; border-bottom: 3px dashed #d8c4a4; }
+.item-nilai:last-child { border-bottom: 0; }
+.item-nilai-label { margin: 0; font-size: 15px; font-weight: 400; letter-spacing: .1em; text-transform: uppercase; color: var(--coklat-tua); }
+.item-nilai.hijau .item-nilai-label { color: var(--hijau-tua); }
+.item-nilai.rahasia .item-nilai-label { color: var(--emas-tua); }
+.item-nilai-teks { margin: 0; font-size: 17px; line-height: 1.4; }
+.item-feedback { margin: 0 var(--px); padding: 10px 12px; background: var(--putih); font-size: 18px; --bayang: transparent; --garis: var(--emas-tua); }
+.item-feedback.kosong { color: var(--tinta-lembut); --garis: #d8c4a4; }
+.nilai-tunggu { text-align: center; color: var(--tinta-lembut); padding: 24px 0; margin: 0; }
+.modal-kaki { padding: 12px 20px max(16px, env(safe-area-inset-bottom)); border-top: 3px solid var(--tinta); display: flex; flex-direction: column; gap: 6px; }
+
+/* ---------- Ringkasan ---------- */
+.ringkasan { display: flex; flex-direction: column; gap: 18px; }
+.blok { background: var(--kertas); padding: 14px 16px; margin: 0 var(--px); }
+.blok h2 { font-family: var(--huruf-judul); font-weight: 700; text-transform: uppercase; font-size: 15px; margin: 0 0 10px; }
+.blok p { margin: 0 0 6px; }
+.blok ul { margin: 0; padding-left: 0; list-style: none; }
+.blok li { margin-bottom: 10px; padding-left: 20px; position: relative; }
+.blok li::before { content: ""; position: absolute; left: 2px; top: 7px; width: 9px; height: 9px; background: var(--hijau-tua); }
+.statistik { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; text-align: center; padding: var(--px); }
+.statistik div { background: var(--putih); padding: 10px 4px; --bayang: transparent; }
+.statistik b { display: block; font-size: 22px; color: var(--coklat-tua); }
+.statistik span { font-size: 15px; color: var(--tinta-lembut); font-weight: 400; }
+.skor-pemain { display: flex; flex-direction: column; gap: 12px; padding: var(--px); }
+.skor-baris { background: var(--putih); padding: 10px 12px; --bayang: transparent; }
+.skor-baris .atas { display: flex; justify-content: space-between; font-weight: 400; font-size: 18px; }
+.skor-baris .atas .bintang-tampil { color: var(--emas-tua); }
+.skor-baris small { display: block; color: var(--tinta-lembut); font-size: 16px; }
+.item-kartu { background: var(--putih); padding: 8px 10px; margin: var(--px) var(--px) 12px; font-size: 17px; --bayang: transparent; --garis: var(--coklat); }
+.item-kartu.hijau { --garis: var(--hijau); }
+.item-kartu.rahasia { --garis: var(--emas-tua); }
+.item-kartu small { display: block; color: var(--tinta-lembut); font-weight: 400; font-size: 15px; }
+.item-kartu q { display: block; color: var(--tinta-lembut); margin-top: 2px; }
+.fb-judul { font-weight: 400; font-size: 17px; color: var(--tinta-lembut); margin: 10px 0 6px !important; }
+.blok.saran { background: var(--hijau-muda); --garis: var(--hijau-tua); }
+.blok.saran h2 { color: var(--hijau-tua); }
+.kosong-ket { color: var(--tinta-lembut); font-size: 17px; }
 
 /* ---------- Toast ---------- */
 .toast {
-  position: fixed; left: 50%; bottom: max(24px, env(safe-area-inset-bottom));
+  position: fixed; left: 50%; bottom: max(28px, calc(env(safe-area-inset-bottom) + 16px)); z-index: 30;
   transform: translate(-50%, 20px);
-  background: var(--tinta); color: #fff; font-weight: 700; font-size: 14px;
-  padding: 10px 16px; border-radius: 999px; max-width: calc(100% - 32px);
-  opacity: 0; pointer-events: none; transition: opacity .2s, transform .2s;
-  text-align: center;
+  background: var(--tinta); color: var(--putih); font-weight: 400; font-size: 17px;
+  padding: 10px 16px; max-width: calc(100% - 40px); text-align: center;
+  opacity: 0; pointer-events: none; transition: opacity .2s steps(2), transform .2s steps(2);
+  --garis: var(--putih);
 }
 .toast.tampil { opacity: 1; transform: translate(-50%, 0); }
+/* Saat pop-up terbuka, toast pindah ke atas supaya tidak menutup tombol */
+body.modal-buka .toast { bottom: auto; top: max(16px, env(safe-area-inset-top)); }
 
 @media (prefers-reduced-motion: reduce) {
   .dadu { transition-duration: .01s; }
-  .kartu.balik .kartu-dalam, .layar { animation: none; }
+  .dekor .awan, .pemain.giliran-ini, .titik, .kilau, .matahari-dekat, .timer.mepet, .terbang .lompat { animation: none; }
+  .kartu.balik .kartu-dalam, .layar.aktif { animation: none; }
+}
+
+
+/* ---------- Rangkuman pribadi di pop-up ---------- */
+.modal-kotak.rangkuman { max-height: 94vh; max-height: 94dvh; }
+.rangkuman-isi { overflow-y: auto; flex: 1; padding: 6px 20px 10px; -webkit-overflow-scrolling: touch; }
+.rangkuman-isi h3 {
+  font-family: var(--huruf-judul); font-weight: 700; font-size: 14px; text-transform: uppercase; letter-spacing: .04em;
+  margin: 18px 0 8px; color: var(--coklat-tua);
+}
+.statistik.mini { padding: var(--px) var(--px) 0; }
+.statistik.mini b { font-size: 21px; line-height: 1.2; }
+.lencana {
+  display: inline-block; font-size: 15px; padding: 1px 8px; margin-left: 6px;
+  background: var(--emas-muda); color: var(--emas-tua);
+  box-shadow: 0 0 0 2px var(--emas-tua);
+}
+.lencana.bahas { background: #fde2dc; color: var(--bahaya); box-shadow: 0 0 0 2px var(--bahaya); }
+.saran-pribadi { margin: 0; padding: 0; list-style: none; }
+.saran-pribadi li { position: relative; padding-left: 20px; margin-bottom: 10px; }
+.saran-pribadi li::before { content: ""; position: absolute; left: 2px; top: 8px; width: 9px; height: 9px; background: var(--hijau-tua); }
+.kotak-saran { background: var(--hijau-muda); padding: 12px 14px; margin: 0 var(--px);
+  box-shadow: 0 -3px 0 0 var(--hijau-tua), 0 3px 0 0 var(--hijau-tua), -3px 0 0 0 var(--hijau-tua), 3px 0 0 0 var(--hijau-tua); }
+.status-ulang { margin: 0; text-align: center; font-size: 17px; color: var(--hijau-tua); }
+.status-ulang:empty { display: none; }
+
+
+/* ---------- Pilihan mode (layar awal, langkah 1) ---------- */
+.judul-langkah { margin: 0 0 4px; text-align: center; font-family: var(--huruf-judul); font-weight: 700; font-size: 15px; text-transform: uppercase; letter-spacing: .04em; }
+.opsi-mode {
+  font: inherit; color: var(--tinta); text-align: left; cursor: pointer; border: 0;
+  display: flex; align-items: center; gap: 14px; width: calc(100% - 2 * var(--px)); margin: var(--px) auto calc(3 * var(--px));
+  padding: 14px; background: var(--putih);
+  box-shadow: 0 -3px 0 0 var(--tinta), 0 3px 0 0 var(--tinta), -3px 0 0 0 var(--tinta), 3px 0 0 0 var(--tinta),
+    inset 3px 3px 0 0 rgba(255,255,255,.8), inset -3px -5px 0 0 rgba(0,0,0,.08), 0 9px 0 0 var(--tinta);
+}
+.opsi-mode:active { transform: translateY(3px); box-shadow: 0 -3px 0 0 var(--tinta), 0 3px 0 0 var(--tinta), -3px 0 0 0 var(--tinta), 3px 0 0 0 var(--tinta), 0 6px 0 0 var(--tinta); }
+.opsi-mode[data-mode="teks"] { background: #e8f2fb; }
+.opsi-mode[data-mode="telepon"] { background: var(--hijau-muda); }
+.opsi-mode b { display: block; font-family: var(--huruf-judul); font-weight: 700; font-size: 15px; text-transform: uppercase; color: var(--tinta); margin-bottom: 2px; }
+.opsi-mode small { display: block; font-size: 16px; color: var(--tinta-lembut); line-height: 1.35; }
+.ikon-mode { flex: none; width: 46px; height: 40px; background: center / contain no-repeat; }
+.ikon-mode.chat { background-image: var(--px-gelembung-ikon); }
+.ikon-mode.telepon { background-image: var(--px-telepon-hijau); width: 40px; height: 45px; }
+.chip-mode { margin: 0 0 4px; font-size: 17px; color: var(--tinta-lembut); text-align: center; }
+.chip-mode #label-mode { color: var(--coklat-tua); }
+.tautan { font: inherit; font-size: 17px; background: none; border: 0; padding: 0 2px; color: var(--hijau-tua); text-decoration: underline; text-underline-offset: 4px; cursor: pointer; }
+#btn-lanjut { width: calc(100% - 6px); }
+
+/* ---------- Mode teks: kolom jawaban dan gelembung jawaban ---------- */
+.panel-jawab { background: #e8f2fb; --garis: #2f5f8f; }
+.panel-jawab label { color: #2f5f8f; }
+.hitung-huruf { margin: -4px 0 0; text-align: right; font-size: 15px; color: var(--tinta-lembut); }
+.gelembung {
+  /* Gelembung pesan pixel (9-slice): ekor di kiri bawah untuk jawaban pasangan */
+  position: relative; margin: 0 22px 6px 0; padding: 0 6px 2px 0;
+  border: solid transparent; border-width: 16px 16px 20px 32px;
+  border-image: var(--px-gelembung) 4 4 5 8 fill / 16px 16px 20px 32px stretch;
+  color: var(--tinta);
+}
+.gelembung.milik-saya {
+  /* Jawaban sendiri: gelembung hijau muda, ekor di kanan bawah */
+  margin: 0 0 6px 22px; padding: 0 0 2px 6px;
+  border-width: 16px 32px 20px 16px;
+  border-image: var(--px-gelembung-kanan) 4 8 5 4 fill / 16px 32px 20px 16px stretch;
+}
+.gelembung-nama { margin: 0 0 4px; font-family: var(--huruf-judul); font-weight: 700; font-size: 12px; text-transform: uppercase; color: #2f5f8f; }
+.gelembung.milik-saya .gelembung-nama { color: var(--hijau-tua); }
+.gelembung-teks { margin: 0; font-size: 19px; white-space: pre-wrap; overflow-wrap: anywhere; }
+.item-jawaban { margin: 0; padding: 8px 10px; background: #e8f2fb; font-size: 16px; white-space: pre-wrap; overflow-wrap: anywhere; border-left: 4px solid #2f5f8f; }
+
+/* ---------- Timer per kartu & target ---------- */
+.baris-waktu { display: flex; justify-content: center; flex-wrap: wrap; gap: 10px; margin-top: -6px; }
+.baris-waktu:not(:has(:not([hidden]))) { display: none; }
+.timer, .progres-target {
+  font-family: var(--huruf-judul); font-weight: 700; font-size: 13px; text-transform: uppercase; letter-spacing: .03em;
+  padding: 6px 10px; background: var(--putih); color: var(--tinta);
+  box-shadow: 0 -3px 0 0 var(--tinta), 0 3px 0 0 var(--tinta), -3px 0 0 0 var(--tinta), 3px 0 0 0 var(--tinta);
+}
+.timer.mepet { background: var(--emas); animation: denyut-timer 1s steps(2) infinite; }
+@keyframes denyut-timer { 50% { background: var(--emas-muda); } }
+.timer.habis { background: #fde2dc; color: var(--bahaya); box-shadow: 0 -3px 0 0 var(--bahaya), 0 3px 0 0 var(--bahaya), -3px 0 0 0 var(--bahaya), 3px 0 0 0 var(--bahaya); }
+.progres-target { background: var(--hijau-muda); color: var(--hijau-tua); }
+.wadah-target { margin-top: 6px; }
+.ket-target { margin: 2px 0 0; font-size: 16px; color: var(--tinta-lembut); }
+
+/* ---------- Ikon pixel (dibuat dari grid, lihat bahan/sprite.py) ---------- */
+:root {
+  --px-bintang-nyala: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='11' height='11' viewBox='0 0 11 11' shape-rendering='crispEdges'><rect x='5' y='0' width='1' height='1' fill='%235b3a1e'/><rect x='4' y='1' width='1' height='1' fill='%235b3a1e'/><rect x='5' y='1' width='1' height='1' fill='%23f6c42a'/><rect x='6' y='1' width='1' height='1' fill='%235b3a1e'/><rect x='4' y='2' width='1' height='1' fill='%235b3a1e'/><rect x='5' y='2' width='1' height='1' fill='%23f6c42a'/><rect x='6' y='2' width='1' height='1' fill='%235b3a1e'/><rect x='0' y='3' width='4' height='1' fill='%235b3a1e'/><rect x='4' y='3' width='1' height='1' fill='%23f6c42a'/><rect x='5' y='3' width='1' height='1' fill='%23fff3b0'/><rect x='6' y='3' width='1' height='1' fill='%23f6c42a'/><rect x='7' y='3' width='4' height='1' fill='%235b3a1e'/><rect x='0' y='4' width='1' height='1' fill='%235b3a1e'/><rect x='1' y='4' width='4' height='1' fill='%23f6c42a'/><rect x='5' y='4' width='1' height='1' fill='%23fff3b0'/><rect x='6' y='4' width='4' height='1' fill='%23f6c42a'/><rect x='10' y='4' width='1' height='1' fill='%235b3a1e'/><rect x='1' y='5' width='1' height='1' fill='%235b3a1e'/><rect x='2' y='5' width='7' height='1' fill='%23f6c42a'/><rect x='9' y='5' width='1' height='1' fill='%235b3a1e'/><rect x='2' y='6' width='1' height='1' fill='%235b3a1e'/><rect x='3' y='6' width='5' height='1' fill='%23f6c42a'/><rect x='8' y='6' width='1' height='1' fill='%235b3a1e'/><rect x='2' y='7' width='1' height='1' fill='%235b3a1e'/><rect x='3' y='7' width='5' height='1' fill='%23f6c42a'/><rect x='8' y='7' width='1' height='1' fill='%235b3a1e'/><rect x='1' y='8' width='1' height='1' fill='%235b3a1e'/><rect x='2' y='8' width='3' height='1' fill='%23f6c42a'/><rect x='5' y='8' width='1' height='1' fill='%235b3a1e'/><rect x='6' y='8' width='3' height='1' fill='%23f6c42a'/><rect x='9' y='8' width='1' height='1' fill='%235b3a1e'/><rect x='1' y='9' width='1' height='1' fill='%235b3a1e'/><rect x='2' y='9' width='2' height='1' fill='%23f6c42a'/><rect x='4' y='9' width='1' height='1' fill='%235b3a1e'/><rect x='6' y='9' width='1' height='1' fill='%235b3a1e'/><rect x='7' y='9' width='2' height='1' fill='%23f6c42a'/><rect x='9' y='9' width='1' height='1' fill='%235b3a1e'/><rect x='1' y='10' width='3' height='1' fill='%235b3a1e'/><rect x='7' y='10' width='3' height='1' fill='%235b3a1e'/></svg>");
+  --px-bintang-mati: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='11' height='11' viewBox='0 0 11 11' shape-rendering='crispEdges'><rect x='5' y='0' width='1' height='1' fill='%23c4b398'/><rect x='4' y='1' width='1' height='1' fill='%23c4b398'/><rect x='5' y='1' width='1' height='1' fill='%23efe4d0'/><rect x='6' y='1' width='1' height='1' fill='%23c4b398'/><rect x='4' y='2' width='1' height='1' fill='%23c4b398'/><rect x='5' y='2' width='1' height='1' fill='%23efe4d0'/><rect x='6' y='2' width='1' height='1' fill='%23c4b398'/><rect x='0' y='3' width='4' height='1' fill='%23c4b398'/><rect x='4' y='3' width='1' height='1' fill='%23efe4d0'/><rect x='5' y='3' width='1' height='1' fill='%23f7efe0'/><rect x='6' y='3' width='1' height='1' fill='%23efe4d0'/><rect x='7' y='3' width='4' height='1' fill='%23c4b398'/><rect x='0' y='4' width='1' height='1' fill='%23c4b398'/><rect x='1' y='4' width='4' height='1' fill='%23efe4d0'/><rect x='5' y='4' width='1' height='1' fill='%23f7efe0'/><rect x='6' y='4' width='4' height='1' fill='%23efe4d0'/><rect x='10' y='4' width='1' height='1' fill='%23c4b398'/><rect x='1' y='5' width='1' height='1' fill='%23c4b398'/><rect x='2' y='5' width='7' height='1' fill='%23efe4d0'/><rect x='9' y='5' width='1' height='1' fill='%23c4b398'/><rect x='2' y='6' width='1' height='1' fill='%23c4b398'/><rect x='3' y='6' width='5' height='1' fill='%23efe4d0'/><rect x='8' y='6' width='1' height='1' fill='%23c4b398'/><rect x='2' y='7' width='1' height='1' fill='%23c4b398'/><rect x='3' y='7' width='5' height='1' fill='%23efe4d0'/><rect x='8' y='7' width='1' height='1' fill='%23c4b398'/><rect x='1' y='8' width='1' height='1' fill='%23c4b398'/><rect x='2' y='8' width='3' height='1' fill='%23efe4d0'/><rect x='5' y='8' width='1' height='1' fill='%23c4b398'/><rect x='6' y='8' width='3' height='1' fill='%23efe4d0'/><rect x='9' y='8' width='1' height='1' fill='%23c4b398'/><rect x='1' y='9' width='1' height='1' fill='%23c4b398'/><rect x='2' y='9' width='2' height='1' fill='%23efe4d0'/><rect x='4' y='9' width='1' height='1' fill='%23c4b398'/><rect x='6' y='9' width='1' height='1' fill='%23c4b398'/><rect x='7' y='9' width='2' height='1' fill='%23efe4d0'/><rect x='9' y='9' width='1' height='1' fill='%23c4b398'/><rect x='1' y='10' width='3' height='1' fill='%23c4b398'/><rect x='7' y='10' width='3' height='1' fill='%23c4b398'/></svg>");
+  --px-bintang-dadu: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='11' height='11' viewBox='0 0 11 11' shape-rendering='crispEdges'><rect x='5' y='0' width='1' height='1' fill='%234a2a14'/><rect x='4' y='1' width='1' height='1' fill='%234a2a14'/><rect x='5' y='1' width='1' height='1' fill='%23fff3dc'/><rect x='6' y='1' width='1' height='1' fill='%234a2a14'/><rect x='4' y='2' width='1' height='1' fill='%234a2a14'/><rect x='5' y='2' width='1' height='1' fill='%23fff3dc'/><rect x='6' y='2' width='1' height='1' fill='%234a2a14'/><rect x='0' y='3' width='4' height='1' fill='%234a2a14'/><rect x='4' y='3' width='1' height='1' fill='%23fff3dc'/><rect x='5' y='3' width='1' height='1' fill='%23ffffff'/><rect x='6' y='3' width='1' height='1' fill='%23fff3dc'/><rect x='7' y='3' width='4' height='1' fill='%234a2a14'/><rect x='0' y='4' width='1' height='1' fill='%234a2a14'/><rect x='1' y='4' width='4' height='1' fill='%23fff3dc'/><rect x='5' y='4' width='1' height='1' fill='%23ffffff'/><rect x='6' y='4' width='4' height='1' fill='%23fff3dc'/><rect x='10' y='4' width='1' height='1' fill='%234a2a14'/><rect x='1' y='5' width='1' height='1' fill='%234a2a14'/><rect x='2' y='5' width='7' height='1' fill='%23fff3dc'/><rect x='9' y='5' width='1' height='1' fill='%234a2a14'/><rect x='2' y='6' width='1' height='1' fill='%234a2a14'/><rect x='3' y='6' width='5' height='1' fill='%23fff3dc'/><rect x='8' y='6' width='1' height='1' fill='%234a2a14'/><rect x='2' y='7' width='1' height='1' fill='%234a2a14'/><rect x='3' y='7' width='5' height='1' fill='%23fff3dc'/><rect x='8' y='7' width='1' height='1' fill='%234a2a14'/><rect x='1' y='8' width='1' height='1' fill='%234a2a14'/><rect x='2' y='8' width='3' height='1' fill='%23fff3dc'/><rect x='5' y='8' width='1' height='1' fill='%234a2a14'/><rect x='6' y='8' width='3' height='1' fill='%23fff3dc'/><rect x='9' y='8' width='1' height='1' fill='%234a2a14'/><rect x='1' y='9' width='1' height='1' fill='%234a2a14'/><rect x='2' y='9' width='2' height='1' fill='%23fff3dc'/><rect x='4' y='9' width='1' height='1' fill='%234a2a14'/><rect x='6' y='9' width='1' height='1' fill='%234a2a14'/><rect x='7' y='9' width='2' height='1' fill='%23fff3dc'/><rect x='9' y='9' width='1' height='1' fill='%234a2a14'/><rect x='1' y='10' width='3' height='1' fill='%234a2a14'/><rect x='7' y='10' width='3' height='1' fill='%234a2a14'/></svg>");
+  --px-hati-dadu: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='9' height='8' viewBox='0 0 9 8' shape-rendering='crispEdges'><rect x='1' y='0' width='3' height='1' fill='%2322501f'/><rect x='5' y='0' width='3' height='1' fill='%2322501f'/><rect x='0' y='1' width='1' height='1' fill='%2322501f'/><rect x='1' y='1' width='1' height='1' fill='%23ffffff'/><rect x='2' y='1' width='2' height='1' fill='%23fff3dc'/><rect x='4' y='1' width='1' height='1' fill='%2322501f'/><rect x='5' y='1' width='3' height='1' fill='%23fff3dc'/><rect x='8' y='1' width='1' height='1' fill='%2322501f'/><rect x='0' y='2' width='1' height='1' fill='%2322501f'/><rect x='1' y='2' width='1' height='1' fill='%23ffffff'/><rect x='2' y='2' width='6' height='1' fill='%23fff3dc'/><rect x='8' y='2' width='1' height='1' fill='%2322501f'/><rect x='0' y='3' width='1' height='1' fill='%2322501f'/><rect x='1' y='3' width='7' height='1' fill='%23fff3dc'/><rect x='8' y='3' width='1' height='1' fill='%2322501f'/><rect x='1' y='4' width='1' height='1' fill='%2322501f'/><rect x='2' y='4' width='5' height='1' fill='%23fff3dc'/><rect x='7' y='4' width='1' height='1' fill='%2322501f'/><rect x='2' y='5' width='1' height='1' fill='%2322501f'/><rect x='3' y='5' width='3' height='1' fill='%23fff3dc'/><rect x='6' y='5' width='1' height='1' fill='%2322501f'/><rect x='3' y='6' width='1' height='1' fill='%2322501f'/><rect x='4' y='6' width='1' height='1' fill='%23fff3dc'/><rect x='5' y='6' width='1' height='1' fill='%2322501f'/><rect x='4' y='7' width='1' height='1' fill='%2322501f'/></svg>");
+  --px-hati: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='9' height='8' viewBox='0 0 9 8' shape-rendering='crispEdges'><rect x='1' y='0' width='3' height='1' fill='%235b2030'/><rect x='5' y='0' width='3' height='1' fill='%235b2030'/><rect x='0' y='1' width='1' height='1' fill='%235b2030'/><rect x='1' y='1' width='1' height='1' fill='%23ffc4d1'/><rect x='2' y='1' width='2' height='1' fill='%23ef6f8a'/><rect x='4' y='1' width='1' height='1' fill='%235b2030'/><rect x='5' y='1' width='3' height='1' fill='%23ef6f8a'/><rect x='8' y='1' width='1' height='1' fill='%235b2030'/><rect x='0' y='2' width='1' height='1' fill='%235b2030'/><rect x='1' y='2' width='1' height='1' fill='%23ffc4d1'/><rect x='2' y='2' width='6' height='1' fill='%23ef6f8a'/><rect x='8' y='2' width='1' height='1' fill='%235b2030'/><rect x='0' y='3' width='1' height='1' fill='%235b2030'/><rect x='1' y='3' width='7' height='1' fill='%23ef6f8a'/><rect x='8' y='3' width='1' height='1' fill='%235b2030'/><rect x='1' y='4' width='1' height='1' fill='%235b2030'/><rect x='2' y='4' width='5' height='1' fill='%23ef6f8a'/><rect x='7' y='4' width='1' height='1' fill='%235b2030'/><rect x='2' y='5' width='1' height='1' fill='%235b2030'/><rect x='3' y='5' width='3' height='1' fill='%23ef6f8a'/><rect x='6' y='5' width='1' height='1' fill='%235b2030'/><rect x='3' y='6' width='1' height='1' fill='%235b2030'/><rect x='4' y='6' width='1' height='1' fill='%23ef6f8a'/><rect x='5' y='6' width='1' height='1' fill='%235b2030'/><rect x='4' y='7' width='1' height='1' fill='%235b2030'/></svg>");
+  --px-awan: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='20' height='8' viewBox='0 0 20 8' shape-rendering='crispEdges'><rect x='6' y='0' width='4' height='1' fill='%238cc3ea'/><rect x='5' y='1' width='1' height='1' fill='%238cc3ea'/><rect x='6' y='1' width='4' height='1' fill='%23ffffff'/><rect x='10' y='1' width='1' height='1' fill='%238cc3ea'/><rect x='13' y='1' width='3' height='1' fill='%238cc3ea'/><rect x='3' y='2' width='2' height='1' fill='%238cc3ea'/><rect x='5' y='2' width='6' height='1' fill='%23ffffff'/><rect x='11' y='2' width='2' height='1' fill='%238cc3ea'/><rect x='13' y='2' width='3' height='1' fill='%23ffffff'/><rect x='16' y='2' width='1' height='1' fill='%238cc3ea'/><rect x='2' y='3' width='1' height='1' fill='%238cc3ea'/><rect x='3' y='3' width='14' height='1' fill='%23ffffff'/><rect x='17' y='3' width='2' height='1' fill='%238cc3ea'/><rect x='1' y='4' width='1' height='1' fill='%238cc3ea'/><rect x='2' y='4' width='17' height='1' fill='%23ffffff'/><rect x='19' y='4' width='1' height='1' fill='%238cc3ea'/><rect x='0' y='5' width='1' height='1' fill='%238cc3ea'/><rect x='1' y='5' width='15' height='1' fill='%23ffffff'/><rect x='16' y='5' width='2' height='1' fill='%23d4ecfb'/><rect x='18' y='5' width='1' height='1' fill='%23ffffff'/><rect x='19' y='5' width='1' height='1' fill='%238cc3ea'/><rect x='0' y='6' width='1' height='1' fill='%238cc3ea'/><rect x='1' y='6' width='2' height='1' fill='%23d4ecfb'/><rect x='3' y='6' width='11' height='1' fill='%23ffffff'/><rect x='14' y='6' width='5' height='1' fill='%23d4ecfb'/><rect x='19' y='6' width='1' height='1' fill='%238cc3ea'/><rect x='1' y='7' width='18' height='1' fill='%238cc3ea'/></svg>");
+  --px-matahari: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 10 10' shape-rendering='crispEdges'><rect x='3' y='0' width='4' height='1' fill='%23e7a01a'/><rect x='1' y='1' width='2' height='1' fill='%23e7a01a'/><rect x='3' y='1' width='4' height='1' fill='%23ffd84a'/><rect x='7' y='1' width='2' height='1' fill='%23e7a01a'/><rect x='1' y='2' width='1' height='1' fill='%23e7a01a'/><rect x='2' y='2' width='1' height='1' fill='%23ffd84a'/><rect x='3' y='2' width='2' height='1' fill='%23fff6b8'/><rect x='5' y='2' width='3' height='1' fill='%23ffd84a'/><rect x='8' y='2' width='1' height='1' fill='%23e7a01a'/><rect x='0' y='3' width='1' height='1' fill='%23e7a01a'/><rect x='1' y='3' width='1' height='1' fill='%23ffd84a'/><rect x='2' y='3' width='1' height='1' fill='%23fff6b8'/><rect x='3' y='3' width='5' height='1' fill='%23ffd84a'/><rect x='8' y='3' width='1' height='1' fill='%23f5b52e'/><rect x='9' y='3' width='1' height='1' fill='%23e7a01a'/><rect x='0' y='4' width='1' height='1' fill='%23e7a01a'/><rect x='1' y='4' width='7' height='1' fill='%23ffd84a'/><rect x='8' y='4' width='1' height='1' fill='%23f5b52e'/><rect x='9' y='4' width='1' height='1' fill='%23e7a01a'/><rect x='0' y='5' width='1' height='1' fill='%23e7a01a'/><rect x='1' y='5' width='7' height='1' fill='%23ffd84a'/><rect x='8' y='5' width='1' height='1' fill='%23f5b52e'/><rect x='9' y='5' width='1' height='1' fill='%23e7a01a'/><rect x='0' y='6' width='1' height='1' fill='%23e7a01a'/><rect x='1' y='6' width='6' height='1' fill='%23ffd84a'/><rect x='7' y='6' width='2' height='1' fill='%23f5b52e'/><rect x='9' y='6' width='1' height='1' fill='%23e7a01a'/><rect x='1' y='7' width='1' height='1' fill='%23e7a01a'/><rect x='2' y='7' width='4' height='1' fill='%23ffd84a'/><rect x='6' y='7' width='2' height='1' fill='%23f5b52e'/><rect x='8' y='7' width='1' height='1' fill='%23e7a01a'/><rect x='1' y='8' width='2' height='1' fill='%23e7a01a'/><rect x='3' y='8' width='4' height='1' fill='%23f5b52e'/><rect x='7' y='8' width='2' height='1' fill='%23e7a01a'/><rect x='3' y='9' width='4' height='1' fill='%23e7a01a'/></svg>");
+  --px-bunga-pink: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='11' height='13' viewBox='0 0 11 13' shape-rendering='crispEdges'><rect x='3' y='0' width='2' height='1' fill='%238f2f45'/><rect x='6' y='0' width='2' height='1' fill='%238f2f45'/><rect x='2' y='1' width='1' height='1' fill='%238f2f45'/><rect x='3' y='1' width='2' height='1' fill='%23f7a9bb'/><rect x='5' y='1' width='1' height='1' fill='%238f2f45'/><rect x='6' y='1' width='2' height='1' fill='%23f7a9bb'/><rect x='8' y='1' width='1' height='1' fill='%238f2f45'/><rect x='1' y='2' width='2' height='1' fill='%238f2f45'/><rect x='3' y='2' width='2' height='1' fill='%23f7a9bb'/><rect x='5' y='2' width='1' height='1' fill='%238f2f45'/><rect x='6' y='2' width='2' height='1' fill='%23f7a9bb'/><rect x='8' y='2' width='2' height='1' fill='%238f2f45'/><rect x='0' y='3' width='1' height='1' fill='%238f2f45'/><rect x='1' y='3' width='2' height='1' fill='%23f7a9bb'/><rect x='3' y='3' width='2' height='1' fill='%238f2f45'/><rect x='5' y='3' width='1' height='1' fill='%23ffd84a'/><rect x='6' y='3' width='2' height='1' fill='%238f2f45'/><rect x='8' y='3' width='2' height='1' fill='%23f7a9bb'/><rect x='10' y='3' width='1' height='1' fill='%238f2f45'/><rect x='0' y='4' width='1' height='1' fill='%238f2f45'/><rect x='1' y='4' width='3' height='1' fill='%23f7a9bb'/><rect x='4' y='4' width='3' height='1' fill='%23ffd84a'/><rect x='7' y='4' width='3' height='1' fill='%23f7a9bb'/><rect x='10' y='4' width='1' height='1' fill='%238f2f45'/><rect x='1' y='5' width='4' height='1' fill='%238f2f45'/><rect x='5' y='5' width='1' height='1' fill='%23ffd84a'/><rect x='6' y='5' width='4' height='1' fill='%238f2f45'/><rect x='2' y='6' width='1' height='1' fill='%238f2f45'/><rect x='3' y='6' width='2' height='1' fill='%23f7a9bb'/><rect x='5' y='6' width='1' height='1' fill='%238f2f45'/><rect x='6' y='6' width='2' height='1' fill='%23f7a9bb'/><rect x='8' y='6' width='1' height='1' fill='%238f2f45'/><rect x='3' y='7' width='2' height='1' fill='%238f2f45'/><rect x='6' y='7' width='2' height='1' fill='%238f2f45'/><rect x='5' y='8' width='1' height='1' fill='%233f7a35'/><rect x='2' y='9' width='2' height='1' fill='%236fb257'/><rect x='5' y='9' width='1' height='1' fill='%233f7a35'/><rect x='1' y='10' width='4' height='1' fill='%236fb257'/><rect x='5' y='10' width='1' height='1' fill='%233f7a35'/><rect x='7' y='10' width='2' height='1' fill='%236fb257'/><rect x='4' y='11' width='1' height='1' fill='%236fb257'/><rect x='5' y='11' width='1' height='1' fill='%233f7a35'/><rect x='6' y='11' width='4' height='1' fill='%236fb257'/><rect x='5' y='12' width='1' height='1' fill='%233f7a35'/></svg>");
+  --px-bunga-biru: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='11' height='13' viewBox='0 0 11 13' shape-rendering='crispEdges'><rect x='3' y='0' width='2' height='1' fill='%232a4f9c'/><rect x='6' y='0' width='2' height='1' fill='%232a4f9c'/><rect x='2' y='1' width='1' height='1' fill='%232a4f9c'/><rect x='3' y='1' width='2' height='1' fill='%23a9c6f5'/><rect x='5' y='1' width='1' height='1' fill='%232a4f9c'/><rect x='6' y='1' width='2' height='1' fill='%23a9c6f5'/><rect x='8' y='1' width='1' height='1' fill='%232a4f9c'/><rect x='1' y='2' width='2' height='1' fill='%232a4f9c'/><rect x='3' y='2' width='2' height='1' fill='%23a9c6f5'/><rect x='5' y='2' width='1' height='1' fill='%232a4f9c'/><rect x='6' y='2' width='2' height='1' fill='%23a9c6f5'/><rect x='8' y='2' width='2' height='1' fill='%232a4f9c'/><rect x='0' y='3' width='1' height='1' fill='%232a4f9c'/><rect x='1' y='3' width='2' height='1' fill='%23a9c6f5'/><rect x='3' y='3' width='2' height='1' fill='%232a4f9c'/><rect x='5' y='3' width='1' height='1' fill='%23ffd84a'/><rect x='6' y='3' width='2' height='1' fill='%232a4f9c'/><rect x='8' y='3' width='2' height='1' fill='%23a9c6f5'/><rect x='10' y='3' width='1' height='1' fill='%232a4f9c'/><rect x='0' y='4' width='1' height='1' fill='%232a4f9c'/><rect x='1' y='4' width='3' height='1' fill='%23a9c6f5'/><rect x='4' y='4' width='3' height='1' fill='%23ffd84a'/><rect x='7' y='4' width='3' height='1' fill='%23a9c6f5'/><rect x='10' y='4' width='1' height='1' fill='%232a4f9c'/><rect x='1' y='5' width='4' height='1' fill='%232a4f9c'/><rect x='5' y='5' width='1' height='1' fill='%23ffd84a'/><rect x='6' y='5' width='4' height='1' fill='%232a4f9c'/><rect x='2' y='6' width='1' height='1' fill='%232a4f9c'/><rect x='3' y='6' width='2' height='1' fill='%23a9c6f5'/><rect x='5' y='6' width='1' height='1' fill='%232a4f9c'/><rect x='6' y='6' width='2' height='1' fill='%23a9c6f5'/><rect x='8' y='6' width='1' height='1' fill='%232a4f9c'/><rect x='3' y='7' width='2' height='1' fill='%232a4f9c'/><rect x='6' y='7' width='2' height='1' fill='%232a4f9c'/><rect x='5' y='8' width='1' height='1' fill='%233f7a35'/><rect x='2' y='9' width='2' height='1' fill='%236fb257'/><rect x='5' y='9' width='1' height='1' fill='%233f7a35'/><rect x='1' y='10' width='4' height='1' fill='%236fb257'/><rect x='5' y='10' width='1' height='1' fill='%233f7a35'/><rect x='7' y='10' width='2' height='1' fill='%236fb257'/><rect x='4' y='11' width='1' height='1' fill='%236fb257'/><rect x='5' y='11' width='1' height='1' fill='%233f7a35'/><rect x='6' y='11' width='4' height='1' fill='%236fb257'/><rect x='5' y='12' width='1' height='1' fill='%233f7a35'/></svg>");
+  --px-kucing: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='20' height='12' viewBox='0 0 20 12' shape-rendering='crispEdges'><rect x='13' y='0' width='1' height='1' fill='%233b2616'/><rect x='18' y='0' width='1' height='1' fill='%233b2616'/><rect x='12' y='1' width='1' height='1' fill='%233b2616'/><rect x='13' y='1' width='1' height='1' fill='%23f3b26b'/><rect x='14' y='1' width='1' height='1' fill='%233b2616'/><rect x='17' y='1' width='1' height='1' fill='%233b2616'/><rect x='18' y='1' width='1' height='1' fill='%23f3b26b'/><rect x='19' y='1' width='1' height='1' fill='%233b2616'/><rect x='12' y='2' width='1' height='1' fill='%233b2616'/><rect x='13' y='2' width='2' height='1' fill='%23f3b26b'/><rect x='15' y='2' width='2' height='1' fill='%233b2616'/><rect x='17' y='2' width='2' height='1' fill='%23f3b26b'/><rect x='19' y='2' width='1' height='1' fill='%233b2616'/><rect x='12' y='3' width='1' height='1' fill='%233b2616'/><rect x='13' y='3' width='6' height='1' fill='%23f3b26b'/><rect x='19' y='3' width='1' height='1' fill='%233b2616'/><rect x='1' y='4' width='1' height='1' fill='%233b2616'/><rect x='12' y='4' width='1' height='1' fill='%233b2616'/><rect x='13' y='4' width='1' height='1' fill='%23f3b26b'/><rect x='14' y='4' width='1' height='1' fill='%233b2616'/><rect x='15' y='4' width='2' height='1' fill='%23f3b26b'/><rect x='17' y='4' width='1' height='1' fill='%233b2616'/><rect x='18' y='4' width='1' height='1' fill='%23f3b26b'/><rect x='19' y='4' width='1' height='1' fill='%233b2616'/><rect x='0' y='5' width='1' height='1' fill='%233b2616'/><rect x='1' y='5' width='1' height='1' fill='%23f3b26b'/><rect x='2' y='5' width='1' height='1' fill='%233b2616'/><rect x='12' y='5' width='1' height='1' fill='%233b2616'/><rect x='13' y='5' width='2' height='1' fill='%23f3b26b'/><rect x='15' y='5' width='2' height='1' fill='%23f08aa0'/><rect x='17' y='5' width='2' height='1' fill='%23f3b26b'/><rect x='19' y='5' width='1' height='1' fill='%233b2616'/><rect x='0' y='6' width='1' height='1' fill='%233b2616'/><rect x='1' y='6' width='1' height='1' fill='%23f3b26b'/><rect x='2' y='6' width='1' height='1' fill='%233b2616'/><rect x='5' y='6' width='8' height='1' fill='%233b2616'/><rect x='13' y='6' width='6' height='1' fill='%23f3b26b'/><rect x='19' y='6' width='1' height='1' fill='%233b2616'/><rect x='1' y='7' width='1' height='1' fill='%233b2616'/><rect x='2' y='7' width='1' height='1' fill='%23f3b26b'/><rect x='3' y='7' width='2' height='1' fill='%233b2616'/><rect x='5' y='7' width='8' height='1' fill='%23f3b26b'/><rect x='13' y='7' width='6' height='1' fill='%233b2616'/><rect x='2' y='8' width='1' height='1' fill='%233b2616'/><rect x='3' y='8' width='2' height='1' fill='%23f3b26b'/><rect x='5' y='8' width='1' height='1' fill='%23d9823b'/><rect x='6' y='8' width='2' height='1' fill='%23f3b26b'/><rect x='8' y='8' width='1' height='1' fill='%23d9823b'/><rect x='9' y='8' width='2' height='1' fill='%23f3b26b'/><rect x='11' y='8' width='1' height='1' fill='%23d9823b'/><rect x='12' y='8' width='5' height='1' fill='%23f3b26b'/><rect x='17' y='8' width='1' height='1' fill='%233b2616'/><rect x='3' y='9' width='1' height='1' fill='%233b2616'/><rect x='4' y='9' width='13' height='1' fill='%23f3b26b'/><rect x='17' y='9' width='1' height='1' fill='%233b2616'/><rect x='3' y='10' width='1' height='1' fill='%233b2616'/><rect x='4' y='10' width='2' height='1' fill='%23f3b26b'/><rect x='6' y='10' width='8' height='1' fill='%233b2616'/><rect x='14' y='10' width='2' height='1' fill='%23f3b26b'/><rect x='16' y='10' width='1' height='1' fill='%233b2616'/><rect x='3' y='11' width='3' height='1' fill='%233b2616'/><rect x='14' y='11' width='3' height='1' fill='%233b2616'/></svg>");
+  --px-sayap: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='10' height='7' viewBox='0 0 10 7' shape-rendering='crispEdges'><rect x='6' y='0' width='3' height='1' fill='%235b7da3'/><rect x='4' y='1' width='2' height='1' fill='%235b7da3'/><rect x='6' y='1' width='3' height='1' fill='%23ffffff'/><rect x='9' y='1' width='1' height='1' fill='%235b7da3'/><rect x='2' y='2' width='2' height='1' fill='%235b7da3'/><rect x='4' y='2' width='4' height='1' fill='%23ffffff'/><rect x='8' y='2' width='1' height='1' fill='%23cfe6f7'/><rect x='9' y='2' width='1' height='1' fill='%235b7da3'/><rect x='1' y='3' width='1' height='1' fill='%235b7da3'/><rect x='2' y='3' width='5' height='1' fill='%23ffffff'/><rect x='7' y='3' width='1' height='1' fill='%23cfe6f7'/><rect x='8' y='3' width='1' height='1' fill='%235b7da3'/><rect x='0' y='4' width='1' height='1' fill='%235b7da3'/><rect x='1' y='4' width='4' height='1' fill='%23ffffff'/><rect x='5' y='4' width='2' height='1' fill='%23cfe6f7'/><rect x='7' y='4' width='1' height='1' fill='%235b7da3'/><rect x='0' y='5' width='1' height='1' fill='%235b7da3'/><rect x='1' y='5' width='4' height='1' fill='%23cfe6f7'/><rect x='5' y='5' width='2' height='1' fill='%235b7da3'/><rect x='1' y='6' width='4' height='1' fill='%235b7da3'/></svg>");
+  --px-kupu-pink: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='11' height='9' viewBox='0 0 11 9' shape-rendering='crispEdges'><rect x='3' y='0' width='1' height='1' fill='%235b2030'/><rect x='7' y='0' width='1' height='1' fill='%235b2030'/><rect x='4' y='1' width='1' height='1' fill='%235b2030'/><rect x='6' y='1' width='1' height='1' fill='%235b2030'/><rect x='1' y='2' width='3' height='1' fill='%235b2030'/><rect x='5' y='2' width='1' height='1' fill='%235b2030'/><rect x='7' y='2' width='3' height='1' fill='%235b2030'/><rect x='0' y='3' width='1' height='1' fill='%235b2030'/><rect x='1' y='3' width='3' height='1' fill='%23f59ab0'/><rect x='4' y='3' width='1' height='1' fill='%235b2030'/><rect x='5' y='3' width='1' height='1' fill='%233b2616'/><rect x='6' y='3' width='1' height='1' fill='%235b2030'/><rect x='7' y='3' width='3' height='1' fill='%23f59ab0'/><rect x='10' y='3' width='1' height='1' fill='%235b2030'/><rect x='0' y='4' width='1' height='1' fill='%235b2030'/><rect x='1' y='4' width='1' height='1' fill='%23f59ab0'/><rect x='2' y='4' width='1' height='1' fill='%23fff1c2'/><rect x='3' y='4' width='1' height='1' fill='%23f59ab0'/><rect x='4' y='4' width='1' height='1' fill='%235b2030'/><rect x='5' y='4' width='1' height='1' fill='%233b2616'/><rect x='6' y='4' width='1' height='1' fill='%235b2030'/><rect x='7' y='4' width='1' height='1' fill='%23f59ab0'/><rect x='8' y='4' width='1' height='1' fill='%23fff1c2'/><rect x='9' y='4' width='1' height='1' fill='%23f59ab0'/><rect x='10' y='4' width='1' height='1' fill='%235b2030'/><rect x='1' y='5' width='1' height='1' fill='%235b2030'/><rect x='2' y='5' width='2' height='1' fill='%23f59ab0'/><rect x='4' y='5' width='1' height='1' fill='%235b2030'/><rect x='5' y='5' width='1' height='1' fill='%233b2616'/><rect x='6' y='5' width='1' height='1' fill='%235b2030'/><rect x='7' y='5' width='2' height='1' fill='%23f59ab0'/><rect x='9' y='5' width='1' height='1' fill='%235b2030'/><rect x='2' y='6' width='1' height='1' fill='%235b2030'/><rect x='3' y='6' width='1' height='1' fill='%23f59ab0'/><rect x='4' y='6' width='1' height='1' fill='%235b2030'/><rect x='5' y='6' width='1' height='1' fill='%233b2616'/><rect x='6' y='6' width='1' height='1' fill='%235b2030'/><rect x='7' y='6' width='1' height='1' fill='%23f59ab0'/><rect x='8' y='6' width='1' height='1' fill='%235b2030'/><rect x='1' y='7' width='1' height='1' fill='%235b2030'/><rect x='2' y='7' width='2' height='1' fill='%23f59ab0'/><rect x='4' y='7' width='1' height='1' fill='%235b2030'/><rect x='5' y='7' width='1' height='1' fill='%233b2616'/><rect x='6' y='7' width='1' height='1' fill='%235b2030'/><rect x='7' y='7' width='2' height='1' fill='%23f59ab0'/><rect x='9' y='7' width='1' height='1' fill='%235b2030'/><rect x='1' y='8' width='3' height='1' fill='%235b2030'/><rect x='5' y='8' width='1' height='1' fill='%235b2030'/><rect x='7' y='8' width='3' height='1' fill='%235b2030'/></svg>");
+  --px-kupu-biru: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='11' height='9' viewBox='0 0 11 9' shape-rendering='crispEdges'><rect x='3' y='0' width='1' height='1' fill='%231f3f7a'/><rect x='7' y='0' width='1' height='1' fill='%231f3f7a'/><rect x='4' y='1' width='1' height='1' fill='%231f3f7a'/><rect x='6' y='1' width='1' height='1' fill='%231f3f7a'/><rect x='1' y='2' width='3' height='1' fill='%231f3f7a'/><rect x='5' y='2' width='1' height='1' fill='%231f3f7a'/><rect x='7' y='2' width='3' height='1' fill='%231f3f7a'/><rect x='0' y='3' width='1' height='1' fill='%231f3f7a'/><rect x='1' y='3' width='3' height='1' fill='%238fb8f2'/><rect x='4' y='3' width='1' height='1' fill='%231f3f7a'/><rect x='5' y='3' width='1' height='1' fill='%233b2616'/><rect x='6' y='3' width='1' height='1' fill='%231f3f7a'/><rect x='7' y='3' width='3' height='1' fill='%238fb8f2'/><rect x='10' y='3' width='1' height='1' fill='%231f3f7a'/><rect x='0' y='4' width='1' height='1' fill='%231f3f7a'/><rect x='1' y='4' width='1' height='1' fill='%238fb8f2'/><rect x='2' y='4' width='1' height='1' fill='%23fff1c2'/><rect x='3' y='4' width='1' height='1' fill='%238fb8f2'/><rect x='4' y='4' width='1' height='1' fill='%231f3f7a'/><rect x='5' y='4' width='1' height='1' fill='%233b2616'/><rect x='6' y='4' width='1' height='1' fill='%231f3f7a'/><rect x='7' y='4' width='1' height='1' fill='%238fb8f2'/><rect x='8' y='4' width='1' height='1' fill='%23fff1c2'/><rect x='9' y='4' width='1' height='1' fill='%238fb8f2'/><rect x='10' y='4' width='1' height='1' fill='%231f3f7a'/><rect x='1' y='5' width='1' height='1' fill='%231f3f7a'/><rect x='2' y='5' width='2' height='1' fill='%238fb8f2'/><rect x='4' y='5' width='1' height='1' fill='%231f3f7a'/><rect x='5' y='5' width='1' height='1' fill='%233b2616'/><rect x='6' y='5' width='1' height='1' fill='%231f3f7a'/><rect x='7' y='5' width='2' height='1' fill='%238fb8f2'/><rect x='9' y='5' width='1' height='1' fill='%231f3f7a'/><rect x='2' y='6' width='1' height='1' fill='%231f3f7a'/><rect x='3' y='6' width='1' height='1' fill='%238fb8f2'/><rect x='4' y='6' width='1' height='1' fill='%231f3f7a'/><rect x='5' y='6' width='1' height='1' fill='%233b2616'/><rect x='6' y='6' width='1' height='1' fill='%231f3f7a'/><rect x='7' y='6' width='1' height='1' fill='%238fb8f2'/><rect x='8' y='6' width='1' height='1' fill='%231f3f7a'/><rect x='1' y='7' width='1' height='1' fill='%231f3f7a'/><rect x='2' y='7' width='2' height='1' fill='%238fb8f2'/><rect x='4' y='7' width='1' height='1' fill='%231f3f7a'/><rect x='5' y='7' width='1' height='1' fill='%233b2616'/><rect x='6' y='7' width='1' height='1' fill='%231f3f7a'/><rect x='7' y='7' width='2' height='1' fill='%238fb8f2'/><rect x='9' y='7' width='1' height='1' fill='%231f3f7a'/><rect x='1' y='8' width='3' height='1' fill='%231f3f7a'/><rect x='5' y='8' width='1' height='1' fill='%231f3f7a'/><rect x='7' y='8' width='3' height='1' fill='%231f3f7a'/></svg>");
+  --px-kilau: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='9' height='9' viewBox='0 0 9 9' shape-rendering='crispEdges'><rect x='4' y='0' width='1' height='1' fill='%23b8650f'/><rect x='3' y='1' width='1' height='1' fill='%23b8650f'/><rect x='4' y='1' width='1' height='1' fill='%23ffd84a'/><rect x='5' y='1' width='1' height='1' fill='%23b8650f'/><rect x='3' y='2' width='1' height='1' fill='%23b8650f'/><rect x='4' y='2' width='1' height='1' fill='%23ffd84a'/><rect x='5' y='2' width='1' height='1' fill='%23b8650f'/><rect x='1' y='3' width='2' height='1' fill='%23b8650f'/><rect x='3' y='3' width='1' height='1' fill='%23ffd84a'/><rect x='4' y='3' width='1' height='1' fill='%23fffbe0'/><rect x='5' y='3' width='1' height='1' fill='%23ffd84a'/><rect x='6' y='3' width='2' height='1' fill='%23b8650f'/><rect x='0' y='4' width='1' height='1' fill='%23b8650f'/><rect x='1' y='4' width='2' height='1' fill='%23ffd84a'/><rect x='3' y='4' width='3' height='1' fill='%23fffbe0'/><rect x='6' y='4' width='2' height='1' fill='%23ffd84a'/><rect x='8' y='4' width='1' height='1' fill='%23b8650f'/><rect x='1' y='5' width='2' height='1' fill='%23b8650f'/><rect x='3' y='5' width='1' height='1' fill='%23ffd84a'/><rect x='4' y='5' width='1' height='1' fill='%23fffbe0'/><rect x='5' y='5' width='1' height='1' fill='%23ffd84a'/><rect x='6' y='5' width='2' height='1' fill='%23b8650f'/><rect x='3' y='6' width='1' height='1' fill='%23b8650f'/><rect x='4' y='6' width='1' height='1' fill='%23ffd84a'/><rect x='5' y='6' width='1' height='1' fill='%23b8650f'/><rect x='3' y='7' width='1' height='1' fill='%23b8650f'/><rect x='4' y='7' width='1' height='1' fill='%23ffd84a'/><rect x='5' y='7' width='1' height='1' fill='%23b8650f'/><rect x='4' y='8' width='1' height='1' fill='%23b8650f'/></svg>");
+  --px-kilau-pink: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='9' height='9' viewBox='0 0 9 9' shape-rendering='crispEdges'><rect x='4' y='0' width='1' height='1' fill='%23a33a57'/><rect x='3' y='1' width='1' height='1' fill='%23a33a57'/><rect x='4' y='1' width='1' height='1' fill='%23f7a9bb'/><rect x='5' y='1' width='1' height='1' fill='%23a33a57'/><rect x='3' y='2' width='1' height='1' fill='%23a33a57'/><rect x='4' y='2' width='1' height='1' fill='%23f7a9bb'/><rect x='5' y='2' width='1' height='1' fill='%23a33a57'/><rect x='1' y='3' width='2' height='1' fill='%23a33a57'/><rect x='3' y='3' width='1' height='1' fill='%23f7a9bb'/><rect x='4' y='3' width='1' height='1' fill='%23fff1f4'/><rect x='5' y='3' width='1' height='1' fill='%23f7a9bb'/><rect x='6' y='3' width='2' height='1' fill='%23a33a57'/><rect x='0' y='4' width='1' height='1' fill='%23a33a57'/><rect x='1' y='4' width='2' height='1' fill='%23f7a9bb'/><rect x='3' y='4' width='3' height='1' fill='%23fff1f4'/><rect x='6' y='4' width='2' height='1' fill='%23f7a9bb'/><rect x='8' y='4' width='1' height='1' fill='%23a33a57'/><rect x='1' y='5' width='2' height='1' fill='%23a33a57'/><rect x='3' y='5' width='1' height='1' fill='%23f7a9bb'/><rect x='4' y='5' width='1' height='1' fill='%23fff1f4'/><rect x='5' y='5' width='1' height='1' fill='%23f7a9bb'/><rect x='6' y='5' width='2' height='1' fill='%23a33a57'/><rect x='3' y='6' width='1' height='1' fill='%23a33a57'/><rect x='4' y='6' width='1' height='1' fill='%23f7a9bb'/><rect x='5' y='6' width='1' height='1' fill='%23a33a57'/><rect x='3' y='7' width='1' height='1' fill='%23a33a57'/><rect x='4' y='7' width='1' height='1' fill='%23f7a9bb'/><rect x='5' y='7' width='1' height='1' fill='%23a33a57'/><rect x='4' y='8' width='1' height='1' fill='%23a33a57'/></svg>");
+  --px-chat: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='14' height='10' viewBox='0 0 14 10' shape-rendering='crispEdges'><rect x='2' y='0' width='10' height='1' fill='%233b2616'/><rect x='1' y='1' width='1' height='1' fill='%233b2616'/><rect x='2' y='1' width='10' height='1' fill='%23ffffff'/><rect x='12' y='1' width='1' height='1' fill='%233b2616'/><rect x='0' y='2' width='1' height='1' fill='%233b2616'/><rect x='1' y='2' width='12' height='1' fill='%23ffffff'/><rect x='13' y='2' width='1' height='1' fill='%233b2616'/><rect x='0' y='3' width='1' height='1' fill='%233b2616'/><rect x='1' y='3' width='2' height='1' fill='%23ffffff'/><rect x='3' y='3' width='1' height='1' fill='%23a8683a'/><rect x='4' y='3' width='2' height='1' fill='%23ffffff'/><rect x='6' y='3' width='1' height='1' fill='%23a8683a'/><rect x='7' y='3' width='2' height='1' fill='%23ffffff'/><rect x='9' y='3' width='1' height='1' fill='%23a8683a'/><rect x='10' y='3' width='3' height='1' fill='%23ffffff'/><rect x='13' y='3' width='1' height='1' fill='%233b2616'/><rect x='0' y='4' width='1' height='1' fill='%233b2616'/><rect x='1' y='4' width='12' height='1' fill='%23ffffff'/><rect x='13' y='4' width='1' height='1' fill='%233b2616'/><rect x='0' y='5' width='1' height='1' fill='%233b2616'/><rect x='1' y='5' width='11' height='1' fill='%23ffffff'/><rect x='12' y='5' width='1' height='1' fill='%23d9e8f5'/><rect x='13' y='5' width='1' height='1' fill='%233b2616'/><rect x='1' y='6' width='1' height='1' fill='%233b2616'/><rect x='2' y='6' width='9' height='1' fill='%23ffffff'/><rect x='11' y='6' width='1' height='1' fill='%23d9e8f5'/><rect x='12' y='6' width='1' height='1' fill='%233b2616'/><rect x='2' y='7' width='2' height='1' fill='%233b2616'/><rect x='4' y='7' width='1' height='1' fill='%23ffffff'/><rect x='5' y='7' width='7' height='1' fill='%233b2616'/><rect x='3' y='8' width='1' height='1' fill='%233b2616'/><rect x='4' y='8' width='1' height='1' fill='%23ffffff'/><rect x='5' y='8' width='1' height='1' fill='%233b2616'/><rect x='3' y='9' width='2' height='1' fill='%233b2616'/></svg>");
+  --px-telepon: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='14' height='11' viewBox='0 0 14 11' shape-rendering='crispEdges'><rect x='2' y='0' width='3' height='1' fill='%233b2616'/><rect x='1' y='1' width='1' height='1' fill='%233b2616'/><rect x='2' y='1' width='3' height='1' fill='%235ea34c'/><rect x='5' y='1' width='1' height='1' fill='%233b2616'/><rect x='1' y='2' width='1' height='1' fill='%233b2616'/><rect x='2' y='2' width='3' height='1' fill='%235ea34c'/><rect x='5' y='2' width='1' height='1' fill='%233b2616'/><rect x='1' y='3' width='1' height='1' fill='%233b2616'/><rect x='2' y='3' width='2' height='1' fill='%235ea34c'/><rect x='4' y='3' width='1' height='1' fill='%233b2616'/><rect x='2' y='4' width='1' height='1' fill='%233b2616'/><rect x='3' y='4' width='2' height='1' fill='%235ea34c'/><rect x='5' y='4' width='1' height='1' fill='%233b2616'/><rect x='3' y='5' width='1' height='1' fill='%233b2616'/><rect x='4' y='5' width='2' height='1' fill='%235ea34c'/><rect x='6' y='5' width='1' height='1' fill='%233b2616'/><rect x='4' y='6' width='1' height='1' fill='%233b2616'/><rect x='5' y='6' width='2' height='1' fill='%235ea34c'/><rect x='7' y='6' width='1' height='1' fill='%233b2616'/><rect x='10' y='6' width='3' height='1' fill='%233b2616'/><rect x='5' y='7' width='1' height='1' fill='%233b2616'/><rect x='6' y='7' width='2' height='1' fill='%235ea34c'/><rect x='8' y='7' width='2' height='1' fill='%233b2616'/><rect x='10' y='7' width='3' height='1' fill='%235ea34c'/><rect x='13' y='7' width='1' height='1' fill='%233b2616'/><rect x='6' y='8' width='1' height='1' fill='%233b2616'/><rect x='7' y='8' width='6' height='1' fill='%235ea34c'/><rect x='13' y='8' width='1' height='1' fill='%233b2616'/><rect x='7' y='9' width='2' height='1' fill='%233b2616'/><rect x='9' y='9' width='3' height='1' fill='%235ea34c'/><rect x='12' y='9' width='1' height='1' fill='%233b2616'/><rect x='9' y='10' width='3' height='1' fill='%233b2616'/></svg>");
+  --px-kucing-hitam: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='22' height='18' viewBox='0 0 22 18' shape-rendering='crispEdges'><rect x='5' y='0' width='1' height='1' fill='%2316151c'/><rect x='10' y='0' width='1' height='1' fill='%2316151c'/><rect x='5' y='1' width='2' height='1' fill='%2316151c'/><rect x='9' y='1' width='2' height='1' fill='%2316151c'/><rect x='17' y='1' width='2' height='1' fill='%2316151c'/><rect x='5' y='2' width='1' height='1' fill='%2316151c'/><rect x='6' y='2' width='1' height='1' fill='%23e8a0a8'/><rect x='7' y='2' width='2' height='1' fill='%2316151c'/><rect x='9' y='2' width='1' height='1' fill='%23e8a0a8'/><rect x='10' y='2' width='1' height='1' fill='%2316151c'/><rect x='16' y='2' width='1' height='1' fill='%2316151c'/><rect x='17' y='2' width='2' height='1' fill='%233a3846'/><rect x='19' y='2' width='1' height='1' fill='%2316151c'/><rect x='5' y='3' width='1' height='1' fill='%2316151c'/><rect x='6' y='3' width='5' height='1' fill='%233a3846'/><rect x='11' y='3' width='1' height='1' fill='%2316151c'/><rect x='16' y='3' width='1' height='1' fill='%2316151c'/><rect x='17' y='3' width='2' height='1' fill='%233a3846'/><rect x='19' y='3' width='1' height='1' fill='%2316151c'/><rect x='5' y='4' width='1' height='1' fill='%2316151c'/><rect x='6' y='4' width='1' height='1' fill='%233a3846'/><rect x='7' y='4' width='1' height='1' fill='%23f2a65a'/><rect x='8' y='4' width='2' height='1' fill='%233a3846'/><rect x='10' y='4' width='1' height='1' fill='%23f2a65a'/><rect x='11' y='4' width='1' height='1' fill='%2316151c'/><rect x='17' y='4' width='1' height='1' fill='%2316151c'/><rect x='18' y='4' width='1' height='1' fill='%233a3846'/><rect x='19' y='4' width='1' height='1' fill='%2316151c'/><rect x='1' y='5' width='5' height='1' fill='%2316151c'/><rect x='6' y='5' width='2' height='1' fill='%233a3846'/><rect x='8' y='5' width='1' height='1' fill='%2316151c'/><rect x='9' y='5' width='2' height='1' fill='%233a3846'/><rect x='11' y='5' width='2' height='1' fill='%2316151c'/><rect x='17' y='5' width='1' height='1' fill='%2316151c'/><rect x='18' y='5' width='1' height='1' fill='%233a3846'/><rect x='19' y='5' width='1' height='1' fill='%2316151c'/><rect x='0' y='6' width='1' height='1' fill='%2316151c'/><rect x='1' y='6' width='1' height='1' fill='%235a5870'/><rect x='2' y='6' width='3' height='1' fill='%233a3846'/><rect x='5' y='6' width='1' height='1' fill='%2316151c'/><rect x='6' y='6' width='7' height='1' fill='%233a3846'/><rect x='13' y='6' width='1' height='1' fill='%2316151c'/><rect x='17' y='6' width='1' height='1' fill='%2316151c'/><rect x='18' y='6' width='1' height='1' fill='%233a3846'/><rect x='19' y='6' width='1' height='1' fill='%2316151c'/><rect x='0' y='7' width='1' height='1' fill='%2316151c'/><rect x='1' y='7' width='5' height='1' fill='%233a3846'/><rect x='6' y='7' width='3' height='1' fill='%2316151c'/><rect x='9' y='7' width='5' height='1' fill='%233a3846'/><rect x='14' y='7' width='1' height='1' fill='%2316151c'/><rect x='17' y='7' width='1' height='1' fill='%2316151c'/><rect x='18' y='7' width='1' height='1' fill='%233a3846'/><rect x='19' y='7' width='1' height='1' fill='%2316151c'/><rect x='1' y='8' width='3' height='1' fill='%2316151c'/><rect x='4' y='8' width='11' height='1' fill='%233a3846'/><rect x='15' y='8' width='2' height='1' fill='%2316151c'/><rect x='17' y='8' width='2' height='1' fill='%233a3846'/><rect x='19' y='8' width='1' height='1' fill='%2316151c'/><rect x='2' y='9' width='1' height='1' fill='%2316151c'/><rect x='3' y='9' width='16' height='1' fill='%233a3846'/><rect x='19' y='9' width='1' height='1' fill='%2316151c'/><rect x='3' y='10' width='4' height='1' fill='%2316151c'/><rect x='7' y='10' width='1' height='1' fill='%232a2833'/><rect x='8' y='10' width='10' height='1' fill='%233a3846'/><rect x='18' y='10' width='1' height='1' fill='%2316151c'/><rect x='9' y='11' width='2' height='1' fill='%2316151c'/><rect x='11' y='11' width='1' height='1' fill='%232a2833'/><rect x='12' y='11' width='7' height='1' fill='%233a3846'/><rect x='19' y='11' width='1' height='1' fill='%2316151c'/><rect x='11' y='12' width='2' height='1' fill='%2316151c'/><rect x='13' y='12' width='1' height='1' fill='%232a2833'/><rect x='14' y='12' width='5' height='1' fill='%233a3846'/><rect x='19' y='12' width='1' height='1' fill='%2316151c'/><rect x='13' y='13' width='1' height='1' fill='%2316151c'/><rect x='14' y='13' width='1' height='1' fill='%232a2833'/><rect x='15' y='13' width='4' height='1' fill='%233a3846'/><rect x='19' y='13' width='1' height='1' fill='%2316151c'/><rect x='14' y='14' width='1' height='1' fill='%2316151c'/><rect x='15' y='14' width='1' height='1' fill='%232a2833'/><rect x='16' y='14' width='3' height='1' fill='%233a3846'/><rect x='19' y='14' width='1' height='1' fill='%2316151c'/><rect x='13' y='15' width='1' height='1' fill='%2316151c'/><rect x='14' y='15' width='1' height='1' fill='%232a2833'/><rect x='15' y='15' width='1' height='1' fill='%233a3846'/><rect x='16' y='15' width='1' height='1' fill='%2316151c'/><rect x='17' y='15' width='2' height='1' fill='%233a3846'/><rect x='19' y='15' width='1' height='1' fill='%2316151c'/><rect x='12' y='16' width='1' height='1' fill='%2316151c'/><rect x='13' y='16' width='2' height='1' fill='%233a3846'/><rect x='15' y='16' width='1' height='1' fill='%2316151c'/><rect x='17' y='16' width='1' height='1' fill='%2316151c'/><rect x='18' y='16' width='1' height='1' fill='%233a3846'/><rect x='19' y='16' width='1' height='1' fill='%2316151c'/><rect x='12' y='17' width='3' height='1' fill='%2316151c'/><rect x='17' y='17' width='2' height='1' fill='%2316151c'/></svg>");
+  --px-telepon-hijau: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='15' height='17' viewBox='0 0 15 17' shape-rendering='crispEdges'><rect x='2' y='0' width='4' height='1' fill='%231a4d10'/><rect x='1' y='1' width='1' height='1' fill='%231a4d10'/><rect x='2' y='1' width='4' height='1' fill='%234c9a2a'/><rect x='6' y='1' width='1' height='1' fill='%231a4d10'/><rect x='0' y='2' width='1' height='1' fill='%231a4d10'/><rect x='1' y='2' width='1' height='1' fill='%234c9a2a'/><rect x='2' y='2' width='1' height='1' fill='%231e5c12'/><rect x='3' y='2' width='1' height='1' fill='%234c9a2a'/><rect x='4' y='2' width='1' height='1' fill='%231e5c12'/><rect x='5' y='2' width='1' height='1' fill='%234c9a2a'/><rect x='6' y='2' width='1' height='1' fill='%231e5c12'/><rect x='7' y='2' width='1' height='1' fill='%231a4d10'/><rect x='0' y='3' width='1' height='1' fill='%231a4d10'/><rect x='1' y='3' width='2' height='1' fill='%234c9a2a'/><rect x='3' y='3' width='1' height='1' fill='%231e5c12'/><rect x='4' y='3' width='1' height='1' fill='%234c9a2a'/><rect x='5' y='3' width='1' height='1' fill='%231e5c12'/><rect x='6' y='3' width='1' height='1' fill='%234c9a2a'/><rect x='7' y='3' width='1' height='1' fill='%231a4d10'/><rect x='0' y='4' width='1' height='1' fill='%231a4d10'/><rect x='1' y='4' width='1' height='1' fill='%234c9a2a'/><rect x='2' y='4' width='1' height='1' fill='%231e5c12'/><rect x='3' y='4' width='1' height='1' fill='%234c9a2a'/><rect x='4' y='4' width='1' height='1' fill='%231e5c12'/><rect x='5' y='4' width='1' height='1' fill='%234c9a2a'/><rect x='6' y='4' width='1' height='1' fill='%231e5c12'/><rect x='7' y='4' width='1' height='1' fill='%231a4d10'/><rect x='0' y='5' width='1' height='1' fill='%231a4d10'/><rect x='1' y='5' width='1' height='1' fill='%2379d13f'/><rect x='2' y='5' width='4' height='1' fill='%234c9a2a'/><rect x='6' y='5' width='1' height='1' fill='%231a4d10'/><rect x='0' y='6' width='1' height='1' fill='%231a4d10'/><rect x='1' y='6' width='2' height='1' fill='%2379d13f'/><rect x='3' y='6' width='3' height='1' fill='%231a4d10'/><rect x='1' y='7' width='1' height='1' fill='%231a4d10'/><rect x='2' y='7' width='2' height='1' fill='%2379d13f'/><rect x='4' y='7' width='1' height='1' fill='%231a4d10'/><rect x='1' y='8' width='1' height='1' fill='%231a4d10'/><rect x='2' y='8' width='3' height='1' fill='%2379d13f'/><rect x='5' y='8' width='1' height='1' fill='%231a4d10'/><rect x='2' y='9' width='1' height='1' fill='%231a4d10'/><rect x='3' y='9' width='3' height='1' fill='%2379d13f'/><rect x='6' y='9' width='1' height='1' fill='%231a4d10'/><rect x='3' y='10' width='1' height='1' fill='%231a4d10'/><rect x='4' y='10' width='3' height='1' fill='%2379d13f'/><rect x='7' y='10' width='1' height='1' fill='%231a4d10'/><rect x='10' y='10' width='3' height='1' fill='%231a4d10'/><rect x='4' y='11' width='1' height='1' fill='%231a4d10'/><rect x='5' y='11' width='3' height='1' fill='%2379d13f'/><rect x='8' y='11' width='2' height='1' fill='%231a4d10'/><rect x='10' y='11' width='3' height='1' fill='%234c9a2a'/><rect x='13' y='11' width='1' height='1' fill='%231a4d10'/><rect x='5' y='12' width='1' height='1' fill='%231a4d10'/><rect x='6' y='12' width='3' height='1' fill='%2379d13f'/><rect x='9' y='12' width='1' height='1' fill='%234c9a2a'/><rect x='10' y='12' width='1' height='1' fill='%231e5c12'/><rect x='11' y='12' width='1' height='1' fill='%234c9a2a'/><rect x='12' y='12' width='1' height='1' fill='%231e5c12'/><rect x='13' y='12' width='1' height='1' fill='%234c9a2a'/><rect x='14' y='12' width='1' height='1' fill='%231a4d10'/><rect x='6' y='13' width='1' height='1' fill='%231a4d10'/><rect x='7' y='13' width='2' height='1' fill='%2379d13f'/><rect x='9' y='13' width='2' height='1' fill='%234c9a2a'/><rect x='11' y='13' width='1' height='1' fill='%231e5c12'/><rect x='12' y='13' width='1' height='1' fill='%234c9a2a'/><rect x='13' y='13' width='1' height='1' fill='%231e5c12'/><rect x='14' y='13' width='1' height='1' fill='%231a4d10'/><rect x='7' y='14' width='1' height='1' fill='%231a4d10'/><rect x='8' y='14' width='1' height='1' fill='%2379d13f'/><rect x='9' y='14' width='1' height='1' fill='%234c9a2a'/><rect x='10' y='14' width='1' height='1' fill='%231e5c12'/><rect x='11' y='14' width='1' height='1' fill='%234c9a2a'/><rect x='12' y='14' width='1' height='1' fill='%231e5c12'/><rect x='13' y='14' width='1' height='1' fill='%234c9a2a'/><rect x='14' y='14' width='1' height='1' fill='%231a4d10'/><rect x='8' y='15' width='2' height='1' fill='%231a4d10'/><rect x='10' y='15' width='3' height='1' fill='%234c9a2a'/><rect x='13' y='15' width='1' height='1' fill='%231a4d10'/><rect x='10' y='16' width='3' height='1' fill='%231a4d10'/></svg>");
+  --px-gelembung-ikon: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='15' height='12' viewBox='0 0 15 12' shape-rendering='crispEdges'><rect x='3' y='0' width='9' height='1' fill='%231b1b22'/><rect x='2' y='1' width='1' height='1' fill='%231b1b22'/><rect x='3' y='1' width='9' height='1' fill='%23ffffff'/><rect x='12' y='1' width='1' height='1' fill='%231b1b22'/><rect x='1' y='2' width='1' height='1' fill='%231b1b22'/><rect x='2' y='2' width='11' height='1' fill='%23ffffff'/><rect x='13' y='2' width='1' height='1' fill='%231b1b22'/><rect x='0' y='3' width='1' height='1' fill='%231b1b22'/><rect x='1' y='3' width='13' height='1' fill='%23ffffff'/><rect x='14' y='3' width='1' height='1' fill='%231b1b22'/><rect x='0' y='4' width='1' height='1' fill='%231b1b22'/><rect x='1' y='4' width='13' height='1' fill='%23ffffff'/><rect x='14' y='4' width='1' height='1' fill='%231b1b22'/><rect x='0' y='5' width='1' height='1' fill='%231b1b22'/><rect x='1' y='5' width='13' height='1' fill='%23ffffff'/><rect x='14' y='5' width='1' height='1' fill='%231b1b22'/><rect x='0' y='6' width='1' height='1' fill='%231b1b22'/><rect x='1' y='6' width='1' height='1' fill='%23c9c6f2'/><rect x='2' y='6' width='11' height='1' fill='%23ffffff'/><rect x='13' y='6' width='1' height='1' fill='%23c9c6f2'/><rect x='14' y='6' width='1' height='1' fill='%231b1b22'/><rect x='1' y='7' width='1' height='1' fill='%231b1b22'/><rect x='2' y='7' width='2' height='1' fill='%23c9c6f2'/><rect x='4' y='7' width='7' height='1' fill='%23ffffff'/><rect x='11' y='7' width='2' height='1' fill='%23c9c6f2'/><rect x='13' y='7' width='1' height='1' fill='%231b1b22'/><rect x='2' y='8' width='2' height='1' fill='%231b1b22'/><rect x='4' y='8' width='1' height='1' fill='%23c9c6f2'/><rect x='5' y='8' width='8' height='1' fill='%231b1b22'/><rect x='3' y='9' width='1' height='1' fill='%231b1b22'/><rect x='4' y='9' width='1' height='1' fill='%23c9c6f2'/><rect x='5' y='9' width='1' height='1' fill='%231b1b22'/><rect x='2' y='10' width='1' height='1' fill='%231b1b22'/><rect x='3' y='10' width='1' height='1' fill='%23c9c6f2'/><rect x='4' y='10' width='1' height='1' fill='%231b1b22'/><rect x='2' y='11' width='2' height='1' fill='%231b1b22'/></svg>");
+  --px-gelembung: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='24' height='15' viewBox='0 0 24 15' shape-rendering='crispEdges'><rect x='3' y='0' width='18' height='1' fill='%231b1b22'/><rect x='2' y='1' width='1' height='1' fill='%231b1b22'/><rect x='3' y='1' width='18' height='1' fill='%23ffffff'/><rect x='21' y='1' width='1' height='1' fill='%231b1b22'/><rect x='1' y='2' width='1' height='1' fill='%231b1b22'/><rect x='2' y='2' width='20' height='1' fill='%23ffffff'/><rect x='22' y='2' width='1' height='1' fill='%231b1b22'/><rect x='0' y='3' width='1' height='1' fill='%231b1b22'/><rect x='1' y='3' width='22' height='1' fill='%23ffffff'/><rect x='23' y='3' width='1' height='1' fill='%231b1b22'/><rect x='0' y='4' width='1' height='1' fill='%231b1b22'/><rect x='1' y='4' width='22' height='1' fill='%23ffffff'/><rect x='23' y='4' width='1' height='1' fill='%231b1b22'/><rect x='0' y='5' width='1' height='1' fill='%231b1b22'/><rect x='1' y='5' width='22' height='1' fill='%23ffffff'/><rect x='23' y='5' width='1' height='1' fill='%231b1b22'/><rect x='0' y='6' width='1' height='1' fill='%231b1b22'/><rect x='1' y='6' width='22' height='1' fill='%23ffffff'/><rect x='23' y='6' width='1' height='1' fill='%231b1b22'/><rect x='0' y='7' width='1' height='1' fill='%231b1b22'/><rect x='1' y='7' width='22' height='1' fill='%23ffffff'/><rect x='23' y='7' width='1' height='1' fill='%231b1b22'/><rect x='0' y='8' width='1' height='1' fill='%231b1b22'/><rect x='1' y='8' width='22' height='1' fill='%23ffffff'/><rect x='23' y='8' width='1' height='1' fill='%231b1b22'/><rect x='0' y='9' width='1' height='1' fill='%231b1b22'/><rect x='1' y='9' width='1' height='1' fill='%23c9c6f2'/><rect x='2' y='9' width='20' height='1' fill='%23ffffff'/><rect x='22' y='9' width='1' height='1' fill='%23c9c6f2'/><rect x='23' y='9' width='1' height='1' fill='%231b1b22'/><rect x='1' y='10' width='1' height='1' fill='%231b1b22'/><rect x='2' y='10' width='20' height='1' fill='%23c9c6f2'/><rect x='22' y='10' width='1' height='1' fill='%231b1b22'/><rect x='2' y='11' width='3' height='1' fill='%231b1b22'/><rect x='5' y='11' width='3' height='1' fill='%23c9c6f2'/><rect x='8' y='11' width='14' height='1' fill='%231b1b22'/><rect x='4' y='12' width='1' height='1' fill='%231b1b22'/><rect x='5' y='12' width='2' height='1' fill='%23c9c6f2'/><rect x='7' y='12' width='1' height='1' fill='%231b1b22'/><rect x='4' y='13' width='1' height='1' fill='%231b1b22'/><rect x='5' y='13' width='1' height='1' fill='%23c9c6f2'/><rect x='6' y='13' width='1' height='1' fill='%231b1b22'/><rect x='4' y='14' width='2' height='1' fill='%231b1b22'/></svg>");
+  --px-gelembung-kanan: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='24' height='15' viewBox='0 0 24 15' shape-rendering='crispEdges'><rect x='3' y='0' width='18' height='1' fill='%231b1b22'/><rect x='2' y='1' width='1' height='1' fill='%231b1b22'/><rect x='3' y='1' width='18' height='1' fill='%23f1fbe9'/><rect x='21' y='1' width='1' height='1' fill='%231b1b22'/><rect x='1' y='2' width='1' height='1' fill='%231b1b22'/><rect x='2' y='2' width='20' height='1' fill='%23f1fbe9'/><rect x='22' y='2' width='1' height='1' fill='%231b1b22'/><rect x='0' y='3' width='1' height='1' fill='%231b1b22'/><rect x='1' y='3' width='22' height='1' fill='%23f1fbe9'/><rect x='23' y='3' width='1' height='1' fill='%231b1b22'/><rect x='0' y='4' width='1' height='1' fill='%231b1b22'/><rect x='1' y='4' width='22' height='1' fill='%23f1fbe9'/><rect x='23' y='4' width='1' height='1' fill='%231b1b22'/><rect x='0' y='5' width='1' height='1' fill='%231b1b22'/><rect x='1' y='5' width='22' height='1' fill='%23f1fbe9'/><rect x='23' y='5' width='1' height='1' fill='%231b1b22'/><rect x='0' y='6' width='1' height='1' fill='%231b1b22'/><rect x='1' y='6' width='22' height='1' fill='%23f1fbe9'/><rect x='23' y='6' width='1' height='1' fill='%231b1b22'/><rect x='0' y='7' width='1' height='1' fill='%231b1b22'/><rect x='1' y='7' width='22' height='1' fill='%23f1fbe9'/><rect x='23' y='7' width='1' height='1' fill='%231b1b22'/><rect x='0' y='8' width='1' height='1' fill='%231b1b22'/><rect x='1' y='8' width='22' height='1' fill='%23f1fbe9'/><rect x='23' y='8' width='1' height='1' fill='%231b1b22'/><rect x='0' y='9' width='1' height='1' fill='%231b1b22'/><rect x='1' y='9' width='1' height='1' fill='%23bfe3b0'/><rect x='2' y='9' width='20' height='1' fill='%23f1fbe9'/><rect x='22' y='9' width='1' height='1' fill='%23bfe3b0'/><rect x='23' y='9' width='1' height='1' fill='%231b1b22'/><rect x='1' y='10' width='1' height='1' fill='%231b1b22'/><rect x='2' y='10' width='20' height='1' fill='%23bfe3b0'/><rect x='22' y='10' width='1' height='1' fill='%231b1b22'/><rect x='2' y='11' width='14' height='1' fill='%231b1b22'/><rect x='16' y='11' width='3' height='1' fill='%23bfe3b0'/><rect x='19' y='11' width='3' height='1' fill='%231b1b22'/><rect x='16' y='12' width='1' height='1' fill='%231b1b22'/><rect x='17' y='12' width='2' height='1' fill='%23bfe3b0'/><rect x='19' y='12' width='1' height='1' fill='%231b1b22'/><rect x='17' y='13' width='1' height='1' fill='%231b1b22'/><rect x='18' y='13' width='1' height='1' fill='%23bfe3b0'/><rect x='19' y='13' width='1' height='1' fill='%231b1b22'/><rect x='18' y='14' width='2' height='1' fill='%231b1b22'/></svg>");
+  --px-gembok: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='8' height='9' viewBox='0 0 8 9' shape-rendering='crispEdges'><rect x='2' y='0' width='4' height='1' fill='%235b3a1e'/><rect x='1' y='1' width='1' height='1' fill='%235b3a1e'/><rect x='6' y='1' width='1' height='1' fill='%235b3a1e'/><rect x='1' y='2' width='1' height='1' fill='%235b3a1e'/><rect x='6' y='2' width='1' height='1' fill='%235b3a1e'/><rect x='0' y='3' width='8' height='1' fill='%235b3a1e'/><rect x='0' y='4' width='1' height='1' fill='%235b3a1e'/><rect x='1' y='4' width='6' height='1' fill='%23f6c42a'/><rect x='7' y='4' width='1' height='1' fill='%235b3a1e'/><rect x='0' y='5' width='1' height='1' fill='%235b3a1e'/><rect x='1' y='5' width='2' height='1' fill='%23f6c42a'/><rect x='3' y='5' width='2' height='1' fill='%235b3a1e'/><rect x='5' y='5' width='2' height='1' fill='%23f6c42a'/><rect x='7' y='5' width='1' height='1' fill='%235b3a1e'/><rect x='0' y='6' width='1' height='1' fill='%235b3a1e'/><rect x='1' y='6' width='2' height='1' fill='%23f6c42a'/><rect x='3' y='6' width='2' height='1' fill='%235b3a1e'/><rect x='5' y='6' width='2' height='1' fill='%23f6c42a'/><rect x='7' y='6' width='1' height='1' fill='%235b3a1e'/><rect x='0' y='7' width='1' height='1' fill='%235b3a1e'/><rect x='1' y='7' width='6' height='1' fill='%23f6c42a'/><rect x='7' y='7' width='1' height='1' fill='%235b3a1e'/><rect x='0' y='8' width='8' height='1' fill='%235b3a1e'/></svg>");
+}
+
+/* Bintang dan hati dari gambar referensi (lihat bahan/potong_sprite.py) */
+:root {
+  --px-bintang-ref: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABIAAAATCAYAAACdkl3yAAABm0lEQVR42p2TPW4TURSFv/PeSywhIxSLlsSioUMUiCLbQEmIWAULSBcWwQpsCYUNsAAKOlaQIQWCJrJbv/GhmHE8w/wUTDV678653zn3jmwz9vjHBzOZoRdXGqtLoyK/Ptv3n8ATePTcevZ+UExjROWXZI62kIF1JL7d6D+IDBNXFQE43FZn9GuFQZplMjNDEhwKnro6GyYaD7vF6Jq0L6O8CN72uArzho2GwLZQy50AuQ67/BaM1RLqjUJ9QCaelgoAvlUt2/iAnvddAzVQikbY6XwlF7sQ3O7qrm1ssPEtxPO1QPXU4pR0thJ3PRQMWLwT6Wwt4vSf8cfHhFcf2/b6LNaE4eU1pOnAZm9WlN+PPI5UXcfX9+LgSf9C5puZu1PzfhACVF2Uu9qukB+6Efa749/gP+yH4KZDd4XyIlrHjWWR8U9Ip1+Jb25wQWNFhI5Nudj/Mqk3A4MLSO+yUEBAusjkZbLmDR65HXZeROuk6lbtk0iXWd3QTa4pdFKLFVVtqkDrQAuRLjZCYfAfSZdZeEu5PDBzP1T9BWwEtU542NmbAAAAAElFTkSuQmCC");
+  --px-bintang-ref-mati: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABIAAAATCAYAAACdkl3yAAABTklEQVR42p2TMU/DQAyFn++STBAp2Rm6ISREJqCiO6ILA/RHQkFiAySYSCVgIV3KxAI/IANDlGsaM4RUTXK9pvVq3/Pn8zMxM0zxNb5nIQQ6+6dkqhOm5M/nM6dpiiRJ8D154o2F4jgGMyPPc8RxbCS3lqcYRASiYiIhBAAGQOsRReGQpZQAACKClBJROGQDkfmzdaS6oI+XK23GcRztA6WUXoiZMXm/WxerEnuH5yRMXdpE+VYAQNDt0yZiSikE3T4BVIwGAJj9Yvz6wLZttxKZTqc4ODojWFu19cttuK7bmsZ1XZQiDR91do+prVC9tiIUvT223l69VqwyWpZlyLJspTnF4knUTaiUgu/78DyvYRHHcSonYxlXe3JJKKyGHc4RjW54meOJmRGF1/OCsnPQG1Dz0nlOsVgf9AZkNSku/il0C6SiAeeIRrcVuj+ripIh3VDVGwAAAABJRU5ErkJggg==");
+  --px-hati-ref: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABIAAAASCAYAAABWzo5XAAAAsklEQVR42r2TMQ7CMAxFv1FZkKiUZKMMHIA7cbbeiYGRAZhwKgHqGhZSEdNEHVz++OM4T44/hRDwLWttYnjvqeRHLaCkSpJc6s0oYc6PZGpEZIxJXlydjwCAfref1GD7uM00oyszAKCZSBLrsZzr106ve3LQOFckGerNWplIbm7bjZNJksOHRH2PqlymJFmORD1rJNMvs9R2zyLJ/4ii75wLAMDMBABEVB72zwviQq5B1BtoF1lOJhpf6QAAAABJRU5ErkJggg==");
 }

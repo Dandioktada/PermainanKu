@@ -4,57 +4,97 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Saling Bercerita</title>
-<meta name="theme-color" content="#f6efe4">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,500;0,600;1,500&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+<meta name="theme-color" content="#8fcbee">
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
+<!-- Dekorasi latar pixel -->
+<div class="dekor" aria-hidden="true">
+  <div class="awan a1"></div>
+  <div class="awan a2"></div>
+  <div class="awan a3"></div>
+  <div class="tanah"></div>
+  <div class="bunga pink b1"></div>
+  <div class="bunga biru b2"></div>
+  <div class="bunga biru b3"></div>
+  <div class="bunga pink b4"></div>
+</div>
+
 <main class="app">
+  <div class="matahari-dekat" aria-hidden="true"></div>
 
   <!-- ====== LAYAR AWAL ====== -->
   <section id="layar-awal" class="layar aktif">
     <header class="judul">
-      <div class="logo-dadu" aria-hidden="true"><span class="c"></span><span class="h"></span></div>
-      <h1>Saling Bercerita</h1>
-      <p class="sub">Putar dadu, ambil kartu, lalu ngobrol berdua.</p>
+      <div class="logo-game">
+        <!-- Logo: dua dadu bertumpuk dengan bintang berkilau di kiri atas dan kanan bawah -->
+        <div class="logo-dadu rapat" aria-hidden="true">
+          <i class="kilau besar kiri-atas"></i>
+          <i class="kilau kecil kiri-atas-2"></i>
+          <span class="c"></span><span class="h"></span>
+          <i class="kilau besar kanan-bawah"></i>
+          <i class="kilau kecil kanan-bawah-2"></i>
+        </div>
+        <h1 data-teks="Saling Bercerita">Saling Bercerita</h1>
+      </div>
+      <p class="tagline">Bercerita untuk Hidup Selamanya</p>
     </header>
 
-    <div class="panel">
+    <!-- Langkah 1: pilih cara ngobrol -->
+    <div id="pilih-mode" class="panel pilih-mode">
+      <p class="judul-langkah">Mau ngobrol lewat apa?</p>
+      <button type="button" class="opsi-mode" data-mode="teks">
+        <span class="ikon-mode chat" aria-hidden="true"></span>
+        <span><b>Ngobrol lewat teks</b><small>Jawab kartu dengan mengetik pesan. Kartunya ringan dan santai.</small></span>
+      </button>
+      <button type="button" class="opsi-mode" data-mode="telepon">
+        <span class="ikon-mode telepon" aria-hidden="true"></span>
+        <span><b>Ngobrol lewat telepon</b><small>Jawab kartu sambil telepon WhatsApp. Kartunya lebih dalam.</small></span>
+      </button>
+    </div>
+
+    <!-- Langkah 2: nama, buat atau gabung ruangan -->
+    <div id="isi-nama" class="panel" hidden>
+      <p class="chip-mode"><span id="label-mode">-</span> <button type="button" id="btn-ganti-mode" class="tautan">Ganti</button></p>
       <label for="input-nama">Nama kamu</label>
       <input id="input-nama" type="text" maxlength="20" placeholder="Tulis namamu" autocomplete="off">
 
-      <button id="btn-buat" class="btn utama">Buat Ruangan</button>
+      <!-- Pilihan topik hanya muncul kalau di kartu.js ada lebih dari satu topik -->
+      <div id="wadah-topik" hidden>
+        <label for="pilih-topik">Pilih topik</label>
+        <select id="pilih-topik" class="pilih-topik"></select>
+      </div>
+
+      <button id="btn-buat" class="btn utama">Bikin Ruangan, Yuk!</button>
 
       <div class="pemisah"><span>atau gabung ke ruangan</span></div>
 
       <label for="input-kode">Kode ruangan</label>
       <input id="input-kode" type="text" maxlength="5" placeholder="Contoh: K7M2Q" autocomplete="off" autocapitalize="characters">
-      <button id="btn-gabung" class="btn kedua">Gabung</button>
-
-      <button id="btn-lanjut" class="btn tipis" hidden></button>
-
-      <p id="pesan-awal" class="pesan" role="status"></p>
+      <button id="btn-gabung" class="btn kedua">Gas Gabung!</button>
     </div>
 
-    <p class="catatan">Game ini hanya menampilkan permainan. Untuk ngobrol, gunakan telepon WhatsApp seperti biasa.</p>
+    <button id="btn-lanjut" class="btn kedua" hidden></button>
+    <p id="pesan-awal" class="pesan" role="status"></p>
+
+    <p class="catatan" id="catatan-mode">Pilih cara ngobrol yang paling nyaman untuk kalian berdua.</p>
   </section>
 
   <!-- ====== LAYAR MENUNGGU ====== -->
   <section id="layar-tunggu" class="layar">
     <header class="judul kecil">
-      <h1>Ruangan siap</h1>
+      <h1 data-teks="Ruangan siap">Ruangan siap</h1>
       <p class="sub">Kirim kode atau tautan ini ke pasanganmu.</p>
     </header>
 
     <div class="panel tengah">
       <p class="label-kode">Kode ruangan</p>
       <p id="tampil-kode" class="kode">-----</p>
+      <p id="tampil-topik-tunggu" class="topik-kecil"></p>
 
-      <a id="btn-wa" class="btn wa" target="_blank" rel="noopener">Kirim lewat WhatsApp</a>
-      <button id="btn-salin" class="btn kedua">Salin tautan</button>
+      <a id="btn-wa" class="btn wa" target="_blank" rel="noopener">Ajak lewat WhatsApp</a>
+      <button id="btn-salin" class="btn kedua">Salin Tautannya</button>
 
       <div class="menunggu">
         <span class="titik"></span><span class="titik"></span><span class="titik"></span>
@@ -63,7 +103,55 @@
       <p id="pesan-tunggu" class="pesan" role="status"></p>
     </div>
 
-    <button id="btn-batal" class="btn tipis">Batalkan</button>
+    <button id="btn-batal" class="btn tipis">Nggak Jadi</button>
+  </section>
+
+  <!-- ====== LAYAR PERSIAPAN: PERTANYAAN RAHASIA ====== -->
+  <section id="layar-persiapan" class="layar">
+    <header class="judul kecil">
+      <div class="ikon-rahasia" aria-hidden="true">?</div>
+      <h1 data-teks="Kartu Rahasia">Kartu Rahasia</h1>
+      <p class="sub">Untuk <b class="nama-lawan">pasanganmu</b></p>
+    </header>
+
+    <div class="panel">
+      <p class="teks-panduan">
+        Tulis satu pertanyaan yang selama ini mengganjal, dan kalau mau, satu tantangan kecil untuk <b class="nama-lawan">pasanganmu</b>.
+        Keduanya disembunyikan, lalu muncul sebagai <b>kartu rahasia</b> di tengah permainan.
+        <b class="nama-lawan">Pasanganmu</b> yang akan menjawab atau melakukannya.
+      </p>
+
+      <label for="rahasia-1">Pertanyaan rahasia <span class="wajib">(wajib)</span></label>
+      <textarea id="rahasia-1" class="input-rahasia" maxlength="200" rows="3" placeholder="Contoh: Kenapa akhir-akhir ini kamu jarang cerita soal kerjaan?"></textarea>
+      <label for="rahasia-2">Tantangan rahasia <span class="opsional">(boleh dikosongkan)</span></label>
+      <textarea id="rahasia-2" class="input-rahasia" maxlength="200" rows="2" placeholder="Contoh: Kirim satu foto lama kita ke chat"></textarea>
+
+      <!-- Target kartu: hanya untuk mode telepon -->
+      <div id="wadah-target" class="wadah-target" hidden>
+        <label for="pilih-target">Target kartu malam ini</label>
+        <select id="pilih-target" class="pilih-topik">
+          <option value="0">Bebas, sampai kami rehat</option>
+          <option value="3">3 kartu</option>
+          <option value="5">5 kartu</option>
+          <option value="7">7 kartu</option>
+          <option value="10">10 kartu</option>
+        </select>
+        <p class="ket-target">Kalau target tercapai, permainan otomatis rehat dan rangkuman muncul.</p>
+      </div>
+
+      <button id="btn-siap" class="btn utama">Simpan, Aku Siap!</button>
+      <p id="pesan-persiapan" class="pesan" role="status"></p>
+
+      <div class="status-siap">
+        <div id="siap-0" class="chip-siap"></div>
+        <div id="siap-1" class="chip-siap"></div>
+      </div>
+    </div>
+
+    <div class="kotak-info">
+      <b>Info</b>
+      <p id="info-durasi">Setiap kartu biasanya dijawab 10 sampai 15 menit. Kalian tidak perlu menghabiskan semua kartu sekaligus. Tekan <b>Rehat Dulu</b> kapan saja untuk melihat rangkuman.</p>
+    </div>
   </section>
 
   <!-- ====== LAYAR PERMAINAN ====== -->
@@ -75,6 +163,10 @@
     </div>
 
     <p id="info-giliran" class="giliran">Memuat permainan</p>
+    <div class="baris-waktu">
+      <span id="timer" class="timer" hidden></span>
+      <span id="progres-target" class="progres-target" hidden></span>
+    </div>
 
     <div class="arena">
       <div class="dadu-wadah">
@@ -98,41 +190,78 @@
       </div>
     </div>
 
-    <button id="btn-putar" class="btn utama besar" disabled>Putar Dadu</button>
-
-    <div class="sisa">
-      <div class="sisa-item coklat"><span class="bulat"></span>Masa depan <b id="sisa-coklat">25</b></div>
-      <div class="sisa-item hijau"><span class="bulat"></span>Hati <b id="sisa-hijau">25</b></div>
+    <!-- Mode teks: jawaban yang sudah dikirim tampil seperti gelembung pesan -->
+    <div id="gelembung-jawaban" class="gelembung" hidden>
+      <p class="gelembung-nama" id="gelembung-nama">-</p>
+      <p class="gelembung-teks" id="gelembung-teks"></p>
     </div>
 
+    <!-- Mode teks: kolom jawaban untuk yang memutar dadu -->
+    <div id="panel-jawab" class="panel panel-jawab" hidden>
+      <label for="input-jawaban">Tulis jawabanmu</label>
+      <textarea id="input-jawaban" maxlength="600" rows="4" placeholder="Ceritakan singkat saja, beberapa kalimat sudah cukup"></textarea>
+      <p class="hitung-huruf"><span id="hitung-jawaban">0</span>/600</p>
+      <button id="btn-kirim-jawaban" class="btn utama" disabled>Kirim Ceritaku</button>
+    </div>
+
+    <!-- Panel penilaian: hanya tampil untuk pendengar. Hasilnya baru terlihat saat permainan diakhiri. -->
+    <div id="panel-nilai" class="panel panel-nilai" hidden>
+      <p class="judul-nilai">Seberapa puas kamu dengan jawaban <b class="nama-penjawab">-</b>?</p>
+      <div class="bintang-pilih tengah" id="bintang-pilih" role="radiogroup" aria-label="Pilih bintang">
+        <button type="button" data-n="1" aria-label="1 bintang">★</button>
+        <button type="button" data-n="2" aria-label="2 bintang">★</button>
+        <button type="button" data-n="3" aria-label="3 bintang">★</button>
+        <button type="button" data-n="4" aria-label="4 bintang">★</button>
+        <button type="button" data-n="5" aria-label="5 bintang">★</button>
+      </div>
+      <textarea id="input-catatan" maxlength="300" rows="3" placeholder="Tulis kalimat feedback untuk jawabannya"></textarea>
+      <p class="ket-rahasia">Penilaian ini tidak terlihat oleh <b class="nama-penjawab">-</b> sampai permainan diakhiri.</p>
+      <button id="btn-nilai" class="btn utama" disabled>Kirim Penilaian</button>
+    </div>
+
+    <button id="btn-putar" class="btn utama besar" disabled>Putar Dadunya!</button>
+
+    <!-- Jumlah total kartu sengaja tidak ditampilkan, hanya kartu yang sudah terbuka -->
     <details class="riwayat">
-      <summary>Kartu yang sudah keluar (<span id="jumlah-riwayat">0</span>)</summary>
+      <summary>Kartu yang sudah terbuka (<span id="jumlah-riwayat">0</span>)</summary>
       <ol id="daftar-riwayat"></ol>
     </details>
 
+    <button id="btn-akhiri" class="btn kedua">Rehat Dulu, Yuk</button>
     <div class="aksi-bawah">
-      <button id="btn-ulang" class="btn tipis">Mulai ulang kartu</button>
-      <button id="btn-keluar" class="btn tipis">Keluar</button>
+      <button id="btn-ulang" class="btn tipis">Ulang dari Awal</button>
+      <button id="btn-keluar" class="btn tipis">Udahan, Keluar</button>
     </div>
   </section>
 
-  <!-- ====== LAYAR SELESAI ====== -->
-  <section id="layar-selesai" class="layar">
-    <header class="judul">
-      <div class="logo-dadu" aria-hidden="true"><span class="c"></span><span class="h"></span></div>
-      <h1>Semua kartu sudah dibuka</h1>
-      <p class="sub">Terima kasih sudah saling bercerita. Semoga obrolan tadi membuat kalian makin dekat.</p>
-    </header>
-    <button id="btn-main-lagi" class="btn utama">Main lagi</button>
-    <button id="btn-keluar-2" class="btn tipis">Keluar</button>
-  </section>
-
 </main>
+
+<!-- ====== POP-UP RANGKUMAN PRIBADI (muncul saat permainan diakhiri) ====== -->
+<!-- Setiap pemain hanya melihat rangkuman dan feedback untuk dirinya sendiri. -->
+<div id="modal-rangkuman" class="modal" role="dialog" aria-modal="true" aria-labelledby="judul-rangkuman" hidden>
+  <div class="modal-kotak rangkuman">
+    <header class="modal-kepala">
+      <h2 id="judul-rangkuman">Rangkuman untukmu</h2>
+      <p id="sub-rangkuman"></p>
+    </header>
+    <div id="isi-rangkuman" class="rangkuman-isi"></div>
+    <footer class="modal-kaki">
+      <p id="status-ulang" class="status-ulang" role="status"></p>
+      <button id="btn-lanjut-main" class="btn utama">Lanjut Cerita, Gas!</button>
+      <button id="btn-keluar-akhir" class="btn tipis">Udahan, Keluar</button>
+    </footer>
+  </div>
+</div>
+
+<!-- Lapisan hewan terbang (kucing bersayap, kupu-kupu) -->
+<div id="terbang" class="terbang" aria-hidden="true"></div>
 
 <div id="toast" class="toast" role="status"></div>
 
 <script src="https://unpkg.com/peerjs@1.5.4/dist/peerjs.min.js"></script>
 <script src="kartu.js"></script>
+<script src="saran.js"></script>
 <script src="game.js"></script>
+<script src="hiasan.js"></script>
 </body>
 </html>
