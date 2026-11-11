@@ -537,7 +537,7 @@ body.modal-buka .toast { bottom: auto; top: max(16px, env(safe-area-inset-top));
 
 @media (prefers-reduced-motion: reduce) {
   .dadu { transition-duration: .01s; }
-  .dekor .awan, .pemain.giliran-ini, .titik, .kilau, .matahari-dekat { animation: none; }
+  .dekor .awan, .pemain.giliran-ini, .titik, .kilau, .matahari-dekat, .timer.mepet { animation: none; }
   .kartu.balik .kartu-dalam, .layar.aktif { animation: none; }
 }
 
@@ -608,6 +608,21 @@ body.modal-buka .toast { bottom: auto; top: max(16px, env(safe-area-inset-top));
 .gelembung.milik-saya .gelembung-nama { color: var(--hijau-tua); }
 .gelembung-teks { margin: 0; font-size: 19px; white-space: pre-wrap; overflow-wrap: anywhere; }
 .item-jawaban { margin: 0; padding: 8px 10px; background: #e8f2fb; font-size: 16px; white-space: pre-wrap; overflow-wrap: anywhere; border-left: 4px solid #2f5f8f; }
+
+/* ---------- Timer per kartu & target ---------- */
+.baris-waktu { display: flex; justify-content: center; flex-wrap: wrap; gap: 10px; margin-top: -6px; }
+.baris-waktu:not(:has(:not([hidden]))) { display: none; }
+.timer, .progres-target {
+  font-family: var(--huruf-judul); font-weight: 700; font-size: 13px; text-transform: uppercase; letter-spacing: .03em;
+  padding: 6px 10px; background: var(--putih); color: var(--tinta);
+  box-shadow: 0 -3px 0 0 var(--tinta), 0 3px 0 0 var(--tinta), -3px 0 0 0 var(--tinta), 3px 0 0 0 var(--tinta);
+}
+.timer.mepet { background: var(--emas); animation: denyut-timer 1s steps(2) infinite; }
+@keyframes denyut-timer { 50% { background: var(--emas-muda); } }
+.timer.habis { background: #fde2dc; color: var(--bahaya); box-shadow: 0 -3px 0 0 var(--bahaya), 0 3px 0 0 var(--bahaya), -3px 0 0 0 var(--bahaya), 3px 0 0 0 var(--bahaya); }
+.progres-target { background: var(--hijau-muda); color: var(--hijau-tua); }
+.wadah-target { margin-top: 6px; }
+.ket-target { margin: 2px 0 0; font-size: 16px; color: var(--tinta-lembut); }
 
 /* ---------- Ikon pixel (dibuat dari grid, lihat bahan/sprite.py) ---------- */
 :root {

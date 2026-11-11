@@ -66,13 +66,13 @@
         <select id="pilih-topik" class="pilih-topik"></select>
       </div>
 
-      <button id="btn-buat" class="btn utama">Buat Ruangan</button>
+      <button id="btn-buat" class="btn utama">Bikin Ruangan, Yuk!</button>
 
       <div class="pemisah"><span>atau gabung ke ruangan</span></div>
 
       <label for="input-kode">Kode ruangan</label>
       <input id="input-kode" type="text" maxlength="5" placeholder="Contoh: K7M2Q" autocomplete="off" autocapitalize="characters">
-      <button id="btn-gabung" class="btn kedua">Gabung</button>
+      <button id="btn-gabung" class="btn kedua">Gas Gabung!</button>
     </div>
 
     <button id="btn-lanjut" class="btn kedua" hidden></button>
@@ -93,8 +93,8 @@
       <p id="tampil-kode" class="kode">-----</p>
       <p id="tampil-topik-tunggu" class="topik-kecil"></p>
 
-      <a id="btn-wa" class="btn wa" target="_blank" rel="noopener">Kirim lewat WhatsApp</a>
-      <button id="btn-salin" class="btn kedua">Salin tautan</button>
+      <a id="btn-wa" class="btn wa" target="_blank" rel="noopener">Ajak lewat WhatsApp</a>
+      <button id="btn-salin" class="btn kedua">Salin Tautannya</button>
 
       <div class="menunggu">
         <span class="titik"></span><span class="titik"></span><span class="titik"></span>
@@ -103,30 +103,43 @@
       <p id="pesan-tunggu" class="pesan" role="status"></p>
     </div>
 
-    <button id="btn-batal" class="btn tipis">Batalkan</button>
+    <button id="btn-batal" class="btn tipis">Nggak Jadi</button>
   </section>
 
   <!-- ====== LAYAR PERSIAPAN: PERTANYAAN RAHASIA ====== -->
   <section id="layar-persiapan" class="layar">
     <header class="judul kecil">
       <div class="ikon-rahasia" aria-hidden="true">?</div>
-      <h1 data-teks="Pertanyaan Rahasia">Pertanyaan Rahasia</h1>
+      <h1 data-teks="Kartu Rahasia">Kartu Rahasia</h1>
       <p class="sub">Untuk <b class="nama-lawan">pasanganmu</b></p>
     </header>
 
     <div class="panel">
       <p class="teks-panduan">
-        Tulis pertanyaan atau hal yang selama ini mengganjal dan ingin kamu sampaikan ke <b class="nama-lawan">pasanganmu</b>.
-        Pertanyaan ini disembunyikan, lalu muncul sebagai <b>kartu rahasia</b> di tengah permainan.
-        <b class="nama-lawan">Pasanganmu</b> yang akan menjawabnya.
+        Tulis satu pertanyaan yang selama ini mengganjal, dan kalau mau, satu tantangan kecil untuk <b class="nama-lawan">pasanganmu</b>.
+        Keduanya disembunyikan, lalu muncul sebagai <b>kartu rahasia</b> di tengah permainan.
+        <b class="nama-lawan">Pasanganmu</b> yang akan menjawab atau melakukannya.
       </p>
 
-      <label for="rahasia-1">Pertanyaan 1 <span class="wajib">(wajib)</span></label>
+      <label for="rahasia-1">Pertanyaan rahasia <span class="wajib">(wajib)</span></label>
       <textarea id="rahasia-1" class="input-rahasia" maxlength="200" rows="3" placeholder="Contoh: Kenapa akhir-akhir ini kamu jarang cerita soal kerjaan?"></textarea>
-      <label for="rahasia-2">Pertanyaan 2 <span class="opsional">(boleh dikosongkan)</span></label>
-      <textarea id="rahasia-2" class="input-rahasia" maxlength="200" rows="2"></textarea>
+      <label for="rahasia-2">Tantangan rahasia <span class="opsional">(boleh dikosongkan)</span></label>
+      <textarea id="rahasia-2" class="input-rahasia" maxlength="200" rows="2" placeholder="Contoh: Kirim satu foto lama kita ke chat"></textarea>
 
-      <button id="btn-siap" class="btn utama">Simpan dan Siap</button>
+      <!-- Target kartu: hanya untuk mode telepon -->
+      <div id="wadah-target" class="wadah-target" hidden>
+        <label for="pilih-target">Target kartu malam ini</label>
+        <select id="pilih-target" class="pilih-topik">
+          <option value="0">Bebas, sampai kami rehat</option>
+          <option value="3">3 kartu</option>
+          <option value="5">5 kartu</option>
+          <option value="7">7 kartu</option>
+          <option value="10">10 kartu</option>
+        </select>
+        <p class="ket-target">Kalau target tercapai, permainan otomatis rehat dan rangkuman muncul.</p>
+      </div>
+
+      <button id="btn-siap" class="btn utama">Simpan, Aku Siap!</button>
       <p id="pesan-persiapan" class="pesan" role="status"></p>
 
       <div class="status-siap">
@@ -137,7 +150,7 @@
 
     <div class="kotak-info">
       <b>Info</b>
-      <p id="info-durasi">Setiap kartu biasanya dijawab 10 sampai 15 menit. Kalian tidak perlu menghabiskan semua kartu sekaligus. Tekan <b>Akhiri permainan</b> kapan saja untuk melihat rangkuman.</p>
+      <p id="info-durasi">Setiap kartu biasanya dijawab 10 sampai 15 menit. Kalian tidak perlu menghabiskan semua kartu sekaligus. Tekan <b>Rehat Dulu</b> kapan saja untuk melihat rangkuman.</p>
     </div>
   </section>
 
@@ -150,6 +163,10 @@
     </div>
 
     <p id="info-giliran" class="giliran">Memuat permainan</p>
+    <div class="baris-waktu">
+      <span id="timer" class="timer" hidden></span>
+      <span id="progres-target" class="progres-target" hidden></span>
+    </div>
 
     <div class="arena">
       <div class="dadu-wadah">
@@ -184,7 +201,7 @@
       <label for="input-jawaban">Tulis jawabanmu</label>
       <textarea id="input-jawaban" maxlength="600" rows="4" placeholder="Ceritakan singkat saja, beberapa kalimat sudah cukup"></textarea>
       <p class="hitung-huruf"><span id="hitung-jawaban">0</span>/600</p>
-      <button id="btn-kirim-jawaban" class="btn utama" disabled>Kirim jawaban</button>
+      <button id="btn-kirim-jawaban" class="btn utama" disabled>Kirim Ceritaku</button>
     </div>
 
     <!-- Panel penilaian: hanya tampil untuk pendengar. Hasilnya baru terlihat saat permainan diakhiri. -->
@@ -199,10 +216,10 @@
       </div>
       <textarea id="input-catatan" maxlength="300" rows="3" placeholder="Tulis kalimat feedback untuk jawabannya"></textarea>
       <p class="ket-rahasia">Penilaian ini tidak terlihat oleh <b class="nama-penjawab">-</b> sampai permainan diakhiri.</p>
-      <button id="btn-nilai" class="btn utama" disabled>Simpan penilaian</button>
+      <button id="btn-nilai" class="btn utama" disabled>Kirim Penilaian</button>
     </div>
 
-    <button id="btn-putar" class="btn utama besar" disabled>Putar Dadu</button>
+    <button id="btn-putar" class="btn utama besar" disabled>Putar Dadunya!</button>
 
     <!-- Jumlah total kartu sengaja tidak ditampilkan, hanya kartu yang sudah terbuka -->
     <details class="riwayat">
@@ -210,10 +227,10 @@
       <ol id="daftar-riwayat"></ol>
     </details>
 
-    <button id="btn-akhiri" class="btn kedua">Akhiri permainan</button>
+    <button id="btn-akhiri" class="btn kedua">Rehat Dulu, Yuk</button>
     <div class="aksi-bawah">
-      <button id="btn-ulang" class="btn tipis">Mulai dari awal</button>
-      <button id="btn-keluar" class="btn tipis">Keluar dari permainan</button>
+      <button id="btn-ulang" class="btn tipis">Ulang dari Awal</button>
+      <button id="btn-keluar" class="btn tipis">Udahan, Keluar</button>
     </div>
   </section>
 
@@ -230,8 +247,8 @@
     <div id="isi-rangkuman" class="rangkuman-isi"></div>
     <footer class="modal-kaki">
       <p id="status-ulang" class="status-ulang" role="status"></p>
-      <button id="btn-lanjut-main" class="btn utama">Lanjutkan permainan</button>
-      <button id="btn-keluar-akhir" class="btn tipis">Keluar dari permainan</button>
+      <button id="btn-lanjut-main" class="btn utama">Lanjut Cerita, Gas!</button>
+      <button id="btn-keluar-akhir" class="btn tipis">Udahan, Keluar</button>
     </footer>
   </div>
 </div>

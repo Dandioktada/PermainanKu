@@ -19,13 +19,15 @@ Pasangan yang membuka tautan undangan otomatis mengikuti mode ruangan.
 1. Pemain pertama menulis nama, lalu menekan **Buat Ruangan**. Kalau di `kartu.js` ada lebih dari satu topik, muncul dropdown untuk memilih topik.
 2. Kode ruangan atau tautannya dikirim ke pemain kedua, misalnya lewat WhatsApp.
 3. Pemain kedua membuka tautan, menulis nama, lalu menekan **Gabung**.
-4. Masing-masing menulis 1 atau 2 **pertanyaan rahasia** untuk pasangannya. Pertanyaan ini muncul diam-diam sebagai kartu rahasia saat giliran pasangannya. Sebelum kartu rahasia pertama dan di antara dua kartu rahasia selalu ada 2 atau 3 kartu biasa.
+4. Masing-masing menulis satu **pertanyaan rahasia** (wajib) dan satu **tantangan rahasia** (boleh dikosongkan) untuk pasangannya, misalnya "Kirim satu foto lama kita ke chat". Keduanya muncul diam-diam sebagai kartu rahasia saat giliran pasangannya. Sebelum kartu rahasia pertama dan di antara dua kartu rahasia selalu ada 2 atau 3 kartu biasa. Di mode telepon, pemain juga bisa memilih **target kartu malam ini** (3, 5, 7, atau 10 kartu). Saat target tercapai, permainan otomatis rehat dan rangkuman muncul.
 5. Pemain bergiliran menekan **Putar Dadu**. Dadu punya 3 sisi Cokelat dan 3 sisi Hijau. Warna yang keluar menentukan kartu yang diambil.
 6. **Yang memutar dadu menjawab kartu.** Nama di kartu otomatis mengikuti nama pemain. Di mode teks, jawaban diketik lalu dikirim, dan pasangannya membaca jawaban itu dalam bentuk gelembung pesan.
+Setiap kartu punya **timer**: 10 menit di mode teks (sampai jawaban dikirim) dan 15 menit di mode telepon (sampai penilaian disimpan). Saat waktu tinggal 2 menit, muncul peringatan, lalu tulisan "Waktu habis" kalau waktunya lewat.
+
 7. Setelah yang menjawab selesai bercerita, pasangan yang mendengarkan mengisi **bintang 1 sampai 5** dan kalimat feedback. Penilaian ini disembunyikan dari yang menjawab. Dadu baru bisa diputar lagi setelah penilaian disimpan.
-8. **Akhiri permainan** berfungsi sebagai jeda. Masing-masing melihat pop-up rangkuman **khusus untuk dirinya sendiri**: jumlah kartu yang dijawab, rata-rata bintang, bintang dan kalimat feedback per kartu, serta saran. Pemain tidak bisa melihat rangkuman pasangannya.
-9. Permainan tersimpan di ruangan yang sama. Tekan **Lanjutkan permainan** (keduanya harus menekan) untuk melanjutkan sesi berikutnya. Kalau aplikasi sempat ditutup, pembuat ruangan menekan **Lanjutkan ruangan** di layar awal, lalu pasangannya bergabung lagi dengan kode yang sama.
-10. Permainan benar-benar selesai saat salah satu pemain menekan **Keluar dari permainan**.
+8. **Rehat Dulu, Yuk** berfungsi sebagai jeda. Masing-masing melihat pop-up rangkuman **khusus untuk dirinya sendiri**: jumlah kartu yang dijawab, rata-rata bintang, bintang dan kalimat feedback per kartu, serta saran. Pemain tidak bisa melihat rangkuman pasangannya.
+9. Permainan tersimpan di ruangan yang sama. Tekan **Lanjut Cerita, Gas!** (keduanya harus menekan) untuk melanjutkan sesi berikutnya. Kalau aplikasi sempat ditutup, pembuat ruangan menekan **Lanjut Main di Ruangan** di layar awal, lalu pasangannya bergabung lagi dengan kode yang sama.
+10. Permainan benar-benar selesai saat salah satu pemain menekan **Udahan, Keluar**.
 
 Permainan tidak menampilkan jumlah total kartu, hanya jumlah kartu yang sudah terbuka. Karena itu kalimat kartu bisa ditambah sebanyak apa pun, sampai ratusan.
 
