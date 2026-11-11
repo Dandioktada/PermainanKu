@@ -19,8 +19,8 @@ PermainanKu/
 
 ## Daftar Game
 
-| Folder | Nama Game | Keterangan |
-|---|---|---|
-| `game-salingbercerita/` | Saling Bercerita | Game kartu obrolan untuk dua orang secara online. Dadu dua warna menentukan kartu Cokelat (masa depan, rencana, mimpi) atau Hijau (komitmen, kejujuran, kasih sayang). |
+| Folder | Nama Game | Alamat | Keterangan |
+|---|---|---|---|
+| `game-salingbercerita/` | Saling Bercerita | https://salingbercerita.netlify.app | Game kartu obrolan untuk dua orang secara online. Dadu dua warna menentukan kartu Cokelat (masa depan, rencana, mimpi) atau Hijau (komitmen, kejujuran, kasih sayang). |
 
 Daftar ini diperbarui setiap kali game baru ditambahkan.

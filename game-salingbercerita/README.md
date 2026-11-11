@@ -1,5 +1,7 @@
 # Saling Bercerita
 
+Alamat permainan: https://salingbercerita.netlify.app
+
 Game kartu obrolan untuk dua orang yang terhubung lewat internet.
 Game ini hanya menampilkan permainan. Obrolannya dilakukan lewat telepon WhatsApp.
 
@@ -31,4 +33,5 @@ Semua kalimat kartu ada di file `kartu.js` dan bisa diubah langsung.
 ## Catatan Teknis
 
 Koneksi antarpemain memakai PeerJS (WebRTC) dengan server sinyal gratis milik PeerJS, jadi tidak perlu server sendiri.
-Supaya tautan bisa dibuka orang lain, folder ini harus diunggah ke hosting statis (misalnya GitHub Pages atau Netlify).
+Game di-hosting di Netlify (project `salingbercerita`) dan tersambung ke branch `main` dengan base directory `game-salingbercerita`.
+Setiap perubahan yang di-push ke `main` otomatis ter-update di situs.
