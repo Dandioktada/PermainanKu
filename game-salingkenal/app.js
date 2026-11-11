@@ -342,7 +342,15 @@
       const ta = el("textarea"); ta.maxLength = 400; ta.rows = 2; ta.placeholder = "Pertanyaan ke-" + (i + 1);
       ta.value = d.pertanyaan[i] || "";
       ta.addEventListener("input", () => { d.pertanyaan[i] = ta.value; perbaruiTombolAtur(); tandaiBank(); simpanDrafNanti(); });
-      s.appendChild(ta); p.appendChild(s); slots.push(ta);
+      // Tombol tong sampah: kosongkan kolom ini dengan sekali ketuk
+      const hapus = el("button", "hapus-slot"); hapus.type = "button";
+      hapus.title = "Kosongkan pertanyaan ke-" + (i + 1); hapus.setAttribute("aria-label", hapus.title);
+      hapus.innerHTML = '<svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16M9 7V4.5h6V7M6.5 7l1 13h9l1-13M10 11v6M14 11v6"/></svg>';
+      hapus.addEventListener("click", () => {
+        ta.value = ""; d.pertanyaan[i] = ""; sesuaikanTinggi(ta);
+        perbaruiTombolAtur(); tandaiBank(); simpanDrafNanti(); ta.focus();
+      });
+      s.append(ta, hapus); p.appendChild(s); slots.push(ta);
     }
     const kirim = el("button", "btn utama", "Kirim pertanyaan"); kirim.type = "button"; kirim.id = "btn-kirim-atur";
     kirim.addEventListener("click", () => {
@@ -387,7 +395,7 @@
           const b = el("button", "btn kedua kecil", "Pakai"); b.type = "button";
           b.addEventListener("click", () => {
             const kosong = slots.findIndex((t) => !t.value.trim());
-            if (kosong < 0) { toast("Semua kolom sudah terisi. Kosongkan salah satu kolom dulu."); return; }
+            if (kosong < 0) { toast("Semua kolom sudah terisi. Ketuk ikon tong sampah untuk mengosongkan salah satunya."); return; }
             slots[kosong].value = q; d.pertanyaan[kosong] = q; sesuaikanTinggi(slots[kosong]);
             perbaruiTombolAtur(); tandaiBank(); simpanDrafNanti();
             toast("Dipakai untuk pertanyaan ke-" + (kosong + 1));
