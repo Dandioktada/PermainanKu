@@ -68,6 +68,7 @@
   function bulat1(x) { return Math.round(x * 10) / 10; }
   function rata(arr) { return arr.length ? arr.reduce((a, b) => a + b, 0) / arr.length : null; }
   function formatMenit(m) {
+    if (m > 0 && m < 1) return "kurang dari 1 menit";
     m = Math.round(m);
     if (m < 60) return m + " menit";
     const j = Math.floor(m / 60), s = m % 60;
