@@ -135,24 +135,8 @@
           <p class="kartu-tema" id="kartu-tema">Belum ada kartu</p>
           <p class="kartu-teks" id="kartu-teks">Putar dadu untuk mengambil kartu pertama.</p>
           <p class="kartu-no" id="kartu-no"></p>
-          <div class="kartu-nilai" id="kartu-nilai" hidden></div>
         </div>
       </div>
-    </div>
-
-    <!-- Panel bintang: hanya tampil untuk pendengar -->
-    <div id="panel-nilai" class="panel panel-nilai" hidden>
-      <p class="judul-nilai">Seberapa puas kamu dengan jawaban <b class="nama-penjawab">-</b>?</p>
-      <div class="bintang-pilih" id="bintang-pilih" role="radiogroup" aria-label="Pilih bintang">
-        <button type="button" data-n="1" aria-label="1 bintang">★</button>
-        <button type="button" data-n="2" aria-label="2 bintang">★</button>
-        <button type="button" data-n="3" aria-label="3 bintang">★</button>
-        <button type="button" data-n="4" aria-label="4 bintang">★</button>
-        <button type="button" data-n="5" aria-label="5 bintang">★</button>
-      </div>
-      <p class="arti-bintang" id="arti-bintang">1 = kurang puas, 5 = sangat puas</p>
-      <textarea id="input-catatan" maxlength="300" rows="2" placeholder="Catatan singkat untuk dia (boleh dikosongkan)"></textarea>
-      <button id="btn-nilai" class="btn utama" disabled>Kirim penilaian</button>
     </div>
 
     <button id="btn-putar" class="btn utama besar" disabled>Putar Dadu</button>
@@ -193,6 +177,23 @@
   </section>
 
 </main>
+
+<!-- ====== POP-UP PENILAIAN (muncul saat Akhiri permainan) ====== -->
+<div id="modal-nilai" class="modal" role="dialog" aria-modal="true" aria-labelledby="judul-modal-nilai" hidden>
+  <div class="modal-kotak">
+    <header class="modal-kepala">
+      <h2 id="judul-modal-nilai">Beri penilaian</h2>
+      <p>Seberapa puas kamu dengan jawaban <b class="nama-lawan">pasanganmu</b>? Beri bintang untuk setiap kartu, lalu tulis feedback kalau ada.</p>
+    </header>
+    <div id="daftar-nilai" class="daftar-nilai"></div>
+    <p id="status-nilai" class="status-nilai" role="status"></p>
+    <footer id="aksi-nilai" class="modal-kaki">
+      <p id="progres-nilai" class="progres-nilai"></p>
+      <button id="btn-kirim-nilai" class="btn utama" disabled>Kirim penilaian</button>
+      <button id="btn-batal-nilai" class="btn tipis">Batal, kembali bermain</button>
+    </footer>
+  </div>
+</div>
 
 <div id="toast" class="toast" role="status"></div>
 
