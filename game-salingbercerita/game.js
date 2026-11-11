@@ -545,34 +545,43 @@
     wadah.scrollTop = 0;
   }
 
+  // Saran dipilih acak dari saran.js sesuai kondisi, jadi kalimatnya bisa berbeda tiap permainan.
   function saranPribadi(t, milik, dinilai, rataSaya, durasiSaya, namaLawan) {
+    const pilih = (kategori, isi) => {
+      const daftar = (typeof SARAN !== "undefined" && SARAN[kategori]) || [];
+      if (!daftar.length) return null;
+      let teks = daftar[Math.floor(Math.random() * daftar.length)];
+      Object.entries(Object.assign({ lawan: namaLawan }, isi || {})).forEach(([k, v]) => { teks = teks.split("{" + k + "}").join(v); });
+      return teks;
+    };
+    const tema = (warna) => t[warna].label.toLowerCase().replace(/ · /g, ", ");
     const saran = [];
-    if (!milik.length) {
-      saran.push("Saat permainan dilanjutkan, coba jawab tiga atau empat kartu dulu sebelum jeda supaya ada yang bisa dirangkum.");
-      return saran;
-    }
-    if (!dinilai.length) {
-      saran.push("Jawabanmu belum sempat dinilai. Lain kali, tekan Rehat Dulu setelah " + namaLawan + " mengisi penilaian.");
-      return saran;
-    }
+    const tambah = (x) => { if (x) saran.push(x); };
+
+    if (!milik.length) { tambah(pilih("belumJawab")); return saran; }
+    if (!dinilai.length) { tambah(pilih("belumDinilai")); return saran; }
+
     const rataWarna = (w) => rata(dinilai.filter((r) => r.warna === w).map((r) => r.bintang));
     const coklat = rataWarna("coklat"), hijau = rataWarna("hijau"), rahasia = rataWarna("rahasia");
     const rendah = dinilai.filter((r) => r.bintang <= 2).length;
     const penuh = dinilai.filter((r) => r.bintang === 5).length;
     const menit = rata(durasiSaya);
 
-    if (rataSaya >= 4.5) saran.push(namaLawan + " merasa sangat puas dengan cerita-ceritamu. Pertahankan keterbukaan seperti ini, juga di luar permainan.");
-    else if (rataSaya >= 3.5) saran.push("Sebagian besar jawabanmu sudah membuat " + namaLawan + " puas. Untuk kartu yang bintangnya belum penuh, tanyakan ke " + namaLawan + " bagian mana yang ingin didengar lebih jauh.");
-    else saran.push("Beberapa jawabanmu masih terasa belum tuntas bagi " + namaLawan + ". Tidak apa-apa. Pilih satu kartu di atas, lalu bahas lagi berdua dengan lebih santai.");
+    if (rataSaya >= 4.5) tambah(pilih("sangatPuas"));
+    else if (rataSaya >= 3.5) tambah(pilih("puas"));
+    else tambah(pilih("kurangPuas"));
 
-    if (coklat != null && coklat < 3) saran.push("Saat bercerita soal " + t.coklat.label.toLowerCase().replace(/ · /g, ", ") + ", coba lebih konkret. Ceritakan contoh nyata atau langkah kecil yang ingin kamu lakukan.");
-    if (hijau != null && hijau < 3) saran.push("Untuk kartu soal " + t.hijau.label.toLowerCase().replace(/ · /g, ", ") + ", " + namaLawan + " tampaknya ingin kamu lebih terbuka. Tidak harus sempurna, cukup jujur.");
-    if (rahasia != null && rahasia < 4) saran.push("Pertanyaan rahasia dari " + namaLawan + " belum terjawab tuntas. Pertanyaan itu biasanya sudah lama dipikirkan, jadi ada baiknya dibahas lagi di waktu khusus.");
-    if (rendah) saran.push("Ada " + rendah + " jawaban yang ditandai \"perlu dibahas lagi\". Bahas satu per satu dengan kepala dingin, jangan sekaligus.");
-    if (menit != null && menit < 5 && dinilai.length >= 3) saran.push("Rata-rata kamu bercerita " + (menit < 1 ? "kurang dari 1 menit" : "sekitar " + formatMenit(menit)) + " per kartu. Tidak perlu terburu-buru, cerita yang pelan sering terasa lebih dalam.");
-    if (penuh) saran.push("Ada " + penuh + " jawabanmu yang mendapat bintang 5. Di situlah " + namaLawan + " merasa paling dekat denganmu.");
+    if (coklat != null && coklat < 3) tambah(pilih("coklatRendah", { tema: tema("coklat") }));
+    if (hijau != null && hijau < 3) tambah(pilih("hijauRendah", { tema: tema("hijau") }));
+    if (rahasia != null && rahasia < 4) tambah(pilih("rahasiaRendah"));
+    if (rendah) tambah(pilih("perluDibahas", { jumlah: rendah }));
+    if (menit != null && menit < 5 && dinilai.length >= 3) {
+      tambah(pilih("terburuBuru", { menit: menit < 1 ? "kurang dari 1 menit" : "sekitar " + formatMenit(menit) }));
+    }
+    if (penuh) tambah(pilih("bintangLima", { jumlah: penuh }));
     return saran;
   }
+
 
   // ---------- Mode teks: kolom jawaban dan gelembung jawaban ----------
   function perbaruiJawaban() {

@@ -48,6 +48,7 @@ Semua kalimat ada di file `kartu.js`. Penanda `{A}` diganti nama yang menjawab, 
 - `style.css` : tampilan
 - `game.js` : jalannya permainan dan koneksi online
 - `kartu.js` : daftar topik dan isi kartu
+- `saran.js` : kalimat saran di rangkuman, beberapa variasi untuk setiap kondisi (dipilih acak, tanpa AI)
 - `hiasan.js` : hewan yang sesekali terbang melintas (kucing bersayap dan kupu-kupu)
 - `font/` : huruf Silkscreen (judul dan tombol) dan Geist Pixel (isi permainan), lisensi SIL Open Font License 1.1, berkas lisensi ada di folder yang sama
 
