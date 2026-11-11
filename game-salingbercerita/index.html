@@ -36,8 +36,11 @@
       <label for="input-nama">Nama kamu</label>
       <input id="input-nama" type="text" maxlength="20" placeholder="Tulis namamu" autocomplete="off">
 
-      <p class="label-blok">Pilih topik</p>
-      <div id="daftar-topik" class="daftar-topik" role="radiogroup" aria-label="Pilih topik"></div>
+      <!-- Pilihan topik hanya muncul kalau di kartu.js ada lebih dari satu topik -->
+      <div id="wadah-topik" hidden>
+        <label for="pilih-topik">Pilih topik</label>
+        <select id="pilih-topik" class="pilih-topik"></select>
+      </div>
 
       <button id="btn-buat" class="btn utama">Buat Ruangan</button>
 

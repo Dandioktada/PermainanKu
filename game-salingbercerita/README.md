@@ -7,7 +7,7 @@ Game ini hanya menampilkan permainan. Obrolannya dilakukan lewat telepon WhatsAp
 
 ## Cara Bermain
 
-1. Pemain pertama menulis nama, memilih topik, lalu menekan **Buat Ruangan**.
+1. Pemain pertama menulis nama, lalu menekan **Buat Ruangan**. Kalau di `kartu.js` ada lebih dari satu topik, muncul dropdown untuk memilih topik.
 2. Kode ruangan atau tautannya dikirim ke pemain kedua, misalnya lewat WhatsApp.
 3. Pemain kedua membuka tautan, menulis nama, lalu menekan **Gabung**.
 4. Masing-masing menulis 1 atau 2 **pertanyaan rahasia** untuk pasangannya. Pertanyaan ini muncul diam-diam sebagai kartu rahasia saat giliran pasangannya. Sebelum kartu rahasia pertama dan di antara dua kartu rahasia selalu ada 2 atau 3 kartu biasa.
@@ -28,7 +28,7 @@ Kartu dikelompokkan per topik. Saat ini tersedia satu topik:
 |---|---|---|
 | Calon Pengantin | 30 kartu: masa depan, rencana, mimpi | 30 kartu: komitmen, kejujuran, kasih sayang |
 
-Semua kalimat ada di file `kartu.js`. Penanda `{A}` diganti nama yang menjawab, `{B}` diganti nama pasangannya. Topik baru ditambahkan dengan menyalin satu blok topik di file tersebut.
+Semua kalimat ada di file `kartu.js`. Penanda `{A}` diganti nama yang menjawab, `{B}` diganti nama pasangannya. Topik baru ditambahkan dengan menyalin satu blok topik di file tersebut. Selama hanya ada satu topik, pilihan topik disembunyikan. Begitu ada topik kedua, layar awal otomatis menampilkan dropdown berisi nama topik.
 
 ## File
 

@@ -739,7 +739,7 @@
 
   function tampilkanRuanganTunggu() {
     $("tampil-kode").textContent = kode;
-    $("tampil-topik-tunggu").textContent = "Topik: " + cariTopik(state.topik).nama;
+    $("tampil-topik-tunggu").textContent = TOPIK.length > 1 ? "Topik: " + cariTopik(state.topik).nama : "";
     const teks = "Yuk main Saling Bercerita bareng aku. Buka tautan ini: " + tautanRuangan() + " (kode ruangan: " + kode + ")";
     $("btn-wa").href = "https://wa.me/?text=" + encodeURIComponent(teks);
     pesan("pesan-tunggu", location.protocol === "file:" ? "Halaman ini dibuka dari file lokal, jadi tautan tidak bisa dibuka orang lain. Bagikan kodenya saja, atau unggah game ke hosting." : "");
@@ -891,23 +891,19 @@
     return n.slice(0, 20);
   }
 
+  // Pilihan topik berupa dropdown nama topik, dan hanya tampil kalau ada lebih dari satu topik.
   function tampilDaftarTopik() {
-    const wadah = $("daftar-topik");
-    wadah.innerHTML = "";
+    const ada = TOPIK.length > 1;
+    $("wadah-topik").hidden = !ada;
+    if (!ada) { topikDipilih = TOPIK[0].id; return; }
+    const pilih = $("pilih-topik");
+    pilih.innerHTML = "";
     TOPIK.forEach((t) => {
-      const b = el("button", "opsi-topik");
-      b.type = "button";
-      b.setAttribute("role", "radio");
-      b.setAttribute("aria-checked", String(t.id === topikDipilih));
-      b.appendChild(el("b", null, t.nama));
-      const n = t.coklat.kartu.length + t.hijau.kartu.length;
-      const kecil = el("small", null, t.deskripsi + " ");
-      kecil.appendChild(el("span", "jumlah", n + " kartu."));
-      b.appendChild(kecil);
-      b.addEventListener("click", () => { topikDipilih = t.id; tampilDaftarTopik(); });
-      wadah.appendChild(b);
+      const o = el("option", null, t.nama);
+      o.value = t.id;
+      o.selected = t.id === topikDipilih;
+      pilih.appendChild(o);
     });
-    if (TOPIK.length < 2) wadah.appendChild(el("p", "topik-segera", "Topik lain segera hadir."));
   }
 
   function buatRuangan() {
@@ -1003,6 +999,7 @@
   // =====================================================================
   // PASANG TOMBOL
   // =====================================================================
+  $("pilih-topik").addEventListener("change", (e) => { topikDipilih = e.target.value; });
   $("btn-buat").addEventListener("click", buatRuangan);
   $("btn-gabung").addEventListener("click", gabungRuangan);
   $("btn-lanjut").addEventListener("click", lanjutkanSesi);
