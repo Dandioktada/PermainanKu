@@ -81,9 +81,8 @@
   const ICE_SERVERS = [
     { urls: ["stun:stun.l.google.com:19302", "stun:stun1.l.google.com:19302", "stun:stun.cloudflare.com:3478"] },
     { urls: ["turn:eu-0.turn.peerjs.com:3478", "turn:us-0.turn.peerjs.com:3478"], username: "peerjs", credential: "peerjsp" },
-    { urls: ["turn:openrelay.metered.ca:80", "turn:openrelay.metered.ca:443", "turn:openrelay.metered.ca:443?transport=tcp"], username: "openrelayproject", credential: "openrelayproject" },
   ];
-  const BATAS_BUKA = 12000;   // jika jalur belum terbuka dalam 12 detik, coba sambung lagi
+  const BATAS_BUKA = 20000;   // jika jalur belum terbuka dalam 20 detik, coba sambung lagi
   let percobaanGabung = 0, timerBuka = null;
   function opsiPeer() {
     const s = new URLSearchParams(location.search).get("server");   // untuk uji lokal: ?server=127.0.0.1:9000
@@ -696,7 +695,9 @@
     percobaan = percobaan || 0;
     sengajaKeluar = false;
     peer = new Peer(AWALAN_ID + kode, opsiPeer());
+    let pernahBuka = false;   // kode ini sudah dibagikan, jadi jangan diganti
     peer.on("open", () => {
+      pernahBuka = true;
       simpanSesi(); setTombolAwal(false); pesan("");
       terapkanState(state); aturTerhubung(false);
       if (lanjutan && state.nama[1]) toast("Ruangan dibuka lagi. Menunggu " + state.nama[1] + " tersambung.");
@@ -713,8 +714,11 @@
     peer.on("error", (err) => {
       if (err.type === "unavailable-id") {
         tutupPeer();
-        if (lanjutan && percobaan < 5) { pesan("Membuka ruangan lagi...", true); setTimeout(() => mulaiHost(true, percobaan + 1), 3000); }
-        else if (!lanjutan) { kode = buatKode(); mulaiHost(false, percobaan + 1); }
+        // Saat menyambung ulang, server kadang masih memegang kode lama.
+        // Tunggu dan pakai kode yang sama, karena kode itu sudah dibagikan ke pasangan.
+        const kodeSama = lanjutan || pernahBuka;
+        if (kodeSama && percobaan < 5) { pesan("Membuka ruangan lagi...", true); setTimeout(() => mulaiHost(true, percobaan + 1), 3000); }
+        else if (!kodeSama) { kode = buatKode(); mulaiHost(false, percobaan + 1); }
         else { pesan("Ruangan lama tidak bisa dibuka. Silakan buat ruangan baru."); setTombolAwal(false); tampilkanLayar("layar-awal"); }
         return;
       }
@@ -727,6 +731,7 @@
     if (c === conn || d.t === "halo") pesanTerakhir = Date.now();
     if (d.t === "ping") { if (c === conn) { try { c.send({ t: "pong" }); } catch (e) {} if (!terhubung) aturTerhubung(true); } return; }
     if (d.t === "halo") {
+      const salamUlang = c === conn;
       if (conn && conn !== c) { try { conn.close(); } catch (e) {} }
       conn = c;
       const nama = String(d.nama || "Tamu").trim().slice(0, 30) || "Tamu";
@@ -734,7 +739,7 @@
       state.nama[1] = nama;
       terhubung = true;
       kirimDanTerapkan();
-      toast(nama + (baru ? " bergabung" : " tersambung lagi"));
+      if (!salamUlang) toast(nama + (baru ? " bergabung" : " tersambung lagi"));
       return;
     }
     if (c !== conn) return;
@@ -773,6 +778,7 @@
     clearTimeout(timerSambung); timerSambung = null;
     if (conn) { const lama = conn; conn = null; try { lama.close(); } catch (e) {} }
     const c = peer.connect(AWALAN_ID + kode, { reliable: true });
+    let dapatState = false;   // salam diulang sampai host membalas
     conn = c;
     clearTimeout(timerBuka);
     timerBuka = setTimeout(() => {
@@ -784,12 +790,16 @@
       if (percobaanGabung < 4) { pesan("Masih menyambung ke ruangan " + kode + "...", true); sambungKeHost(); }
       else { percobaanGabung = 0; pesan("Belum bisa tersambung ke ruangan " + kode + ". Pastikan calonmu masih di halaman ruangan, lalu coba lagi. Jika tetap gagal, coba ganti jaringan (Wi-Fi atau data seluler)."); setTombolAwal(false); tutupPeer(); }
     }, BATAS_BUKA);
-    c.on("open", () => { clearTimeout(timerBuka); percobaanGabung = 0; c.send({ t: "halo", nama: namaSaya }); simpanSesi(); });
+    c.on("open", () => { clearTimeout(timerBuka); percobaanGabung = 0; c.send({ t: "halo", nama: namaSaya });
+      const ulangSalam = setInterval(() => {
+        if (dapatState || c !== conn || !c.open || sengajaKeluar) { clearInterval(ulangSalam); return; }
+        try { c.send({ t: "halo", nama: namaSaya }); } catch (e) {}
+      }, 2500); simpanSesi(); });
     c.on("data", (d) => {
       if (!d || typeof d !== "object") return;
       pesanTerakhir = Date.now();
       if (d.t === "pong") { if (!terhubung && state) aturTerhubung(true); return; }
-      if (d.t === "state") { terhubung = true; setTombolAwal(false); pesan(""); terapkanState(d.state); }
+      if (d.t === "state") { dapatState = true; terhubung = true; setTombolAwal(false); pesan(""); terapkanState(d.state); }
       if (d.t === "tutup") { akhiriRuangan(); pesan("Calonmu keluar dari ruangan. Sesi sudah selesai."); }
     });
     c.on("close", () => {

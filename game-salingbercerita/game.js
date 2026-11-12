@@ -156,9 +156,8 @@
   const ICE_SERVERS = [
     { urls: ["stun:stun.l.google.com:19302", "stun:stun1.l.google.com:19302", "stun:stun.cloudflare.com:3478"] },
     { urls: ["turn:eu-0.turn.peerjs.com:3478", "turn:us-0.turn.peerjs.com:3478"], username: "peerjs", credential: "peerjsp" },
-    { urls: ["turn:openrelay.metered.ca:80", "turn:openrelay.metered.ca:443", "turn:openrelay.metered.ca:443?transport=tcp"], username: "openrelayproject", credential: "openrelayproject" },
   ];
-  const BATAS_BUKA = 12000;   // jika jalur belum terbuka dalam 12 detik, coba sambung lagi
+  const BATAS_BUKA = 20000;   // jika jalur belum terbuka dalam 20 detik, coba sambung lagi
   let percobaanGabung = 0, timerBuka = null;
   function opsiPeer() {
     // Untuk pengujian lokal: ?server=localhost:9000
@@ -810,8 +809,10 @@
     percobaan = percobaan || 0;
     sengajaKeluar = false;
     peer = new Peer(AWALAN_ID + kode, opsiPeer());
+    let pernahBuka = false;   // kode ini sudah dibagikan, jadi jangan diganti
 
     peer.on("open", () => {
+      pernahBuka = true;
       simpanSesi();
       setTombolAwal(false);
       pesan("pesan-awal", "");
@@ -837,10 +838,13 @@
     peer.on("error", (err) => {
       if (err.type === "unavailable-id") {
         tutupPeer();
-        if (lanjutan && percobaan < 5) {
+        // Saat menyambung ulang, server kadang masih memegang kode lama.
+        // Tunggu dan pakai kode yang sama, karena kode itu sudah dibagikan ke pasangan.
+        const kodeSama = lanjutan || pernahBuka;
+        if (kodeSama && percobaan < 5) {
           pesan("pesan-awal", "Membuka ruangan lagi...", true);
           setTimeout(() => mulaiHost(true, percobaan + 1), 3000);
-        } else if (!lanjutan) {
+        } else if (!kodeSama) {
           kode = buatKode();
           mulaiHost(false, percobaan + 1);
         } else {
@@ -865,6 +869,7 @@
       return;
     }
     if (d.t === "halo") {
+      const salamUlang = c === conn;
       if (conn && conn !== c) { try { conn.close(); } catch (e) {} }
       conn = c;
       const namaTamu = String(d.nama || "Tamu").trim().slice(0, 20) || "Tamu";
@@ -872,7 +877,7 @@
       state.nama[1] = namaTamu;
       terhubung = true;
       kirimDanTerapkan(false);
-      toast(namaTamu + (baru ? " bergabung" : " tersambung lagi"));
+      if (!salamUlang) toast(namaTamu + (baru ? " bergabung" : " tersambung lagi"));
       return;
     }
     if (c !== conn) return;
@@ -928,6 +933,7 @@
     timerSambung = null;
     if (conn) { const lama = conn; conn = null; try { lama.close(); } catch (e) {} }
     const c = peer.connect(AWALAN_ID + kode, { reliable: true });
+    let dapatState = false;   // salam diulang sampai host membalas
     conn = c;
     clearTimeout(timerBuka);
     timerBuka = setTimeout(() => {
@@ -941,6 +947,10 @@
     }, BATAS_BUKA);
     c.on("open", () => { clearTimeout(timerBuka); percobaanGabung = 0;
       c.send({ t: "halo", nama: namaSaya });
+      const ulangSalam = setInterval(() => {
+        if (dapatState || c !== conn || !c.open || sengajaKeluar) { clearInterval(ulangSalam); return; }
+        try { c.send({ t: "halo", nama: namaSaya }); } catch (e) {}
+      }, 2500);
       simpanSesi();
     });
     c.on("data", (d) => {
@@ -949,6 +959,7 @@
       if (d.t === "pong") { if (!terhubung && state) aturTerhubung(true); return; }
       if (d.t === "toast") { toast(String(d.teks || "").slice(0, 200)); return; }
       if (d.t === "state") {
+        dapatState = true;
         terhubung = true;
         setTombolAwal(false);
         pesan("pesan-awal", "");
