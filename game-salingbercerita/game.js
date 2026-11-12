@@ -151,16 +151,25 @@
     try { localStorage.removeItem(KUNCI_SESI); } catch (e) { /* abaikan */ }
   }
 
+  // Server STUN dan TURN cadangan. Tanpa TURN, dua HP di jaringan seluler
+  // sering gagal tersambung langsung sehingga keduanya hanya saling menunggu.
+  const ICE_SERVERS = [
+    { urls: ["stun:stun.l.google.com:19302", "stun:stun1.l.google.com:19302", "stun:stun.cloudflare.com:3478"] },
+    { urls: ["turn:eu-0.turn.peerjs.com:3478", "turn:us-0.turn.peerjs.com:3478"], username: "peerjs", credential: "peerjsp" },
+    { urls: ["turn:openrelay.metered.ca:80", "turn:openrelay.metered.ca:443", "turn:openrelay.metered.ca:443?transport=tcp"], username: "openrelayproject", credential: "openrelayproject" },
+  ];
+  const BATAS_BUKA = 12000;   // jika jalur belum terbuka dalam 12 detik, coba sambung lagi
+  let percobaanGabung = 0, timerBuka = null;
   function opsiPeer() {
     // Untuk pengujian lokal: ?server=localhost:9000
     const s = new URLSearchParams(location.search).get("server");
-    if (!s) return { debug: 1 };
+    if (!s) return { debug: 1, config: { iceServers: ICE_SERVERS } };
     const [host, port] = s.split(":");
-    return { host, port: Number(port) || 9000, path: "/", secure: false, debug: 1 };
+    return { host, port: Number(port) || 9000, path: "/", secure: false, debug: 1, config: { iceServers: ICE_SERVERS } };
   }
 
   function tutupPeer() {
-    clearTimeout(timerSambung);
+    clearTimeout(timerSambung); clearTimeout(timerBuka);
     timerSambung = null;
     if (conn) { try { conn.close(); } catch (e) {} }
     if (peer) { try { peer.destroy(); } catch (e) {} }
@@ -890,6 +899,7 @@
   // KONEKSI: TAMU
   // =====================================================================
   function mulaiTamu() {
+    percobaanGabung = 0;
     sengajaKeluar = false;
     peer = new Peer(opsiPeer());
     peer.on("open", sambungKeHost);
@@ -919,7 +929,17 @@
     if (conn) { const lama = conn; conn = null; try { lama.close(); } catch (e) {} }
     const c = peer.connect(AWALAN_ID + kode, { reliable: true });
     conn = c;
-    c.on("open", () => {
+    clearTimeout(timerBuka);
+    timerBuka = setTimeout(() => {
+      if (c !== conn || c.open || sengajaKeluar) return;
+      try { c.close(); } catch (e) {}
+      conn = null;
+      if (state) { jadwalkanSambungUlang(); return; }
+      percobaanGabung++;
+      if (percobaanGabung < 4) { pesan("pesan-awal", "Masih menyambung ke ruangan " + kode + "...", true); sambungKeHost(); }
+      else { percobaanGabung = 0; pesan("pesan-awal", "Belum bisa tersambung ke ruangan " + kode + ". Pastikan pasanganmu masih di halaman ruangan, lalu coba lagi. Jika tetap gagal, coba ganti jaringan (Wi-Fi atau data seluler)."); setTombolAwal(false); tutupPeer(); }
+    }, BATAS_BUKA);
+    c.on("open", () => { clearTimeout(timerBuka); percobaanGabung = 0;
       c.send({ t: "halo", nama: namaSaya });
       simpanSesi();
     });
