@@ -16,38 +16,49 @@ Pasangan yang membuka tautan undangan otomatis mengikuti mode ruangan.
 
 ## Cara Bermain
 
-1. Pemain pertama menulis nama, lalu menekan **Buat Ruangan**. Kalau di `kartu.js` ada lebih dari satu topik, muncul dropdown untuk memilih topik.
+1. Pemain pertama menulis nama, lalu menekan **Bikin Ruangan, Yuk!**.
 2. Kode ruangan atau tautannya dikirim ke pemain kedua, misalnya lewat WhatsApp.
-3. Pemain kedua membuka tautan, menulis nama, lalu menekan **Gabung**.
-4. Masing-masing menulis satu **pertanyaan rahasia** (wajib) dan satu **tantangan rahasia** (boleh dikosongkan) untuk pasangannya, misalnya "Kirim satu foto lama kita ke chat". Keduanya muncul diam-diam sebagai kartu rahasia saat giliran pasangannya. Sebelum kartu rahasia pertama dan di antara dua kartu rahasia selalu ada 2 atau 3 kartu biasa. Di mode telepon, pemain juga bisa memilih **target kartu malam ini** (3, 5, 7, atau 10 kartu). Saat target tercapai, permainan otomatis rehat dan rangkuman muncul.
-5. Pemain bergiliran menekan **Putar Dadu**. Dadu punya 3 sisi Cokelat dan 3 sisi Hijau. Warna yang keluar menentukan kartu yang diambil.
-6. **Yang memutar dadu menjawab kartu.** Nama di kartu otomatis mengikuti nama pemain. Di mode teks, jawaban diketik lalu dikirim, dan pasangannya membaca jawaban itu dalam bentuk gelembung pesan.
+3. Pemain kedua membuka tautan, menulis nama, lalu menekan **Gas Gabung!**.
+4. Setelah keduanya masuk, muncul layar **Pilih Topik**. Siapa saja boleh mengganti topik, dan pilihan itu langsung terlihat di HP pasangannya. Permainan lanjut setelah keduanya menekan **Oke, Pakai Topik Ini!** di topik yang sama. Setelah itu muncul gulungan kertas berisi cara main singkat.
+5. Masing-masing menulis satu **pertanyaan rahasia** (wajib) dan satu **tantangan rahasia** (boleh dikosongkan) untuk pasangannya, misalnya "Kirim satu foto lama kita ke chat". Keduanya muncul diam-diam sebagai kartu rahasia saat giliran pasangannya. Setelah disimpan, isian masih bisa diubah lewat tombol **Ubah Isian** selama pasangannya belum selesai menulis. Sebelum kartu rahasia pertama dan di antara dua kartu rahasia selalu ada 2 atau 3 kartu biasa. Di mode telepon, pemain juga bisa memilih **target kartu malam ini** (3, 5, 7, atau 10 kartu). Saat target tercapai, permainan otomatis rehat dan rangkuman muncul.
+6. Pemain bergiliran menekan **Putar Dadu**. Dadu punya 3 sisi Cokelat dan 3 sisi Hijau. Warna yang keluar menentukan kartu yang diambil.
+7. **Yang memutar dadu menjawab kartu.** Nama di kartu otomatis mengikuti nama pemain. Di mode teks, jawaban diketik lalu dikirim, dan pasangannya membaca jawaban itu dalam bentuk gelembung pesan.
 Setiap kartu punya **timer**: 10 menit di mode teks (sampai jawaban dikirim) dan 15 menit di mode telepon (sampai penilaian disimpan). Saat waktu tinggal 2 menit, muncul peringatan, lalu tulisan "Waktu habis" kalau waktunya lewat.
 
-7. Setelah yang menjawab selesai bercerita, pasangan yang mendengarkan mengisi **bintang 1 sampai 5** dan kalimat feedback. Penilaian ini disembunyikan dari yang menjawab. Dadu baru bisa diputar lagi setelah penilaian disimpan.
-8. **Rehat Dulu, Yuk** berfungsi sebagai jeda. Masing-masing melihat pop-up rangkuman **khusus untuk dirinya sendiri**: jumlah kartu yang dijawab, rata-rata bintang, bintang dan kalimat feedback per kartu, serta saran. Pemain tidak bisa melihat rangkuman pasangannya.
-9. Permainan tersimpan di ruangan yang sama. Tekan **Lanjut Cerita, Gas!** (keduanya harus menekan) untuk melanjutkan sesi berikutnya. Kalau aplikasi sempat ditutup, pembuat ruangan menekan **Lanjut Main di Ruangan** di layar awal, lalu pasangannya bergabung lagi dengan kode yang sama.
-10. Permainan benar-benar selesai saat salah satu pemain menekan **Udahan, Keluar**.
+8. Setelah yang menjawab selesai bercerita, pasangan yang mendengarkan mengisi **bintang 1 sampai 5** dan kalimat feedback. Penilaian ini disembunyikan dari yang menjawab. Dadu baru bisa diputar lagi setelah penilaian disimpan.
+9. **Rehat Dulu, Yuk** berfungsi sebagai jeda. Masing-masing melihat pop-up rangkuman **khusus untuk dirinya sendiri**: jumlah kartu yang dijawab, rata-rata bintang, bintang dan kalimat feedback per kartu, serta saran. Pemain tidak bisa melihat rangkuman pasangannya.
+10. Permainan tersimpan di ruangan yang sama. Tekan **Lanjut Cerita, Gas!** (keduanya harus menekan) untuk melanjutkan sesi berikutnya. Kalau aplikasi sempat ditutup, pembuat ruangan menekan **Lanjut Main di Ruangan** di layar awal, lalu pasangannya bergabung lagi dengan kode yang sama.
+11. Permainan benar-benar selesai saat salah satu pemain menekan **Udahan, Keluar**.
 
 Permainan tidak menampilkan jumlah total kartu, hanya jumlah kartu yang sudah terbuka. Karena itu kalimat kartu bisa ditambah sebanyak apa pun, sampai ratusan.
 
 ## Isi Kartu
 
-Kartu dikelompokkan per topik. Setelah memilih mode, pemain memilih satu dari empat topik:
+Kartu dikelompokkan per topik. Topik dipilih bersama setelah kedua pemain masuk:
 
 | Topik | Mode | Cokelat | Hijau |
 |---|---|---|---|
-| Couple | Telepon | 30 kartu: masa depan, rencana, mimpi | 30 kartu: komitmen, kejujuran, kasih sayang |
-| Couple | Teks | 30 kartu ringan | 30 kartu ringan |
-| Bestie | Telepon | 30 kartu: kenangan, petualangan, mimpi | 30 kartu: dukungan, kejujuran, saling jaga |
-| Bestie | Teks | 30 kartu ringan | 30 kartu ringan |
-| Baru Kenalan | Telepon | 30 kartu: keseharian, cerita hidup, selera | 30 kartu: nilai, harapan, sudut pandang |
-| Baru Kenalan | Teks | 30 kartu ringan | 30 kartu ringan |
+| Ayang | Telepon | 30 kartu: masa depan, rencana, mimpi | 30 kartu: komitmen, kejujuran, kasih sayang |
+| Ayang | Teks | 30 kartu ringan | 30 kartu ringan |
+| Sohib | Telepon | 30 kartu: kenangan, petualangan, mimpi | 30 kartu: dukungan, kejujuran, saling jaga |
+| Sohib | Teks | 30 kartu ringan | 30 kartu ringan |
+| Kenalan | Telepon | 30 kartu: keseharian, cerita hidup, selera | 30 kartu: nilai, harapan, sudut pandang |
+| Kenalan | Teks | 30 kartu ringan | 30 kartu ringan |
 | Acak | Keduanya | Gabungan kartu cokelat dari tiga topik di atas | Gabungan kartu hijau |
 
-Topik Couple adalah penyesuaian dari topik lama Calon Pengantin, supaya cocok untuk pasangan yang belum maupun sudah menikah. Dasar riset untuk Bestie dan Baru Kenalan dicatat di `bahan/riset-pertanyaan-salingbercerita.md`.
+Topik Ayang adalah penyesuaian dari topik lama Calon Pengantin, supaya cocok untuk pasangan yang belum maupun sudah menikah. Dasar riset untuk Sohib dan Kenalan dicatat di `bahan/riset-pertanyaan-salingbercerita.md`.
 
 Semua kalimat ada di file `kartu.js`. Penanda `{A}` diganti nama yang menjawab, `{B}` diganti nama pasangannya. Topik baru ditambahkan dengan menyalin satu blok topik di file tersebut, dan otomatis ikut masuk ke topik Acak.
+
+## Mode Pengembangan
+
+Buka alamat permainan dengan tambahan `?dev=1`, misalnya `https://pengembangan--salingbercerita.netlify.app/?dev=1`. Di mode ini kamu bermain sendiri melawan **Bot** tanpa koneksi online:
+
+- Pilih mode, tulis nama, lalu tekan **Bikin Ruangan, Yuk!**. Bot masuk otomatis.
+- Bot ikut setuju setelah kamu memilih topik.
+- Bot menulis isian rahasia sekitar 6 detik setelah kamu siap, jadi tombol **Ubah Isian** sempat dicoba.
+- Saat bermain, bot memutar dadu, menjawab kartu (mode teks), memberi bintang, dan ikut menekan Lanjut setelah rehat.
+- Permainan di mode ini tidak disimpan.
 
 ## File
 

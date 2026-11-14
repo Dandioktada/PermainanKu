@@ -788,3 +788,49 @@ html[data-waktu="malam"] .btn:disabled { opacity: .7; filter: saturate(.6); }
   box-shadow: 0 -3px 0 0 var(--tinta), 0 3px 0 0 var(--tinta), -3px 0 0 0 var(--tinta), 3px 0 0 0 var(--tinta); }
 .deskripsi-topik { margin: 10px 0 0; font-size: 16px; line-height: 1.35; color: var(--tinta-lembut); }
 .deskripsi-topik:empty { display: none; }
+
+/* ---------- Cara main: gulungan kertas ---------- */
+.modal-aturan { align-items: center; padding: 16px; }
+.gulungan { width: 100%; max-width: 400px; display: flex; flex-direction: column; align-items: center; }
+.gulungan-tongkat {
+  position: relative; z-index: 1; width: 100%; height: 22px; flex: none;
+  background: linear-gradient(#c98b52 0 30%, var(--coklat) 30% 70%, var(--coklat-tua) 70%);
+  box-shadow: 0 -3px 0 0 var(--tinta), 0 3px 0 0 var(--tinta), -3px 0 0 0 var(--tinta), 3px 0 0 0 var(--tinta);
+}
+/* kenop di kedua ujung tongkat */
+.gulungan-tongkat::before, .gulungan-tongkat::after {
+  content: ""; position: absolute; top: -6px; width: 16px; height: 34px; background: var(--emas, #e0a526);
+  box-shadow: 0 -3px 0 0 var(--tinta), 0 3px 0 0 var(--tinta), -3px 0 0 0 var(--tinta), 3px 0 0 0 var(--tinta);
+}
+.gulungan-tongkat::before { left: -14px; }
+.gulungan-tongkat::after { right: -14px; }
+.gulungan-kertas {
+  width: calc(100% - 24px); overflow: hidden; max-height: 0;
+  background: repeating-linear-gradient(0deg, transparent 0 22px, rgba(110, 65, 35, .06) 22px 24px), var(--kertas);
+  box-shadow: -3px 0 0 0 var(--tinta), 3px 0 0 0 var(--tinta), inset 0 10px 8px -6px rgba(59, 38, 22, .35), inset 0 -10px 8px -6px rgba(59, 38, 22, .35);
+}
+.gulungan-isi { padding: 18px 20px 20px; }
+.gulungan-isi h2 { margin: 0; text-align: center; font-family: var(--huruf-judul); font-weight: 700; text-transform: uppercase; font-size: 22px; color: var(--coklat-tua); }
+.aturan-topik { margin: 4px 0 12px; text-align: center; font-size: 16px; color: var(--tinta-lembut); }
+.daftar-aturan { margin: 0 0 16px; padding-left: 24px; display: flex; flex-direction: column; gap: 10px; font-size: 17px; line-height: 1.35; }
+.daftar-aturan li::marker { font-family: var(--huruf-judul); font-weight: 700; color: var(--coklat); }
+.gulungan-isi .btn { width: 100%; margin: 0; }
+
+/* Mula-mula tertutup (kedua tongkat menempel), lalu kertas terbuka ke bawah */
+.modal-aturan.buka .gulungan { animation: gulungan-muncul .3s steps(3) both; }
+.modal-aturan.buka .gulungan-kertas { animation: gulungan-buka 1s steps(10) .45s both; }
+.modal-aturan.buka .gulungan-isi { animation: gulungan-isi .3s steps(3) 1.3s both; }
+@keyframes gulungan-muncul { from { transform: scale(.6); opacity: 0; } to { transform: none; opacity: 1; } }
+@keyframes gulungan-buka { from { max-height: 0; } to { max-height: 72vh; max-height: 72dvh; } }
+@keyframes gulungan-isi { from { opacity: 0; } to { opacity: 1; } }
+.modal-aturan.buka .gulungan-kertas { overflow-y: auto; }
+@media (prefers-reduced-motion: reduce) {
+  .modal-aturan.buka .gulungan, .modal-aturan.buka .gulungan-kertas, .modal-aturan.buka .gulungan-isi { animation-duration: .01s; animation-delay: 0s; }
+}
+
+/* ---------- Penanda mode pengembangan ---------- */
+.tanda-dev {
+  position: fixed; left: 0; right: 0; bottom: 0; z-index: 30; padding: 6px 12px; text-align: center;
+  background: var(--tinta); color: #fff7e8; font-size: 15px; letter-spacing: .03em;
+}
+body.dev { padding-bottom: 40px; }

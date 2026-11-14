@@ -72,13 +72,6 @@
       <label for="input-nama">Nama kamu</label>
       <input id="input-nama" type="text" maxlength="20" placeholder="Tulis namamu" autocomplete="off">
 
-      <!-- Pilihan topik hanya muncul kalau di kartu.js ada lebih dari satu topik -->
-      <div id="wadah-topik" hidden>
-        <p class="label-blok label-topik" id="label-topik">Mau ngobrolin apa?</p>
-        <div id="pilih-topik" class="daftar-topik" role="radiogroup" aria-labelledby="label-topik"></div>
-        <p id="deskripsi-topik" class="deskripsi-topik"></p>
-      </div>
-
       <button id="btn-buat" class="btn utama">Bikin Ruangan, Yuk!</button>
 
       <div class="pemisah"><span>atau gabung ke ruangan</span></div>
@@ -104,7 +97,6 @@
     <div class="panel tengah">
       <p class="label-kode">Kode ruangan</p>
       <p id="tampil-kode" class="kode">-----</p>
-      <p id="tampil-topik-tunggu" class="topik-kecil"></p>
 
       <a id="btn-wa" class="btn wa" target="_blank" rel="noopener">Ajak lewat WhatsApp</a>
       <button id="btn-salin" class="btn kedua">Salin Tautannya</button>
@@ -120,6 +112,28 @@
   </section>
 
   <!-- ====== LAYAR PERSIAPAN: PERTANYAAN RAHASIA ====== -->
+  <!-- ====== LAYAR PILIH TOPIK (setelah kedua pemain masuk) ====== -->
+  <section id="layar-topik" class="layar">
+    <header class="judul kecil">
+      <h1 data-teks="Pilih Topik">Pilih Topik</h1>
+      <p class="sub">Diskusiin bareng <b class="nama-lawan">pasanganmu</b>, mau ngobrolin apa?</p>
+    </header>
+
+    <div class="panel">
+      <div id="pilih-topik" class="daftar-topik" role="radiogroup" aria-label="Topik obrolan"></div>
+      <p id="deskripsi-topik" class="deskripsi-topik"></p>
+      <button id="btn-setuju-topik" class="btn utama">Oke, Pakai Topik Ini!</button>
+      <p id="pesan-topik" class="pesan" role="status"></p>
+      <div class="status-siap">
+        <div id="setuju-0" class="chip-siap"></div>
+        <div id="setuju-1" class="chip-siap"></div>
+      </div>
+    </div>
+
+    <p class="catatan">Siapa saja boleh ganti pilihan. Permainan lanjut setelah kalian berdua setuju di topik yang sama.</p>
+    <button id="btn-keluar-topik" class="btn tipis">Udahan, Keluar</button>
+  </section>
+
   <section id="layar-persiapan" class="layar">
     <header class="judul kecil">
       <div class="ikon-rahasia" aria-hidden="true">?</div>
@@ -153,6 +167,7 @@
       </div>
 
       <button id="btn-siap" class="btn utama">Simpan, Aku Siap!</button>
+      <button id="btn-ubah-rahasia" class="btn kedua" hidden>Ubah Isian</button>
       <p id="pesan-persiapan" class="pesan" role="status"></p>
 
       <div class="status-siap">
@@ -251,6 +266,22 @@
 
 <!-- ====== POP-UP RANGKUMAN PRIBADI (muncul saat permainan diakhiri) ====== -->
 <!-- Setiap pemain hanya melihat rangkuman dan feedback untuk dirinya sendiri. -->
+<!-- Cara main: gulungan kertas yang terbuka setelah topik dipilih -->
+<div id="modal-aturan" class="modal modal-aturan" role="dialog" aria-modal="true" aria-labelledby="judul-aturan" hidden>
+  <div class="gulungan">
+    <div class="gulungan-tongkat" aria-hidden="true"></div>
+    <div class="gulungan-kertas">
+      <div class="gulungan-isi">
+        <h2 id="judul-aturan">Cara Main</h2>
+        <p id="aturan-topik" class="aturan-topik"></p>
+        <ol id="daftar-aturan" class="daftar-aturan"></ol>
+        <button id="btn-tutup-aturan" class="btn utama">Siap, Paham!</button>
+      </div>
+    </div>
+    <div class="gulungan-tongkat" aria-hidden="true"></div>
+  </div>
+</div>
+
 <div id="modal-rangkuman" class="modal" role="dialog" aria-modal="true" aria-labelledby="judul-rangkuman" hidden>
   <div class="modal-kotak rangkuman">
     <header class="modal-kepala">
