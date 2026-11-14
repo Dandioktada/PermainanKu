@@ -17,12 +17,18 @@ Alat bantu bertanya untuk muslim dan muslimah yang sedang menjalani proses ta'ar
    Catatan tertulis boleh dikosongkan. Jawaban bisa ditandai **Minta diperjelas** (otomatis tercentang untuk nilai 1 sampai 2).
 6. **Perjelas.** Kalau ada jawaban yang diminta diperjelas, penjawab menulis penjelasan tambahan.
 7. **Selesai.** Semua pertanyaan, jawaban, penilaian, catatan, dan penjelasan dari kedua pihak tampil di layar dan bisa diunduh sebagai **PDF**.
+8. **Keputusan.** Di layar selesai, masing-masing mengisi skala 1 sampai 10 (1 = tidak ingin lanjut, 10 = ingin kenal lebih lanjut). Angka ini hanya disimpan di HP pemain sendiri, tidak dikirim ke calon, dan hanya masuk ke PDF yang diunduh pemain itu. Setelah memilih, muncul saran sesuai angkanya:
+   - 7 sampai 10: melibatkan perantara atau wali, sholat istikharah, dan doa (istikharah, QS. Al-Kahfi: 10, QS. Al-Qashash: 24) lengkap dengan teks Arab, latin, arti, dan sumber.
+   - 5 sampai 6: bertanya lewat perantara dan sholat istikharah.
+   - 1 sampai 4: menyampaikan keputusan lewat perantara dengan santun.
 
 Data hanya berpindah langsung antara dua HP lewat koneksi WebRTC. Tidak ada jawaban yang disimpan di server.
 
 ## Bantuan pertanyaan
 
 Ada di `pertanyaan.js`: 18 kategori dengan tiga tingkat (dasar, menengah, lanjutan), total 125 pertanyaan. Tombol **Pilihkan untukku** mengisi kolom kosong secara seimbang, satu pertanyaan dari setiap kategori penting. Cakupan topik diperkuat dari riset Kemenag, Kemenkes, BKKBN, penelitian pranikah, dan kajian ta'aruf (lihat `bahan/riset-pertanyaan-salingkenal.md`). "Baru kenal" disarankan mulai dari tingkat dasar, "Sudah kenal lama" mulai dari tingkat lanjutan, tapi semua tingkat bisa dibuka. Semua kalimat ditulis sendiri; cakupan topiknya mengacu pada topik umum lembar profil diri sebelum menikah. Kalimat bisa ditambah, diubah, atau dihapus.
+
+Kotak bantuan pertanyaan tampil di atas kolom pertanyaan dan punya kolom **pencarian**. Pencarian menelusuri semua tingkat (dasar, menengah, lanjutan), tidak peka huruf besar, dan bisa memakai beberapa kata. Setiap hasil menyebut kategori dan tingkatnya.
 
 ## Tampilan
 

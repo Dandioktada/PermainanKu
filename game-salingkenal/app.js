@@ -15,6 +15,36 @@
   const BATAS_SENYAP = 12000;
   const PILIHAN_JUMLAH = [3, 5, 7, 10];
   const ARTI_BINTANG = ["", "Tidak jelas", "Cukup tidak jelas", "Cukup jelas", "Jelas", "Sangat jelas"];
+  // Keputusan lanjut atau tidak (1 sampai 10). Disimpan hanya di HP pemain sendiri, tidak dikirim ke calon.
+  const KUNCI_KEPUTUSAN = "salingkenal-keputusan";
+  const ARTI_KEPUTUSAN = ["", "Tidak ingin lanjut", "Tidak ingin lanjut", "Cenderung tidak lanjut", "Cenderung tidak lanjut",
+    "Masih ragu", "Masih ragu", "Cenderung ingin lanjut", "Cenderung ingin lanjut", "Ingin kenal lebih lanjut", "Ingin kenal lebih lanjut"];
+  const DOA = [
+    {
+      judul: "Doa istikharah",
+      ket: "Dibaca setelah sholat istikharah dua rakaat. Saat sampai pada kata \"urusan ini\", sebutkan dalam hati urusan yang sedang ditimbang.",
+      arab: "اللَّهُمَّ إِنِّي أَسْتَخِيرُكَ بِعِلْمِكَ، وَأَسْتَقْدِرُكَ بِقُدْرَتِكَ، وَأَسْأَلُكَ مِنْ فَضْلِكَ الْعَظِيمِ، فَإِنَّكَ تَقْدِرُ وَلَا أَقْدِرُ، وَتَعْلَمُ وَلَا أَعْلَمُ، وَأَنْتَ عَلَّامُ الْغُيُوبِ. اللَّهُمَّ إِنْ كُنْتَ تَعْلَمُ أَنَّ هَذَا الْأَمْرَ خَيْرٌ لِي فِي دِينِي وَمَعَاشِي وَعَاقِبَةِ أَمْرِي، فَاقْدُرْهُ لِي وَيَسِّرْهُ لِي، ثُمَّ بَارِكْ لِي فِيهِ. وَإِنْ كُنْتَ تَعْلَمُ أَنَّ هَذَا الْأَمْرَ شَرٌّ لِي فِي دِينِي وَمَعَاشِي وَعَاقِبَةِ أَمْرِي، فَاصْرِفْهُ عَنِّي وَاصْرِفْنِي عَنْهُ، وَاقْدُرْ لِيَ الْخَيْرَ حَيْثُ كَانَ، ثُمَّ أَرْضِنِي بِهِ",
+      latin: "Allahumma inni astakhiruka bi 'ilmika, wa astaqdiruka bi qudratika, wa as'aluka min fadhlikal 'azhim. Fa innaka taqdiru wa la aqdiru, wa ta'lamu wa la a'lamu, wa anta 'allamul ghuyub. Allahumma in kunta ta'lamu anna hadzal amra khairun li fi dini wa ma'asyi wa 'aqibati amri, faqdurhu li wa yassirhu li, tsumma barik li fih. Wa in kunta ta'lamu anna hadzal amra syarrun li fi dini wa ma'asyi wa 'aqibati amri, fashrifhu 'anni washrifni 'anhu, waqdur liyal khaira haitsu kana, tsumma ardhini bih.",
+      arti: "Ya Allah, aku memohon pilihan kepada-Mu dengan ilmu-Mu, memohon kekuatan dengan kekuasaan-Mu, dan memohon karunia-Mu yang agung. Sungguh Engkau Mahakuasa sedangkan aku tidak kuasa, Engkau Maha Mengetahui sedangkan aku tidak mengetahui, dan Engkaulah Yang Maha Mengetahui perkara gaib. Ya Allah, jika Engkau mengetahui bahwa urusan ini baik bagiku dalam agamaku, kehidupanku, dan akhir urusanku, maka takdirkanlah ia untukku, mudahkanlah bagiku, lalu berkahilah aku di dalamnya. Dan jika Engkau mengetahui bahwa urusan ini buruk bagiku dalam agamaku, kehidupanku, dan akhir urusanku, maka jauhkanlah ia dariku dan jauhkanlah aku darinya, takdirkanlah kebaikan untukku di mana pun adanya, kemudian jadikanlah aku rida dengannya.",
+      sumber: "HR. Bukhari no. 1162, dari Jabir bin Abdullah",
+    },
+    {
+      judul: "Memohon petunjuk dalam urusan",
+      ket: "Doa para pemuda Ashabul Kahfi saat memohon jalan keluar dari Allah.",
+      arab: "رَبَّنَا آتِنَا مِنْ لَدُنْكَ رَحْمَةً وَهَيِّئْ لَنَا مِنْ أَمْرِنَا رَشَدًا",
+      latin: "Rabbana atina min ladunka rahmatan wa hayyi' lana min amrina rasyada.",
+      arti: "Ya Tuhan kami, berikanlah rahmat kepada kami dari sisi-Mu dan sempurnakanlah petunjuk yang lurus bagi kami dalam urusan kami.",
+      sumber: "QS. Al-Kahfi: 10",
+    },
+    {
+      judul: "Memohon kebaikan dari Allah",
+      ket: "Doa Nabi Musa di negeri Madyan, sebelum Allah mempertemukannya dengan keluarga yang kelak menjadi keluarga istrinya.",
+      arab: "رَبِّ إِنِّي لِمَا أَنْزَلْتَ إِلَيَّ مِنْ خَيْرٍ فَقِيرٌ",
+      latin: "Rabbi inni lima anzalta ilayya min khairin faqir.",
+      arti: "Ya Tuhanku, sesungguhnya aku sangat memerlukan kebaikan yang Engkau turunkan kepadaku.",
+      sumber: "QS. Al-Qashash: 24",
+    },
+  ];
   const URUTAN_FASE = ["atur", "jawab", "nilai", "perjelas", "selesai"];
   const DEV = new URLSearchParams(location.search).get("dev") === "1";
 
@@ -371,11 +401,19 @@
     p.append(kirim, ubah);
     wadah.appendChild(p);
 
-    // Bank pertanyaan
+    // Bank pertanyaan (tampil di atas kotak kolom pertanyaan)
     const bank = el("div", "bank");
     const kep = el("div", "bank-kepala");
     kep.append(el("b", null, "Bantuan pertanyaan"), el("small", null, d.kenal === "lama" ? "Sudah kenal lama" : "Baru kenal"));
     bank.appendChild(kep);
+    const cari = el("input", "cari-bank"); cari.type = "search";
+    cari.placeholder = "Cari pertanyaan, misalnya: keluarga";
+    cari.setAttribute("aria-label", "Cari pertanyaan");
+    cari.value = d.cari || "";
+    cari.addEventListener("input", () => { d.cari = cari.value; isiDaftar(); });
+    bank.appendChild(cari);
+    const infoCari = el("p", "info-cari");
+    bank.appendChild(infoCari);
     const tab = el("div", "tab-tingkat");
     TINGKAT.forEach((t) => {
       const b = el("button", null, t.nama); b.type = "button";
@@ -392,14 +430,26 @@
     bank.appendChild(sel);
     const ul = el("ul", "daftar-bank");
     bank.appendChild(ul);
-    wadah.appendChild(bank);
+    wadah.insertBefore(bank, p);
 
+    // Huruf kecil tanpa tanda baca supaya pencarian tidak peka huruf besar dan tanda aksen
+    const normal = (t) => String(t || "").toLowerCase().normalize("NFD").replace(/\p{Diacritic}/gu, "");
     function isiDaftar() {
       ul.innerHTML = "";
+      const kata = normal(d.cari).split(/\s+/).filter(Boolean);
+      const mencari = kata.length > 0;
+      // Saat mencari, semua tingkat ikut ditelusuri; pilihan kategori tetap berlaku
+      tab.hidden = mencari;
+      let jumlah = 0;
       BANK_PERTANYAAN.filter((k) => !d.kategori || k.id === d.kategori).forEach((k) => {
-        (k[d.tingkat] || []).forEach((q) => {
+        const daftar = mencari ? TINGKAT.flatMap((t) => (k[t.id] || []).map((q) => [q, t.nama])) : (k[d.tingkat] || []).map((q) => [q, null]);
+        daftar.forEach(([q, namaTingkat]) => {
+          if (mencari && !kata.every((w) => normal(q + " " + k.nama).includes(w))) return;
+          jumlah++;
           const li = el("li"); li.dataset.q = q;
-          li.appendChild(el("span", null, q));
+          const isi = el("span", null, q);
+          if (mencari) isi.appendChild(el("small", "asal-q", k.nama + " · " + namaTingkat));
+          li.appendChild(isi);
           const b = el("button", "btn kedua kecil", "Pakai"); b.type = "button";
           b.addEventListener("click", () => {
             const kosong = slots.findIndex((t) => !t.value.trim());
@@ -411,7 +461,8 @@
           li.appendChild(b); ul.appendChild(li);
         });
       });
-      if (!ul.children.length) ul.appendChild(el("li", null, "Belum ada pertanyaan di tingkat ini untuk kategori tersebut."));
+      infoCari.textContent = mencari ? (jumlah ? jumlah + " pertanyaan ditemukan" : "") : "";
+      if (!ul.children.length) ul.appendChild(el("li", null, mencari ? "Tidak ada pertanyaan yang cocok dengan \"" + d.cari.trim() + "\". Coba kata lain." : "Belum ada pertanyaan di tingkat ini untuk kategori tersebut."));
       tandaiBank();
     }
     function tandaiBank() {
@@ -548,11 +599,83 @@
     wadah.appendChild(el("div", "ilustrasi"));
     const p = panelJudul("Alhamdulillah, semua tahap sudah selesai",
       "Berikut seluruh pertanyaan, jawaban, dan penilaian kalian berdua. Unduh PDF-nya untuk disimpan atau dibaca bersama perantara dan wali.");
+    wadah.appendChild(p);
+    wadah.appendChild(panelKeputusan());
+    [0, 1].forEach((penanya) => wadah.appendChild(blokRingkasan(penanya)));
+  }
+
+  // Keputusan disimpan per ruangan dan per pemain, hanya di HP ini
+  function kunciKeputusan() { return (DEV ? "dev" : kode) + ":" + state.mulaiPada + ":" + indeksSaya(); }
+  function bacaKeputusan() {
+    try { return (JSON.parse(localStorage.getItem(KUNCI_KEPUTUSAN)) || {})[kunciKeputusan()] || 0; } catch (e) { return keputusanSementara[kunciKeputusan()] || 0; }
+  }
+  function simpanKeputusan(n) {
+    keputusanSementara[kunciKeputusan()] = n;
+    try {
+      const semua = JSON.parse(localStorage.getItem(KUNCI_KEPUTUSAN)) || {};
+      semua[kunciKeputusan()] = n;
+      localStorage.setItem(KUNCI_KEPUTUSAN, JSON.stringify(semua));
+    } catch (e) { /* penyimpanan tidak tersedia, pakai simpanan sementara */ }
+  }
+  const keputusanSementara = {};
+
+  function panelKeputusan() {
+    const lawan = namaPemain(1 - indeksSaya());
+    const p = panelJudul("Bagaimana kelanjutannya?",
+      "Setelah membaca semuanya, seberapa ingin kamu melanjutkan proses saling kenal dengan " + lawan + "? Angka ini hanya terlihat olehmu dan ikut tercatat di PDF yang kamu unduh.");
+    const skala = el("div", "skala-keputusan"); skala.setAttribute("role", "radiogroup"); skala.setAttribute("aria-label", "Keputusan 1 sampai 10");
+    for (let n = 1; n <= 10; n++) {
+      const b = el("button", null, String(n)); b.type = "button"; b.dataset.n = n;
+      b.setAttribute("role", "radio"); b.setAttribute("aria-label", n + ": " + ARTI_KEPUTUSAN[n]);
+      b.addEventListener("click", () => { simpanKeputusan(n); perbarui(); });
+      skala.appendChild(b);
+    }
+    const ujung = el("div", "ujung-skala");
+    ujung.append(el("span", null, "1 = tidak ingin lanjut"), el("span", null, "10 = ingin kenal lebih lanjut"));
+    const arti = el("p", "arti-keputusan");
+    const saran = el("div", "saran-keputusan");
     const unduh = el("button", "btn utama", "Unduh PDF"); unduh.type = "button";
     unduh.addEventListener("click", unduhPDF);
-    p.appendChild(unduh);
-    wadah.appendChild(p);
-    [0, 1].forEach((penanya) => wadah.appendChild(blokRingkasan(penanya)));
+    p.append(skala, ujung, arti, saran, unduh);
+
+    function perbarui() {
+      const n = bacaKeputusan();
+      skala.querySelectorAll("button").forEach((b) => b.setAttribute("aria-checked", String(Number(b.dataset.n) === n)));
+      arti.textContent = n ? "Pilihanmu: " + n + " dari 10, " + ARTI_KEPUTUSAN[n].toLowerCase() + "." : "Belum dipilih. Kamu tetap bisa mengunduh PDF tanpa mengisi bagian ini.";
+      saran.innerHTML = "";
+      if (n) isiSaran(saran, n, lawan);
+    }
+    perbarui();
+    return p;
+  }
+
+  function isiSaran(wadah, n, lawan) {
+    const poin = (judul, teks) => { const d = el("div", "poin-saran"); d.append(el("b", null, judul), el("p", null, teks)); wadah.appendChild(d); };
+    if (n >= 7) {
+      wadah.appendChild(el("p", "judul-saran", "Bismillah, beberapa langkah yang bisa kamu tempuh"));
+      poin("Libatkan perantara dan keluarga", "Sampaikan keinginanmu untuk lanjut lewat perantara, keluarga, atau wali. Mereka bisa ikut menimbang dan mengatur langkah berikutnya, misalnya pertemuan keluarga, dengan cara yang terjaga.");
+      poin("Sholat istikharah", "Kerjakan sholat sunnah dua rakaat, lalu baca doa istikharah. Boleh diulang beberapa kali. Jawabannya tidak harus lewat mimpi; perhatikan juga kemantapan hati, kemudahan jalan, dan pertimbangan orang tua.");
+      poin("Perbanyak doa", "Mohon kepada Allah agar diberi keyakinan atas keputusan yang kamu pilih. Beberapa doa yang bisa dibaca ada di bawah ini.");
+      DOA.forEach((x) => wadah.appendChild(kartuDoa(x)));
+    } else if (n >= 5) {
+      wadah.appendChild(el("p", "judul-saran", "Masih ragu itu wajar"));
+      poin("Tanyakan lewat perantara", "Kalau ada hal yang masih mengganjal, sampaikan lewat perantara supaya bisa diperjelas tanpa canggung.");
+      poin("Sholat istikharah", "Mohon petunjuk kepada Allah lewat sholat istikharah, lalu diskusikan juga dengan keluarga atau wali sebelum memutuskan.");
+      DOA.slice(0, 2).forEach((x) => wadah.appendChild(kartuDoa(x)));
+    } else {
+      wadah.appendChild(el("p", "judul-saran", "Terima kasih sudah jujur pada dirimu sendiri"));
+      poin("Sampaikan dengan baik", "Sampaikan keputusanmu lewat perantara dengan bahasa yang santun, dan tetap jaga nama baik " + lawan + ". Tidak berlanjut bukan berarti ada yang salah.");
+      poin("Serahkan kepada Allah", "Kalau hatimu belum benar-benar yakin, sholat istikharah tetap bisa membantu. Semoga Allah memberikan yang terbaik untuk kalian berdua.");
+    }
+  }
+
+  function kartuDoa(x) {
+    const k = el("details", "kartu-doa");
+    k.appendChild(el("summary", null, x.judul));
+    if (x.ket) k.appendChild(el("p", "ket-doa", x.ket));
+    const ar = el("p", "doa-arab", x.arab); ar.lang = "ar"; ar.dir = "rtl";
+    k.append(ar, el("p", "doa-latin", x.latin), el("p", "doa-arti", "Artinya: " + x.arti), el("p", "doa-sumber", x.sumber));
+    return k;
   }
 
   function blokRingkasan(penanya) {
@@ -675,6 +798,12 @@
       });
       garis();
     });
+    const saya = indeksSaya(), nKep = bacaKeputusan();
+    if (y + 30 > BAWAH) halamanBaru();
+    tulis("Keputusan " + namaPemain(saya), { tebal: true, ukuran: 13, warna: [52, 66, 13], jarak: 2 });
+    tulis(nKep ? nKep + " dari 10: " + ARTI_KEPUTUSAN[nKep] : "Belum diisi", { tebal: true, jarak: 1.5 });
+    tulis("Skala 1 sampai 10: 1 berarti tidak ingin lanjut, 10 berarti ingin kenal lebih lanjut. Bagian ini hanya berisi keputusan " + namaPemain(saya) + " dan tidak ditampilkan kepada " + namaPemain(1 - saya) + " di aplikasi.", { ukuran: 9, warna: [102, 115, 111], jarak: 4 });
+    garis();
     tulis("Semoga Allah memudahkan setiap langkah ikhtiar kalian dan memberikan yang terbaik.", { miring: true, warna: [102, 115, 111], tengah: true, jarak: 0 });
 
     const total = doc.getNumberOfPages();
