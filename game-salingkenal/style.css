@@ -282,3 +282,33 @@ input::placeholder, textarea::placeholder { color: #a79f90; }
   .langkah li::before { content: counter(l) ""; }
 }
 @media (prefers-reduced-motion: reduce) { .layar.aktif, .titik { animation: none; } }
+
+/* ---------- Pencarian bantuan pertanyaan ---------- */
+.cari-bank { width: 100%; }
+.info-cari { margin: -4px 0 0; font-size: 13px; color: var(--tinta-lembut); }
+.info-cari:empty { display: none; }
+.asal-q { display: block; margin-top: 4px; font-size: 11px; letter-spacing: .08em; text-transform: uppercase; color: var(--brown); opacity: .8; }
+
+/* ---------- Keputusan lanjut atau tidak ---------- */
+.skala-keputusan { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 8px; }
+.skala-keputusan button {
+  font: inherit; font-family: var(--huruf-serif); font-weight: 600; font-size: 22px; padding: 8px 0; min-width: 0;
+  border-radius: 3px; border: 1px solid #d9d1c2; background: rgba(255, 255, 255, .75); color: var(--brown); cursor: pointer;
+}
+.skala-keputusan button[aria-checked="true"] { background: var(--fern); border-color: var(--fern); color: #fff; }
+.ujung-skala { display: flex; justify-content: space-between; gap: 12px; font-size: 12px; color: var(--tinta-lembut); }
+.ujung-skala span:last-child { text-align: right; }
+.arti-keputusan { margin: 4px 0 0; text-align: center; font-weight: 500; color: var(--fern); }
+.saran-keputusan { display: flex; flex-direction: column; gap: 10px; }
+.saran-keputusan:empty { display: none; }
+.judul-saran { margin: 6px 0 0; font-family: var(--huruf-serif); font-weight: 600; font-size: 21px; color: var(--fern); text-align: center; }
+.poin-saran { padding: 10px 12px; border-left: 3px solid var(--emas); background: rgba(255, 255, 255, .6); }
+.poin-saran b { display: block; color: var(--brown); font-weight: 600; }
+.poin-saran p { margin: 4px 0 0; font-size: 15px; line-height: 1.5; }
+.kartu-doa { border: 1px solid #e3dccf; border-radius: 3px; background: rgba(255, 255, 255, .7); padding: 10px 12px; }
+.kartu-doa summary { cursor: pointer; font-weight: 600; color: var(--fern); }
+.ket-doa { margin: 8px 0 0; font-size: 14px; color: var(--tinta-lembut); }
+.doa-arab { margin: 10px 0 0; font-family: "Amiri", "Scheherazade New", "Noto Naskh Arabic", "Traditional Arabic", "Geeza Pro", serif; font-size: 24px; line-height: 2; text-align: right; color: var(--teks, #342B1C); }
+.doa-latin { margin: 8px 0 0; font-style: italic; font-size: 15px; line-height: 1.5; color: var(--brown); }
+.doa-arti { margin: 8px 0 0; font-size: 15px; line-height: 1.5; }
+.doa-sumber { margin: 6px 0 0; font-size: 12px; letter-spacing: .06em; text-transform: uppercase; color: var(--tinta-lembut); }
