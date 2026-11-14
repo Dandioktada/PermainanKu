@@ -1201,7 +1201,7 @@
       return;
     }
     if (s.fase === "persiapan") {
-      if (s.siap[0] && !s.siap[1]) aksi(1, { t: "siap", pertanyaan: "Pertanyaan rahasia dari bot: apa hal kecil yang bikin {A} senang hari ini?", tantangan: "Tantangan dari bot: sebutkan tiga hal yang kamu syukuri minggu ini." });
+      if (s.siap[0] && !s.siap[1]) aksi(1, { t: "siap", pertanyaan: "Pertanyaan rahasia dari bot: apa hal kecil yang bikin kamu senang hari ini?", tantangan: "Tantangan dari bot: sebutkan tiga hal yang kamu syukuri minggu ini." });
       return;
     }
     if (s.fase === "jeda") {
@@ -1448,6 +1448,8 @@
     const tanda = el("div", "tanda-dev", "Mode pengembangan: main bareng bot");
     document.body.appendChild(tanda);
     document.body.classList.add("dev");
+    // Akses untuk pengujian otomatis, hanya di mode pengembangan
+    window.__salingBercerita = { get state() { return state; }, kirim: () => kirimDanTerapkan(false) };
   } else if (typeof Peer === "undefined") {
     pesan("pesan-awal", "Gagal memuat komponen online. Periksa koneksi internet lalu muat ulang halaman.");
     setTombolAwal(true);

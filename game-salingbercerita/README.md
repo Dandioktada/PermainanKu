@@ -38,15 +38,15 @@ Kartu dikelompokkan per topik. Topik dipilih bersama setelah kedua pemain masuk:
 
 | Topik | Mode | Cokelat | Hijau |
 |---|---|---|---|
-| Ayang | Telepon | 30 kartu: masa depan, rencana, mimpi | 30 kartu: komitmen, kejujuran, kasih sayang |
-| Ayang | Teks | 30 kartu ringan | 30 kartu ringan |
-| Sohib | Telepon | 30 kartu: kenangan, petualangan, mimpi | 30 kartu: dukungan, kejujuran, saling jaga |
-| Sohib | Teks | 30 kartu ringan | 30 kartu ringan |
-| Kenalan | Telepon | 30 kartu: keseharian, cerita hidup, selera | 30 kartu: nilai, harapan, sudut pandang |
-| Kenalan | Teks | 30 kartu ringan | 30 kartu ringan |
+| Pasangan | Telepon | 30 kartu: masa depan, rencana, mimpi | 30 kartu: komitmen, kejujuran, kasih sayang |
+| Pasangan | Teks | 30 kartu ringan | 30 kartu ringan |
+| Sahabat | Telepon | 30 kartu: kenangan, petualangan, mimpi | 30 kartu: dukungan, kejujuran, saling jaga |
+| Sahabat | Teks | 30 kartu ringan | 30 kartu ringan |
+| Teman | Telepon | 30 kartu: keseharian, cerita hidup, selera | 30 kartu: nilai, harapan, sudut pandang |
+| Teman | Teks | 30 kartu ringan | 30 kartu ringan |
 | Acak | Keduanya | Gabungan kartu cokelat dari tiga topik di atas | Gabungan kartu hijau |
 
-Topik Ayang adalah penyesuaian dari topik lama Calon Pengantin, supaya cocok untuk pasangan yang belum maupun sudah menikah. Dasar riset untuk Sohib dan Kenalan dicatat di `bahan/riset-pertanyaan-salingbercerita.md`.
+Topik Pasangan adalah penyesuaian dari topik lama Calon Pengantin, supaya cocok untuk pasangan yang belum maupun sudah menikah. Dasar riset untuk Sahabat dan Teman dicatat di `bahan/riset-pertanyaan-salingbercerita.md`.
 
 Semua kalimat ada di file `kartu.js`. Penanda `{A}` diganti nama yang menjawab, `{B}` diganti nama pasangannya. Topik baru ditambahkan dengan menyalin satu blok topik di file tersebut, dan otomatis ikut masuk ke topik Acak.
 

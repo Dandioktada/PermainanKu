@@ -16,7 +16,7 @@
 const TOPIK = [
   {
     id: "couple",
-    nama: "Ayang",
+    nama: "Pasangan",
     deskripsi: "Untuk pasangan, baik yang sedang menjalin hubungan maupun yang sudah menikah. Membahas mimpi, rencana bersama, komitmen, cara menghadapi konflik, dan hubungan dengan keluarga.",
     coklat: {
       label: "Masa Depan · Rencana · Mimpi",
@@ -157,7 +157,7 @@ const TOPIK = [
     },
   },  {
     id: "bestie",
-    nama: "Sohib",
+    nama: "Sahabat",
     deskripsi: "Untuk sahabat dekat. Mengenang perjalanan pertemanan, berbagi kabar baik, dan saling menjaga dengan jujur.",
     coklat: {
       label: "Kenangan · Petualangan · Mimpi",
@@ -298,7 +298,7 @@ const TOPIK = [
   },
   {
     id: "baru-kenalan",
-    nama: "Kenalan",
+    nama: "Teman",
     deskripsi: "Untuk dua orang yang baru saling kenal. Dimulai dari obrolan ringan, lalu pelan-pelan masuk ke cerita dan sudut pandang masing-masing.",
     coklat: {
       label: "Keseharian · Cerita Hidup · Selera",
@@ -446,7 +446,7 @@ const TOPIK = [
   TOPIK.push({
     id: "acak",
     nama: "Acak",
-    deskripsi: "Kartu diambil acak dari semua topik: Ayang, Sohib, dan Kenalan.",
+    deskripsi: "Kartu diambil acak dari semua topik: Pasangan, Sahabat, dan Teman.",
     coklat: { label: "Cerita · Rencana · Seru-seruan", kartu: gabung((t) => t.coklat.kartu) },
     hijau: { label: "Perasaan · Kejujuran · Dukungan", kartu: gabung((t) => t.hijau.kartu) },
     teks: { coklat: gabung((t) => (t.teks && t.teks.coklat) || []), hijau: gabung((t) => (t.teks && t.teks.hijau) || []) },
