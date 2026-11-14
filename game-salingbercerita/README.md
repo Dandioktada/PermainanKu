@@ -33,14 +33,21 @@ Permainan tidak menampilkan jumlah total kartu, hanya jumlah kartu yang sudah te
 
 ## Isi Kartu
 
-Kartu dikelompokkan per topik. Saat ini tersedia satu topik:
+Kartu dikelompokkan per topik. Setelah memilih mode, pemain memilih satu dari empat topik:
 
 | Topik | Mode | Cokelat | Hijau |
 |---|---|---|---|
-| Calon Pengantin | Telepon | 30 kartu: masa depan, rencana, mimpi | 30 kartu: komitmen, kejujuran, kasih sayang |
-| Calon Pengantin | Teks | 30 kartu ringan (dari `bahan/kalimat-kartu-salinbercerita-ringan`) | 30 kartu ringan |
+| Couple | Telepon | 30 kartu: masa depan, rencana, mimpi | 30 kartu: komitmen, kejujuran, kasih sayang |
+| Couple | Teks | 30 kartu ringan | 30 kartu ringan |
+| Bestie | Telepon | 30 kartu: kenangan, petualangan, mimpi | 30 kartu: dukungan, kejujuran, saling jaga |
+| Bestie | Teks | 30 kartu ringan | 30 kartu ringan |
+| Baru Kenalan | Telepon | 30 kartu: keseharian, cerita hidup, selera | 30 kartu: nilai, harapan, sudut pandang |
+| Baru Kenalan | Teks | 30 kartu ringan | 30 kartu ringan |
+| Acak | Keduanya | Gabungan kartu cokelat dari tiga topik di atas | Gabungan kartu hijau |
 
-Semua kalimat ada di file `kartu.js`. Penanda `{A}` diganti nama yang menjawab, `{B}` diganti nama pasangannya. Topik baru ditambahkan dengan menyalin satu blok topik di file tersebut. Selama hanya ada satu topik, pilihan topik disembunyikan. Begitu ada topik kedua, layar awal otomatis menampilkan dropdown berisi nama topik.
+Topik Couple adalah penyesuaian dari topik lama Calon Pengantin, supaya cocok untuk pasangan yang belum maupun sudah menikah. Dasar riset untuk Bestie dan Baru Kenalan dicatat di `bahan/riset-pertanyaan-salingbercerita.md`.
+
+Semua kalimat ada di file `kartu.js`. Penanda `{A}` diganti nama yang menjawab, `{B}` diganti nama pasangannya. Topik baru ditambahkan dengan menyalin satu blok topik di file tersebut, dan otomatis ikut masuk ke topik Acak.
 
 ## File
 

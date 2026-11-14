@@ -774,3 +774,17 @@ html[data-waktu="malam"] .btn:disabled { opacity: .7; filter: saturate(.6); }
   --px-bintang-ref-mati: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABIAAAATCAYAAACdkl3yAAABTklEQVR42p2TMU/DQAyFn++STBAp2Rm6ISREJqCiO6ILA/RHQkFiAySYSCVgIV3KxAI/IANDlGsaM4RUTXK9pvVq3/Pn8zMxM0zxNb5nIQQ6+6dkqhOm5M/nM6dpiiRJ8D154o2F4jgGMyPPc8RxbCS3lqcYRASiYiIhBAAGQOsRReGQpZQAACKClBJROGQDkfmzdaS6oI+XK23GcRztA6WUXoiZMXm/WxerEnuH5yRMXdpE+VYAQNDt0yZiSikE3T4BVIwGAJj9Yvz6wLZttxKZTqc4ODojWFu19cttuK7bmsZ1XZQiDR91do+prVC9tiIUvT223l69VqwyWpZlyLJspTnF4knUTaiUgu/78DyvYRHHcSonYxlXe3JJKKyGHc4RjW54meOJmRGF1/OCsnPQG1Dz0nlOsVgf9AZkNSku/il0C6SiAeeIRrcVuj+ripIh3VDVGwAAAABJRU5ErkJggg==");
   --px-hati-ref: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABIAAAASCAYAAABWzo5XAAAAsklEQVR42r2TMQ7CMAxFv1FZkKiUZKMMHIA7cbbeiYGRAZhwKgHqGhZSEdNEHVz++OM4T44/hRDwLWttYnjvqeRHLaCkSpJc6s0oYc6PZGpEZIxJXlydjwCAfref1GD7uM00oyszAKCZSBLrsZzr106ve3LQOFckGerNWplIbm7bjZNJksOHRH2PqlymJFmORD1rJNMvs9R2zyLJ/4ii75wLAMDMBABEVB72zwviQq5B1BtoF1lOJhpf6QAAAABJRU5ErkJggg==");
 }
+
+/* ---------- Pilihan topik (layar awal, langkah 2) ---------- */
+.label-topik { margin: 0 0 6px; }
+.daftar-topik { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; margin: 0 var(--px) 4px; }
+.opsi-topik {
+  font: inherit; font-family: var(--huruf-judul); font-weight: 700; font-size: 14px; text-transform: uppercase;
+  color: var(--tinta); cursor: pointer; border: 0; padding: 12px 6px; min-width: 0; overflow-wrap: anywhere;
+  background: var(--putih);
+  box-shadow: 0 -3px 0 0 var(--tinta), 0 3px 0 0 var(--tinta), -3px 0 0 0 var(--tinta), 3px 0 0 0 var(--tinta), 0 6px 0 0 var(--tinta);
+}
+.opsi-topik[aria-checked="true"] { background: var(--coklat-muda); transform: translateY(3px);
+  box-shadow: 0 -3px 0 0 var(--tinta), 0 3px 0 0 var(--tinta), -3px 0 0 0 var(--tinta), 3px 0 0 0 var(--tinta); }
+.deskripsi-topik { margin: 10px 0 0; font-size: 16px; line-height: 1.35; color: var(--tinta-lembut); }
+.deskripsi-topik:empty { display: none; }

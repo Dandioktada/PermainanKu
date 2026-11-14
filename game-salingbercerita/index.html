@@ -74,8 +74,9 @@
 
       <!-- Pilihan topik hanya muncul kalau di kartu.js ada lebih dari satu topik -->
       <div id="wadah-topik" hidden>
-        <label for="pilih-topik">Pilih topik</label>
-        <select id="pilih-topik" class="pilih-topik"></select>
+        <p class="label-blok label-topik" id="label-topik">Mau ngobrolin apa?</p>
+        <div id="pilih-topik" class="daftar-topik" role="radiogroup" aria-labelledby="label-topik"></div>
+        <p id="deskripsi-topik" class="deskripsi-topik"></p>
       </div>
 
       <button id="btn-buat" class="btn utama">Bikin Ruangan, Yuk!</button>

@@ -1064,7 +1064,7 @@
     return n.slice(0, 20);
   }
 
-  // Pilihan topik berupa dropdown nama topik, dan hanya tampil kalau ada lebih dari satu topik.
+  // Pilihan topik berupa tombol (2 x 2), dan hanya tampil kalau ada lebih dari satu topik.
   function tampilDaftarTopik() {
     const ada = TOPIK.length > 1;
     $("wadah-topik").hidden = !ada;
@@ -1072,11 +1072,18 @@
     const pilih = $("pilih-topik");
     pilih.innerHTML = "";
     TOPIK.forEach((t) => {
-      const o = el("option", null, t.nama);
-      o.value = t.id;
-      o.selected = t.id === topikDipilih;
-      pilih.appendChild(o);
+      const b = el("button", "opsi-topik", t.nama);
+      b.type = "button";
+      b.dataset.topik = t.id;
+      b.setAttribute("role", "radio");
+      b.addEventListener("click", () => { topikDipilih = t.id; tandaiTopik(); });
+      pilih.appendChild(b);
     });
+    tandaiTopik();
+  }
+  function tandaiTopik() {
+    document.querySelectorAll(".opsi-topik").forEach((b) => b.setAttribute("aria-checked", String(b.dataset.topik === topikDipilih)));
+    $("deskripsi-topik").textContent = cariTopik(topikDipilih).deskripsi || "";
   }
 
   function buatRuangan() {
@@ -1191,7 +1198,6 @@
   // =====================================================================
   // PASANG TOMBOL
   // =====================================================================
-  $("pilih-topik").addEventListener("change", (e) => { topikDipilih = e.target.value; });
   document.querySelectorAll(".opsi-mode").forEach((b) => b.addEventListener("click", () => {
     modeDipilih = b.dataset.mode;
     pesan("pesan-awal", "");
